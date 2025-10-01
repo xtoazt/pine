@@ -221,7 +221,7 @@ export default function ApiPage() {
       "id": "class-782",
       "title": "Stickman Fighter",
       "description": "Epic stickman fighting game...",
-      "thumbnail": "https://top-vaz-online.github.io/img/class-782.png",
+      "thumbnail": "/images/logo.png",
       "category": "fighting",
       "tags": ["stickman", "fighting", "action"],
       "playUrl": "/play/class-782",

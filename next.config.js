@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['top-vaz-online.github.io'],
+    domains: ['localhost'],
   },
   async rewrites() {
     return [
@@ -11,6 +11,10 @@ const nextConfig = {
       },
     ]
   },
+  // Ensure static assets are served correctly
+  trailingSlash: false,
+  // Enable static file serving
+  assetPrefix: '',
 }
 
 module.exports = nextConfig
