@@ -1,7 +1,7 @@
 {
   "name": "pine",
   "version": "1.0.0",
-  "description": "A modern, developer-friendly game platform built with React, TypeScript, and shadcn/ui",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
