@@ -24,6 +24,9 @@ export function GameCard({ game }: GameCardProps) {
           width={200}
           height={120}
           className="game-thumbnail object-cover transition-transform duration-200 group-hover:scale-105"
+          onError={(e) => {
+            e.currentTarget.src = '/images/logo.png'
+          }}
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
