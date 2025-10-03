@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Game } from '@/types/game'
 import { ArrowLeft, Play, ThumbsUp, Eye, Share2 } from 'lucide-react'
 import Link from 'next/link'
+import { VirtualController } from '@/components/game/virtual-controller'
+import { useVirtualController } from '@/hooks/use-virtual-controller'
 
 export default function GamePage() {
   const params = useParams()
@@ -15,6 +17,7 @@ export default function GamePage() {
   
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
+  const virtualController = useVirtualController()
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -185,6 +188,14 @@ export default function GamePage() {
           </Card>
         </div>
       </div>
+
+      {/* Virtual Controller */}
+      <VirtualController
+        isVisible={virtualController.isVisible}
+        onToggle={virtualController.toggleController}
+        onKeyPress={virtualController.handleKeyPress}
+        onKeyRelease={virtualController.handleKeyRelease}
+      />
     </div>
   )
 }

@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ['localhost', 'fortnite-game.github.io'],
-  },
+      images: {
+        domains: ['localhost', 'fortnite-game.github.io', 'raw.githubusercontent.com'],
+      },
   async rewrites() {
     return [
       {

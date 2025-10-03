@@ -19,7 +19,7 @@ export default function HomePage() {
     const fetchData = async () => {
       try {
         const [gamesRes, categoriesRes, statsRes] = await Promise.all([
-          fetch('/api/games?limit=20'),
+          fetch('/api/games?limit=30'),
           fetch('/api/categories'),
           fetch('/api/stats')
         ])
