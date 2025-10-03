@@ -12,7 +12,7 @@ export function Footer() {
               <span className="text-lg font-bold">pine</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              A modern, developer-friendly game platform built with React, TypeScript, and shadcn/ui.
+              A clean, minimalist game platform with 100+ carefully curated games. No ads, no tracking.
             </p>
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <span>Made with</span>

@@ -171,7 +171,7 @@ export function VirtualController({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 bg-red-500/20 border-red-500/50"
+            className="h-8 w-8 p-0"
             onMouseDown={() => handleMouseDown('Space')}
             onMouseUp={() => handleMouseUp('Space')}
             onMouseLeave={() => handleMouseLeave('Space')}
@@ -183,7 +183,7 @@ export function VirtualController({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 bg-blue-500/20 border-blue-500/50"
+            className="h-8 w-8 p-0"
             onMouseDown={() => handleMouseDown('Enter')}
             onMouseUp={() => handleMouseUp('Enter')}
             onMouseLeave={() => handleMouseLeave('Enter')}

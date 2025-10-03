@@ -7,13 +7,13 @@ import { Footer } from '@/components/layout/footer'
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
-  title: 'pine - Modern Game Platform',
-  description: 'A modern, developer-friendly game platform built with React, TypeScript, and shadcn/ui. No ads, no tracking.',
-  keywords: ['games', 'platform', 'react', 'typescript', 'shadcn', 'api'],
-  authors: [{ name: 'Rohan' }],
+  title: 'pine - Minimalist Game Platform',
+  description: 'A clean, minimalist game platform with 100+ carefully curated games. No ads, no tracking, just pure gaming.',
+  keywords: ['pine', 'games', 'platform', 'minimalist', 'clean', 'no-ads', 'gaming'],
+  authors: [{ name: 'pine' }],
   openGraph: {
-    title: 'pine - Modern Game Platform',
-    description: 'A modern, developer-friendly game platform built with React, TypeScript, and shadcn/ui.',
+    title: 'pine - Minimalist Game Platform',
+    description: 'A clean, minimalist game platform with 100+ carefully curated games. No ads, no tracking.',
     type: 'website',
   },
 }
