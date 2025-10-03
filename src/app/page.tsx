@@ -19,7 +19,7 @@ export default function HomePage() {
     const fetchData = async () => {
       try {
         const [gamesRes, categoriesRes, statsRes] = await Promise.all([
-          fetch('/api/games?limit=12'),
+          fetch('/api/games?limit=20'),
           fetch('/api/categories'),
           fetch('/api/stats')
         ])
@@ -120,8 +120,8 @@ export default function HomePage() {
           </Button>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {categories.slice(0, 12).map((category) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          {categories.slice(0, 14).map((category) => (
             <Card key={category.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-4 text-center">
                 <h3 className="font-semibold mb-2">{category.name}</h3>
