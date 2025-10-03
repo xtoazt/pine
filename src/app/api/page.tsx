@@ -221,7 +221,7 @@ export default function ApiPage() {
       "id": "class-782",
       "title": "Stickman Fighter",
       "description": "Epic stickman fighting game...",
-      "thumbnail": "/images/logo.png",
+      "thumbnail": "https://fortnite-game.github.io/img/class-357.png",
       "category": "fighting",
       "tags": ["stickman", "fighting", "action"],
       "playUrl": "/play/class-782",

@@ -42,37 +42,39 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="container py-8 space-y-12">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="text-center space-y-6">
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-            Welcome to pine
+      <section className="space-y-6 py-8 md:py-12 lg:py-32">
+        <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+          <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
+            The Foundation for your{" "}
+            <span className="text-primary">Game Platform</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            A modern, developer-friendly game platform. No ads, no tracking, just pure gaming fun.
+          <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+            A set of beautifully designed games that you can customize, extend, and build on. 
+            Start here then make it your own. Open Source. Open Code.
           </p>
-        </div>
-        
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" asChild>
-            <Link href="/category/popular">
-              <Gamepad2 className="mr-2 h-5 w-5" />
-              Play Popular Games
-            </Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <Link href="/api">
-              <Zap className="mr-2 h-5 w-5" />
-              View API
-            </Link>
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button size="lg" asChild>
+              <Link href="/category/popular">
+                <Gamepad2 className="mr-2 h-4 w-4" />
+                Get Started
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild>
+              <Link href="/api">
+                <Zap className="mr-2 h-4 w-4" />
+                View Components
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Stats Section */}
       {stats && (
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section className="container space-y-6 py-8 md:py-12 lg:py-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Games</CardTitle>
@@ -102,11 +104,12 @@ export default function HomePage() {
               <div className="text-2xl font-bold">{stats.totalCategories}</div>
             </CardContent>
           </Card>
+          </div>
         </section>
       )}
 
       {/* Categories Section */}
-      <section className="space-y-6">
+      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold">Game Categories</h2>
           <Button variant="outline" asChild>
@@ -132,7 +135,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Games Section */}
-      <section className="space-y-6">
+      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold">Featured Games</h2>
           <Button variant="outline" asChild>
@@ -147,24 +150,26 @@ export default function HomePage() {
       </section>
 
       {/* Developer Section */}
-      <section className="bg-muted/50 rounded-lg p-8 text-center space-y-4">
-        <h2 className="text-3xl font-bold">Built for Developers</h2>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          pine provides a clean, modern API for developers to easily integrate games into their own applications. 
-          No complex authentication, no rate limits, just simple HTTP requests.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild>
-            <Link href="/api">
-              <Zap className="mr-2 h-4 w-4" />
-              API Documentation
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="https://github.com/rohan/pine">
-              View on GitHub
-            </Link>
-          </Button>
+      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
+        <div className="bg-muted/50 rounded-lg p-8 text-center space-y-4">
+          <h2 className="text-3xl font-bold">Built for Developers</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            pine provides a clean, modern API for developers to easily integrate games into their own applications. 
+            No complex authentication, no rate limits, just simple HTTP requests.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild>
+              <Link href="/api">
+                <Zap className="mr-2 h-4 w-4" />
+                API Documentation
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="https://github.com/rohan/pine">
+                View on GitHub
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
     </div>
