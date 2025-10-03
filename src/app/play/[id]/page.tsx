@@ -23,7 +23,8 @@ export default function GamePage() {
     const fetchGame = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/games?limit=1&offset=0`)
+        // Fetch all games and find the specific one by ID
+        const response = await fetch(`/api/games?limit=100`)
         const data = await response.json()
         
         // Find the specific game by ID
