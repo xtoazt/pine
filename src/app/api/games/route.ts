@@ -15,6 +15,7 @@ const mockGames: Game[] = [
     upvotes: 3905,
     downvotes: 175,
     playCount: 3682,
+    source: "lessons",
     createdAt: new Date("2024-01-01T00:00:00.000Z"),
     updatedAt: new Date("2024-01-01T00:00:00.000Z")
   },
@@ -8488,13 +8489,23 @@ const mockGames: Game[] = [
     createdAt: new Date("2023-12-01T00:00:00.000Z"),
     updatedAt: new Date("2023-12-01T00:00:00.000Z")
   },
-  // Add all HDUN games with proper Date objects
+  // Add all HDUN games with proper Date objects and source
   ...hdunGames.map(game => ({
     ...game,
+    source: 'hdun',
     createdAt: new Date(game.createdAt),
     updatedAt: new Date(game.updatedAt)
   }))
-]
+].map(game => {
+  // Add source property based on game ID pattern if not already set
+  const source = game.source || (game.id.startsWith('lesson-') ? 'lessons' : 
+                                game.id.startsWith('fortnite-') ? 'fortnite' : 
+                                game.id.startsWith('hdun-') ? 'hdun' : 'lessons')
+  return {
+    ...game,
+    source
+  }
+})
 
 export async function GET(request: NextRequest) {
   try {
@@ -8509,6 +8520,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const sortBy = searchParams.get('sortBy') || 'popular'
+    const source = searchParams.get('source') || '' // Filter by source: lessons, hdun, fortnite
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     
     let filteredGames = [...mockGames]
@@ -8521,6 +8533,11 @@ export async function GET(request: NextRequest) {
         (game.description && game.description.toLowerCase().includes(searchLower)) ||
         game.tags.some(tag => tag.toLowerCase().includes(searchLower))
       )
+    }
+    
+    // Apply source filter
+    if (source) {
+      filteredGames = filteredGames.filter(game => game.source === source)
     }
     
     // Apply category filter

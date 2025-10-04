@@ -41,7 +41,8 @@
                         return document.getElementById('videoad')
                     },
                     AIP_COMPLETE: function(state) {
-                        lesson_detail();
+                        // Game loaded successfully - no additional action needed
+                        console.log('Game loaded successfully');
                     }
                 });
 
@@ -55,7 +56,7 @@
                     });
                 } else {//Adlib didnt load this could be due to an adblocker, timeout etc.
                 //Please add your script here that starts the content, this usually is the same script as added in AIP_COMPLETE.
-                // alert("Please Disable Adblocker for the play games!");
+                console.log('Ad system not available, game should still work');
                 //aiptag.adplayer.aipConfig.AIP_COMPLETE();
                 }
             }

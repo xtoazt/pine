@@ -133,11 +133,12 @@ export default function ApiPage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
           <TabsTrigger value="examples">Examples</TabsTrigger>
           <TabsTrigger value="html-snippet">HTML Snippet</TabsTrigger>
+          <TabsTrigger value="developer">Developer</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -365,6 +366,113 @@ console.log(data.categories); // All categories with counts`}
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="developer" className="space-y-6">
+          <div className="grid grid-cols-1 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Code className="mr-2 h-5 w-5" />
+                  Game Sources & Data
+                </CardTitle>
+                <CardDescription>
+                  Information about where games come from and how to identify them
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h4 className="font-semibold mb-3">Game Sources</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 border rounded-lg">
+                      <h5 className="font-medium text-green-600">Lessons Data</h5>
+                      <p className="text-sm text-muted-foreground">606 games</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Educational and classic games from the original lessons collection
+                      </p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h5 className="font-medium text-blue-600">HDUN Games</h5>
+                      <p className="text-sm text-muted-foreground">6,050 games</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Large collection of HTML5 games from HDUN.org
+                      </p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h5 className="font-medium text-purple-600">Fortnite Games</h5>
+                      <p className="text-sm text-muted-foreground">35 games</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Games from the Fortnite game repository
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-3">Identifying Game Sources</h4>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-muted rounded">
+                      <h5 className="font-medium">By Game ID Pattern</h5>
+                      <pre className="text-xs mt-2">
+{`// Lessons games
+"lesson-1", "lesson-2", etc.
+
+// HDUN games  
+"hdun-action-1", "hdun-puzzle-5", etc.
+
+// Fortnite games
+"fortnite-game-1", "fortnite-game-2", etc.`}
+                      </pre>
+                    </div>
+                    <div className="p-3 bg-muted rounded">
+                      <h5 className="font-medium">By Source Property</h5>
+                      <pre className="text-xs mt-2">
+{`// API Response includes source field
+{
+  "id": "hdun-action-1",
+  "title": "Game Title",
+  "source": "hdun",  // "lessons", "hdun", or "fortnite"
+  ...
+}`}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-3">API Endpoints for Source Data</h4>
+                  <div className="space-y-2 text-sm">
+                    <div><code>GET /api/games?source=lessons</code> - Get only lessons games</div>
+                    <div><code>GET /api/games?source=hdun</code> - Get only HDUN games</div>
+                    <div><code>GET /api/games?source=fortnite</code> - Get only Fortnite games</div>
+                    <div><code>GET /api/games?api_key=key</code> - Get all games with source info</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-3">Game Statistics</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div className="p-3 border rounded">
+                      <div className="text-2xl font-bold text-green-600">606</div>
+                      <div className="text-xs text-muted-foreground">Lessons</div>
+                    </div>
+                    <div className="p-3 border rounded">
+                      <div className="text-2xl font-bold text-blue-600">6,050</div>
+                      <div className="text-xs text-muted-foreground">HDUN</div>
+                    </div>
+                    <div className="p-3 border rounded">
+                      <div className="text-2xl font-bold text-purple-600">35</div>
+                      <div className="text-xs text-muted-foreground">Fortnite</div>
+                    </div>
+                    <div className="p-3 border rounded">
+                      <div className="text-2xl font-bold text-primary">6,691</div>
+                      <div className="text-xs text-muted-foreground">Total</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

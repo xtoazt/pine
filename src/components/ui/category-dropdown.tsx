@@ -105,11 +105,11 @@ function CategoryDropdownContent() {
         
         <DropdownMenuSeparator />
         
-        {/* Game Categories */}
+        {/* Game Categories - Top 8 only */}
         {(categories || [])
           .filter(cat => cat && !['all', 'popular', 'new'].includes(cat.slug))
           .filter(cat => cat && cat.gameCount > 0)
-          .slice(0, 20) // Limit to top 20 categories for performance
+          .slice(0, 8) // Limit to top 8 categories for cleaner UI
           .map((category) => (
             <DropdownMenuItem 
               key={category.id} 
@@ -124,6 +124,16 @@ function CategoryDropdownContent() {
               </div>
             </DropdownMenuItem>
           ))}
+        
+        <DropdownMenuSeparator />
+        
+        <DropdownMenuItem onClick={() => handleCategorySelect('all')}>
+          <span className="mr-2">📋</span>
+          <div className="flex flex-col">
+            <span>View All Categories</span>
+            <span className="text-xs text-muted-foreground">See all {categories.length} categories</span>
+          </div>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
