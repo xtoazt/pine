@@ -26,7 +26,7 @@ function CategoryDropdownContent() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentCategory = searchParams.get('category') || 'all'
+  const currentCategory = (searchParams?.get?.('category') as string) || 'all'
 
   useEffect(() => {
     const fetchCategories = async () => {
