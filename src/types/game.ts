@@ -7,6 +7,7 @@ export interface Game {
   tags: string[]
   playUrl: string
   sourceUrl?: string
+  source?: string
   rating?: number
   upvotes: number
   downvotes: number

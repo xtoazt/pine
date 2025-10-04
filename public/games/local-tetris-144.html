@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tetris Game</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #000; color: #fff; font-family: Arial; }
+        canvas { border: 2px solid #fff; background: #000; }
+        .score { font-size: 20px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="score">Score: <span id="score">0</span> | Lines: <span id="lines">0</span></div>
+    <canvas id="gameCanvas" width="300" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const linesElement = document.getElementById('lines');
+        
+        const blockSize = 30;
+        const cols = canvas.width / blockSize;
+        const rows = canvas.height / blockSize;
+        
+        let board = Array(rows).fill().map(() => Array(cols).fill(0));
+        let currentPiece = null;
+        let score = 0;
+        let lines = 0;
+        
+        const pieces = [
+            { shape: [[1,1,1,1]], color: '#00f' },
+            { shape: [[1,1],[1,1]], color: '#ff0' },
+            { shape: [[1,1,1],[0,1,0]], color: '#0f0' },
+            { shape: [[1,1,1],[1,0,0]], color: '#f00' },
+            { shape: [[1,1,1],[0,0,1]], color: '#f0f' }
+        ];
+        
+        function createPiece() {
+            const piece = pieces[Math.floor(Math.random() * pieces.length)];
+            return {
+                shape: piece.shape,
+                color: piece.color,
+                x: Math.floor(cols / 2) - Math.floor(piece.shape[0].length / 2),
+                y: 0
+            };
+        }
+        
+        function draw() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw board
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    if (board[y][x]) {
+                        ctx.fillStyle = board[y][x];
+                        ctx.fillRect(x * blockSize, y * blockSize, blockSize - 1, blockSize - 1);
+                    }
+                }
+            }
+            
+            // Draw current piece
+            if (currentPiece) {
+                ctx.fillStyle = currentPiece.color;
+                for (let y = 0; y < currentPiece.shape.length; y++) {
+                    for (let x = 0; x < currentPiece.shape[y].length; x++) {
+                        if (currentPiece.shape[y][x]) {
+                            ctx.fillRect(
+                                (currentPiece.x + x) * blockSize,
+                                (currentPiece.y + y) * blockSize,
+                                blockSize - 1,
+                                blockSize - 1
+                            );
+                        }
+                    }
+                }
+            }
+        }
+        
+        function movePiece(dx, dy) {
+            if (currentPiece && isValidMove(currentPiece.x + dx, currentPiece.y + dy, currentPiece.shape)) {
+                currentPiece.x += dx;
+                currentPiece.y += dy;
+                return true;
+            }
+            return false;
+        }
+        
+        function isValidMove(x, y, shape) {
+            for (let py = 0; py < shape.length; py++) {
+                for (let px = 0; px < shape[py].length; px++) {
+                    if (shape[py][px]) {
+                        const nx = x + px;
+                        const ny = y + py;
+                        if (nx < 0 || nx >= cols || ny >= rows || (ny >= 0 && board[ny][nx])) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        
+        function placePiece() {
+            for (let y = 0; y < currentPiece.shape.length; y++) {
+                for (let x = 0; x < currentPiece.shape[y].length; x++) {
+                    if (currentPiece.shape[y][x]) {
+                        board[currentPiece.y + y][currentPiece.x + x] = currentPiece.color;
+                    }
+                }
+            }
+            clearLines();
+            currentPiece = createPiece();
+        }
+        
+        function clearLines() {
+            for (let y = rows - 1; y >= 0; y--) {
+                if (board[y].every(cell => cell !== 0)) {
+                    board.splice(y, 1);
+                    board.unshift(Array(cols).fill(0));
+                    score += 100;
+                    lines++;
+                    scoreElement.textContent = score;
+                    linesElement.textContent = lines;
+                }
+            }
+        }
+        
+        function gameLoop() {
+            if (!currentPiece) {
+                currentPiece = createPiece();
+            }
+            
+            if (!movePiece(0, 1)) {
+                placePiece();
+            }
+            
+            draw();
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') movePiece(-1, 0);
+            if (e.key === 'ArrowRight') movePiece(1, 0);
+            if (e.key === 'ArrowDown') movePiece(0, 1);
+            if (e.key === ' ') {
+                while (movePiece(0, 1)) {}
+            }
+        });
+        
+        setInterval(gameLoop, 500);
+        draw();
+    </script>
+</body>
+</html>

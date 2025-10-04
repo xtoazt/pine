@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
-import hdunGames from '@/data/hdun-games.json'
+import localGames from '@/data/local-games.json'
 
-// ALL games from lessons data + Fortnite games + HTML5 games + HDUN games (6656+ total)
+// ALL games from lessons data + Fortnite games + HTML5 games + Local games (1606+ total)
 const mockGames: Game[] = [
   {
     id: "lesson-1",
@@ -8488,8 +8488,12 @@ const mockGames: Game[] = [
     createdAt: new Date("2023-12-01T00:00:00.000Z"),
     updatedAt: new Date("2023-12-01T00:00:00.000Z")
   },
-  // Add all HDUN games
-  ...hdunGames
+  // Add all local games with proper Date objects
+  ...localGames.map(game => ({
+    ...game,
+    createdAt: new Date(game.createdAt),
+    updatedAt: new Date(game.updatedAt)
+  }))
 ]
 
 export async function GET(request: NextRequest) {
