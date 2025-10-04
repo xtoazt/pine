@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Menu, Github, Settings } from "lucide-react"
+import { Search, Menu, Github, Settings, Plus } from "lucide-react"
 import { useState } from "react"
 import { CloakSelector } from "@/components/cloak/cloak-selector"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
@@ -66,6 +66,12 @@ export function Header() {
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
               Arcade
+            </Link>
+            <Link
+              href="/add-game"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Add Game
             </Link>
                 <Link
                   href="/api"

@@ -1,6 +1,7 @@
 import { GameCard } from "./game-card"
 import { Game } from "@/types/game"
 import { useSettings } from "@/contexts/settings-context"
+import { useCustomGames } from "@/hooks/useCustomGames"
 
 interface GameGridProps {
   games: Game[]
@@ -9,6 +10,10 @@ interface GameGridProps {
 
 export function GameGrid({ games, loading = false }: GameGridProps) {
   const { settings } = useSettings()
+  const { customGames } = useCustomGames()
+  
+  // Combine regular games with custom games
+  const allGames = [...games, ...customGames]
   if (loading) {
     return (
       <div className="game-grid">
@@ -46,7 +51,7 @@ export function GameGrid({ games, loading = false }: GameGridProps) {
 
   return (
     <div className={`game-grid grid gap-4 ${gridCols}`}>
-      {games.map((game) => (
+      {allGames.map((game) => (
         <GameCard key={game.id} game={game} />
       ))}
     </div>

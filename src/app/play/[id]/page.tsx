@@ -10,6 +10,7 @@ import { ArrowLeft, Play, ThumbsUp, Eye, Share2, Maximize, Minimize } from 'luci
 import Link from 'next/link'
 import { VirtualController } from '@/components/game/virtual-controller'
 import { useVirtualController } from '@/hooks/use-virtual-controller'
+import { useCustomGames } from '@/hooks/useCustomGames'
 
 export default function GamePage() {
   const params = useParams()
@@ -19,11 +20,21 @@ export default function GamePage() {
   const [loading, setLoading] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const virtualController = useVirtualController()
+  const { customGames } = useCustomGames()
 
   useEffect(() => {
     const fetchGame = async () => {
       try {
         setLoading(true)
+        
+        // First check custom games
+        const customGame = customGames.find(g => g.id === gameId)
+        if (customGame) {
+          setGame(customGame)
+          setLoading(false)
+          return
+        }
+        
         // Fetch all games and find the specific one by ID
         const response = await fetch(`/api/games?limit=1000`)
         const data = await response.json()
@@ -154,7 +165,9 @@ export default function GamePage() {
             <CardContent className="p-0">
               <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
                     <iframe
-                      src={game.source === 'hdun' ? `/play.html?game=${gameId}` : `/api/proxy/lessons/${gameId}`}
+                      src={game.source === 'hdun' ? `/play.html?game=${gameId}` : 
+                            game.source === 'custom' ? game.playUrl : 
+                            `/api/proxy/lessons/${gameId}`}
                       className="w-full h-full border-0"
                       allowFullScreen
                       title={game.title}

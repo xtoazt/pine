@@ -8489,10 +8489,12 @@ const mockGames: Game[] = [
     createdAt: new Date("2023-12-01T00:00:00.000Z"),
     updatedAt: new Date("2023-12-01T00:00:00.000Z")
   },
-  // Add all curated HDUN games
+  // Add all curated HDUN games with proper Date objects
   ...hdunGamesCurated.map(game => ({
     ...game,
-    source: 'hdun'
+    source: 'hdun',
+    createdAt: new Date(game.createdAt),
+    updatedAt: new Date(game.updatedAt)
   }))
 ].map(game => {
   // Add source property based on game ID pattern if not already set
@@ -8518,10 +8520,25 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const sortBy = searchParams.get('sortBy') || 'popular'
-    const source = searchParams.get('source') || '' // Filter by source: lessons, hdun, fortnite
+    const source = searchParams.get('source') || '' // Filter by source: lessons, hdun, fortnite, custom
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     
-    let filteredGames = [...mockGames]
+    // Get custom games from request headers (passed from client-side)
+    const customGamesHeader = request.headers.get('x-custom-games')
+    let customGames: Game[] = []
+    if (customGamesHeader) {
+      try {
+        customGames = JSON.parse(customGamesHeader).map((game: any) => ({
+          ...game,
+          createdAt: new Date(game.createdAt),
+          updatedAt: new Date(game.updatedAt)
+        }))
+      } catch (e) {
+        console.error('Error parsing custom games:', e)
+      }
+    }
+    
+    let filteredGames = [...mockGames, ...customGames]
     
     // Apply search filter
     if (search) {
