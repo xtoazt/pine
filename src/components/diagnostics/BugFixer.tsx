@@ -92,24 +92,31 @@ export function BugFixer() {
 
   return (
     <>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setOpen(v => !v)}
-        className="fixed bottom-4 right-20 z-50 h-10 rounded-full bg-background/80 backdrop-blur-sm border shadow hover:bg-background/90"
-        title={open ? 'Hide diagnostics' : 'Show diagnostics'}
-      >
-        <Bug className="h-4 w-4 mr-2" /> Diagnostics
-      </Button>
+      {!open && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setOpen(true)}
+          className="fixed bottom-4 right-20 z-40 h-10 rounded-full bg-background/80 backdrop-blur-sm border shadow hover:bg-background/90"
+          title={'Show diagnostics'}
+        >
+          <Bug className="h-4 w-4 mr-2" /> Diagnostics
+        </Button>
+      )}
 
       {open && (
-        <Card className="fixed bottom-20 right-4 w-80 z-40 shadow-2xl">
+        <Card className="fixed bottom-20 right-4 w-80 z-50 shadow-2xl">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Diagnostics</CardTitle>
-              <Button variant="ghost" size="icon" onClick={runAll} disabled={running}>
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="icon" onClick={runAll} disabled={running}>
                 <RefreshCw className={`h-4 w-4 ${running ? 'animate-spin' : ''}`} />
-              </Button>
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
+                  ✕
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">

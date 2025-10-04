@@ -39,7 +39,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     // Boot API route-based Socket.IO server
     fetch('/api/socket').catch(() => {})
     // Initialize socket connection to same origin API route
-    const newSocket = io({ path: '/api/socket' })
+    const newSocket = io({ path: '/api/socket', autoConnect: true, transports: ['websocket'] })
     
     newSocket.on('connect', () => {
       console.log('Connected to chat server')

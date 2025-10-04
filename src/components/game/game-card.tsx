@@ -35,7 +35,7 @@ export function GameCard({ game }: GameCardProps) {
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <Button size="sm" asChild>
-              <Link href={game.playUrl} prefetch={false}>
+              <Link href={`/play/${game.id}`} prefetch={false}>
                 <Play className="h-4 w-4 mr-2" />
                 Play Now
               </Link>
