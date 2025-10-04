@@ -73,6 +73,12 @@ export function Header() {
             >
               Add Game
             </Link>
+            <Link
+              href="/hdun-games"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              HDUN Games
+            </Link>
                 <Link
                   href="/api"
                   className="transition-colors hover:text-foreground/80 text-foreground/60"

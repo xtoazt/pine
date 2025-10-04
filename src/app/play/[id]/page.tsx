@@ -167,6 +167,7 @@ export default function GamePage() {
                     <iframe
                       src={game.source === 'hdun' ? `/play.html?game=${gameId}` : 
                             game.source === 'custom' ? game.playUrl : 
+                            gameId.startsWith('hdun-') ? `/api/hdun/proxy?id=${gameId.replace('hdun-', '')}` :
                             `/api/proxy/lessons/${gameId}`}
                       className="w-full h-full border-0"
                       allowFullScreen
