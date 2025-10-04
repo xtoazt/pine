@@ -26,18 +26,28 @@ export default function CategoryPage() {
       try {
         setLoading(true)
         
-        // Fetch category info
+        // Fetch category info (API returns { categories: [...] })
         const categoriesRes = await fetch('/api/categories')
-        const categories = await categoriesRes.json()
-        const currentCategory = categories.find((cat: GameCategory) => cat.slug === slug)
+        const categoriesJson = await categoriesRes.json()
+        const categoriesArr: GameCategory[] = Array.isArray(categoriesJson?.categories) ? categoriesJson.categories : []
+        const currentCategory = categoriesArr.find((cat) => cat && cat.slug === slug) || null
         setCategory(currentCategory)
         
         // Fetch games for this category
-        const gamesRes = await fetch(`/api/games?category=${slug}&all=true`)
+        let gamesUrl = `/api/games?all=true`
+        if (slug === 'popular') {
+          gamesUrl = `/api/games?category=popular&limit=60`
+        } else if (slug === 'new') {
+          gamesUrl = `/api/games?category=new&limit=60`
+        } else if (slug && slug !== 'all') {
+          gamesUrl = `/api/games?category=${slug}&all=true`
+        }
+        const gamesRes = await fetch(gamesUrl)
         const gamesData = await gamesRes.json()
-        setGames(gamesData.games)
+        setGames(Array.isArray(gamesData?.games) ? gamesData.games : [])
       } catch (error) {
         console.error('Error fetching data:', error)
+        setGames([])
       } finally {
         setLoading(false)
       }
