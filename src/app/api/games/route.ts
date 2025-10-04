@@ -113,6 +113,40 @@ async function fetchHdunList(baseUrl: string): Promise<Game[]> {
   }
 }
 
+async function fetchGnMath(baseUrl: string): Promise<Game[]> {
+  try {
+    const res = await fetch(new URL('/api/gnmath/list', baseUrl).toString(), { cache: 'no-store' })
+    if (!res.ok) return []
+    const data = await res.json()
+    const ids: string[] = Array.isArray(data.ids) ? data.ids : []
+    const games: Game[] = []
+    for (const id of ids) {
+      const raw = `https://cdn.jsdelivr.net/gh/gn-math/html@main/${id}.html`
+      // ping via DS proxy
+      const ping = await fetch(new URL(`/api/ds/proxy?url=${encodeURIComponent(raw)}&ping=1`, baseUrl).toString(), { cache: 'no-store' })
+      if (!ping.ok) continue
+      games.push({
+        id: `gn-${id}`,
+        title: id.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        description: 'gn-math game',
+        thumbnail: `/api/ds/proxy?url=${encodeURIComponent(raw)}`,
+        category: 'arcade',
+        tags: ['gn-math'],
+        playUrl: `/api/ds/proxy?url=${encodeURIComponent(raw)}`,
+        upvotes: 0,
+        downvotes: 0,
+        playCount: 0,
+        source: 'gnmath',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      })
+    }
+    return games
+  } catch {
+    return []
+  }
+}
+
 // ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (4000+ total)
 const mockGames: Game[] = [
   {
@@ -8652,8 +8686,9 @@ export async function GET(request: NextRequest) {
     const radonGames = await fetchRadonGames(request.url)
     const gsGames = await fetchGameSnacks(request.url)
     const hdunGamesDynamic = await fetchHdunList(request.url)
+    const gnGames = await fetchGnMath(request.url)
     
-    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...customGames]
+    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...customGames]
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = await (async () => {
