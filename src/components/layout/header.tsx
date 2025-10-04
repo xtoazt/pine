@@ -79,6 +79,12 @@ export function Header() {
             >
               HDUN Games
             </Link>
+            <Link
+              href="/proxy"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Proxy
+            </Link>
                 <Link
                   href="/api"
                   className="transition-colors hover:text-foreground/80 text-foreground/60"
