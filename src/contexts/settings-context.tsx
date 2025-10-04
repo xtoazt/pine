@@ -8,23 +8,36 @@ interface Settings {
   accentColor: string
   fontSize: number
   boldText: boolean
+  borderRadius: number
+  spacing: number
   
   // Layout settings
   layout: string
   gamesPerRow: number
   showGameCounts: boolean
   compactMode: boolean
+  cardSize: string
+  animationSpeed: string
   
   // Display settings
   showThumbnails: boolean
   showDescriptions: boolean
   showTags: boolean
   showStats: boolean
+  showRatings: boolean
+  thumbnailQuality: string
+  
+  // Advanced settings
+  autoPlay: boolean
+  soundEnabled: boolean
+  vibrationEnabled: boolean
+  hapticFeedback: boolean
   
   // Privacy settings
   enableCloaking: boolean
   rememberPreferences: boolean
   analytics: boolean
+  telemetry: boolean
 }
 
 const defaultSettings: Settings = {
@@ -32,17 +45,28 @@ const defaultSettings: Settings = {
   accentColor: 'blue',
   fontSize: 16,
   boldText: true,
+  borderRadius: 8,
+  spacing: 16,
   layout: 'grid',
   gamesPerRow: 4,
   showGameCounts: true,
   compactMode: false,
+  cardSize: 'medium',
+  animationSpeed: 'normal',
   showThumbnails: true,
   showDescriptions: true,
   showTags: true,
   showStats: true,
+  showRatings: true,
+  thumbnailQuality: 'high',
+  autoPlay: false,
+  soundEnabled: true,
+  vibrationEnabled: false,
+  hapticFeedback: true,
   enableCloaking: true,
   rememberPreferences: true,
   analytics: false,
+  telemetry: false,
 }
 
 interface SettingsContextType {
@@ -108,6 +132,32 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       } else {
         body.style.fontWeight = '400'
       }
+    }
+
+    // Apply border radius changes
+    if (key === 'borderRadius') {
+      document.documentElement.style.setProperty('--radius', `${value}px`)
+    }
+
+    // Apply spacing changes
+    if (key === 'spacing') {
+      document.documentElement.style.setProperty('--spacing', `${value}px`)
+    }
+
+    // Apply animation speed changes
+    if (key === 'animationSpeed') {
+      const speed = value === 'fast' ? '0.1s' : value === 'slow' ? '0.5s' : '0.2s'
+      document.documentElement.style.setProperty('--animation-speed', speed)
+    }
+
+    // Apply card size changes
+    if (key === 'cardSize') {
+      document.documentElement.setAttribute('data-card-size', value)
+    }
+
+    // Apply haptic feedback
+    if (key === 'hapticFeedback' && value && 'vibrate' in navigator) {
+      navigator.vibrate(50)
     }
   }
 

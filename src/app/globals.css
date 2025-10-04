@@ -5,6 +5,7 @@
 @layer base {
   * {
     font-weight: 600;
+    transition: all var(--animation-speed, 0.2s) ease;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -21,6 +22,31 @@
   
   .font-medium {
     font-weight: 600;
+  }
+
+  /* Card size variations */
+  [data-card-size="small"] .game-card {
+    transform: scale(0.9);
+  }
+  
+  [data-card-size="large"] .game-card {
+    transform: scale(1.1);
+  }
+  
+  [data-card-size="medium"] .game-card {
+    transform: scale(1);
+  }
+
+  /* Spacing variations */
+  .game-grid {
+    gap: var(--spacing, 16px);
+  }
+
+  /* Border radius variations */
+  .game-card,
+  .card,
+  .btn {
+    border-radius: var(--radius, 8px);
   }
 }
 

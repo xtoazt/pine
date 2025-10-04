@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Game } from '@/types/game'
-import { ArrowLeft, Play, ThumbsUp, Eye, Share2 } from 'lucide-react'
+import { ArrowLeft, Play, ThumbsUp, Eye, Share2, Maximize, Minimize } from 'lucide-react'
 import Link from 'next/link'
 import { VirtualController } from '@/components/game/virtual-controller'
 import { useVirtualController } from '@/hooks/use-virtual-controller'
@@ -17,6 +17,7 @@ export default function GamePage() {
   
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const virtualController = useVirtualController()
 
   useEffect(() => {
@@ -41,6 +42,36 @@ export default function GamePage() {
       fetchGame()
     }
   }, [gameId])
+
+  const toggleFullscreen = () => {
+    const gameContainer = document.getElementById('game-container')
+    if (!gameContainer) return
+
+    if (!document.fullscreenElement) {
+      gameContainer.requestFullscreen().then(() => {
+        setIsFullscreen(true)
+      }).catch((err) => {
+        console.error('Error attempting to enable fullscreen:', err)
+      })
+    } else {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false)
+      }).catch((err) => {
+        console.error('Error attempting to exit fullscreen:', err)
+      })
+    }
+  }
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    }
+  }, [])
 
   if (loading) {
     return (
@@ -95,10 +126,25 @@ export default function GamePage() {
           </div>
         </div>
         
-        <Button onClick={() => window.location.reload()}>
-          <Play className="mr-2 h-4 w-4" />
-          Reload Game
-        </Button>
+            <div className="flex space-x-2">
+              <Button onClick={() => window.location.reload()}>
+                <Play className="mr-2 h-4 w-4" />
+                Reload Game
+              </Button>
+              <Button variant="outline" onClick={toggleFullscreen}>
+                {isFullscreen ? (
+                  <>
+                    <Minimize className="mr-2 h-4 w-4" />
+                    Exit Fullscreen
+                  </>
+                ) : (
+                  <>
+                    <Maximize className="mr-2 h-4 w-4" />
+                    Fullscreen
+                  </>
+                )}
+              </Button>
+            </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -106,13 +152,28 @@ export default function GamePage() {
         <div className="lg:col-span-2">
           <Card>
             <CardContent className="p-0">
-              <div className="aspect-video bg-muted rounded-t-lg overflow-hidden">
+              <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
                 <iframe
-                  src={`/proxy/lessons/${gameId}`}
+                  src={game.source === 'hdun' ? `/proxy/hdun/${gameId}` : `/proxy/lessons/${gameId}`}
                   className="w-full h-full border-0"
                   allowFullScreen
                   title={game.title}
                 />
+                
+                {/* Fullscreen overlay controls */}
+                {isFullscreen && (
+                  <div className="absolute top-4 right-4 z-10">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={toggleFullscreen}
+                      className="bg-black/50 text-white hover:bg-black/70"
+                    >
+                      <Minimize className="h-4 w-4 mr-2" />
+                      Exit Fullscreen
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

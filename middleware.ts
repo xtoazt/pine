@@ -27,6 +27,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL(targetUrl))
   }
 
+  // Proxy HDUN games
+  if (pathname.startsWith('/proxy/hdun/')) {
+    const gamePath = pathname.replace('/proxy/hdun/', '')
+    const targetUrl = `https://www.hdun.org/games/alotofgames/${gamePath}`
+    
+    return NextResponse.rewrite(new URL(targetUrl))
+  }
+
   // Handle the new play.html system
   if (pathname.startsWith('/play/') && !pathname.includes('/api/')) {
     // Extract game ID from path

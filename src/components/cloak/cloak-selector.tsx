@@ -125,8 +125,8 @@ export function CloakSelector() {
   return (
     <div className="flex items-center space-x-1">
       <Select value={selectedCloak} onValueChange={handleCloakChange}>
-        <SelectTrigger className="w-[100px] h-7 text-xs">
-          <SelectValue placeholder="Cloak" />
+        <SelectTrigger className="w-[60px] h-6 text-xs border-0 bg-transparent hover:bg-muted/50">
+          <SelectValue placeholder="🔒" />
         </SelectTrigger>
         <SelectContent>
           {cloaks.map((cloak) => (
@@ -152,10 +152,10 @@ export function CloakSelector() {
           variant="ghost"
           size="sm"
           onClick={resetCloak}
-          className="h-7 w-7 p-0"
+          className="h-6 w-6 p-0 text-xs"
           title="Reset cloak"
         >
-          <EyeOff className="h-3 w-3" />
+          ✕
         </Button>
       )}
     </div>

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
+import hdunGames from '@/data/hdun-games.json'
 
-// ALL games from lessons data + Fortnite games + HTML5 games (606 total)
+// ALL games from lessons data + Fortnite games + HTML5 games + HDUN games (6656+ total)
 const mockGames: Game[] = [
   {
     id: "lesson-1",
@@ -8486,7 +8487,9 @@ const mockGames: Game[] = [
     playCount: 37212,
     createdAt: new Date("2023-12-01T00:00:00.000Z"),
     updatedAt: new Date("2023-12-01T00:00:00.000Z")
-  }
+  },
+  // Add all HDUN games
+  ...hdunGames
 ]
 
 export async function GET(request: NextRequest) {
