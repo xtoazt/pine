@@ -9,10 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider'
 import { Settings, Palette, Layout, Eye, Shield, Heart } from 'lucide-react'
 import { useSettings } from '@/contexts/settings-context'
+import { useMusic } from '@/contexts/MusicContext'
 import Link from 'next/link'
 
 export default function SettingsPage() {
   const { settings, updateSetting, resetSettings } = useSettings()
+  const { isMusicVisible, toggleMusic } = useMusic()
 
   return (
     <div className="container py-8 space-y-8">
@@ -227,6 +229,14 @@ export default function SettingsPage() {
               <Switch
                 checked={settings.analytics}
                 onCheckedChange={(value) => updateSetting('analytics', value)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label>Background Music</Label>
+              <Switch
+                checked={isMusicVisible}
+                onCheckedChange={toggleMusic}
               />
             </div>
           </CardContent>
