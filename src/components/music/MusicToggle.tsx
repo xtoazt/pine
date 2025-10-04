@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Music, MusicOff } from 'lucide-react'
+import { Music, VolumeX } from 'lucide-react'
 
 interface MusicToggleProps {
   onToggle: () => void
@@ -19,7 +19,7 @@ export function MusicToggle({ onToggle, isVisible }: MusicToggleProps) {
       title={isVisible ? "Hide Music Player" : "Show Music Player"}
     >
       {isVisible ? (
-        <MusicOff className="h-5 w-5" />
+        <VolumeX className="h-5 w-5" />
       ) : (
         <Music className="h-5 w-5" />
       )}
