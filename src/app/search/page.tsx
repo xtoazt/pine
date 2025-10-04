@@ -29,7 +29,7 @@ function SearchContent() {
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=50`)
+      const response = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30`)
       
       if (!response.ok) {
         throw new Error('Failed to search games')

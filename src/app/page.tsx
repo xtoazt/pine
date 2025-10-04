@@ -18,26 +18,27 @@ export default function HomePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [gamesRes, categoriesRes, statsRes] = await Promise.all([
-          fetch('/api/games?limit=50&category=popular'),
+        // Fetch stats and categories first (fast)
+        const [categoriesRes, statsRes] = await Promise.all([
           fetch('/api/categories'),
           fetch('/api/stats')
         ])
 
-        if (!gamesRes.ok || !categoriesRes.ok || !statsRes.ok) {
-          throw new Error('Failed to fetch data')
+        if (categoriesRes.ok && statsRes.ok) {
+          const categoriesData = await categoriesRes.json()
+          const statsData = await statsRes.json()
+          setCategories(Array.isArray(categoriesData.categories) ? categoriesData.categories : [])
+          setStats(statsData || null)
         }
 
-        const gamesData = await gamesRes.json()
-        const categoriesData = await categoriesRes.json()
-        const statsData = await statsRes.json()
-
-        setGames(Array.isArray(gamesData.games) ? gamesData.games : [])
-        setCategories(Array.isArray(categoriesData.categories) ? categoriesData.categories : [])
-        setStats(statsData || null)
+        // Then fetch games gradually (slower)
+        const gamesRes = await fetch('/api/games?limit=24&category=popular')
+        if (gamesRes.ok) {
+          const gamesData = await gamesRes.json()
+          setGames(Array.isArray(gamesData.games) ? gamesData.games : [])
+        }
       } catch (error) {
         console.error('Error fetching data:', error)
-        // Set empty arrays as fallback
         setGames([])
         setCategories([])
         setStats(null)

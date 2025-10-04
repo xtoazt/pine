@@ -8725,6 +8725,7 @@ export async function GET(request: NextRequest) {
     const source = searchParams.get('source') || '' // Filter by source: lessons, hdun, fortnite, custom
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
+    const includeExternal = searchParams.get('external') === 'true' // Only fetch external sources if explicitly requested
     
     // Get custom games from request headers (passed from client-side)
     const customGamesHeader = request.headers.get('x-custom-games')
@@ -8740,14 +8741,20 @@ export async function GET(request: NextRequest) {
         console.error('Error parsing custom games:', e)
       }
     }
-    // Pull Radon games and merge; skip entries that fail HDUN ping when hdun source
-    const radonGames = await fetchRadonGames(request.url)
-    const gsGames = await fetchGameSnacks(request.url)
-    const hdunGamesDynamic = await fetchHdunList(request.url)
-    const gnGames = await fetchGnMath(request.url)
-    const s16Games = await fetchS16Games(request.url)
     
-    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games, ...customGames]
+    // Start with static games (fast)
+    let filteredGames = [...mockGames, ...customGames]
+    
+    // Only fetch external sources if explicitly requested or if searching for specific source
+    if (includeExternal || includeAll || source) {
+      const radonGames = source === 'radon' || includeExternal ? await fetchRadonGames(request.url) : []
+      const gsGames = source === 'gamesnacks' || includeExternal ? await fetchGameSnacks(request.url) : []
+      const hdunGamesDynamic = source === 'hdun' || includeExternal ? await fetchHdunList(request.url) : []
+      const gnGames = source === 'gnmath' || includeExternal ? await fetchGnMath(request.url) : []
+      const s16Games = source === 's16' || includeExternal ? await fetchS16Games(request.url) : []
+      
+      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games]
+    }
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = filteredGames.filter(g => g && g.playUrl)
