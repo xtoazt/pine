@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const rawUrl = searchParams.get('url')
+    const ping = searchParams.get('ping') === '1'
     if (!rawUrl) {
       return NextResponse.json({ error: 'Missing url param' }, { status: 400 })
     }
@@ -63,6 +64,10 @@ export async function GET(request: NextRequest) {
       },
       redirect: 'follow',
     })
+
+    if (ping) {
+      return new NextResponse(null, { status: res.ok ? 204 : 404 })
+    }
 
     if (!res.ok) {
       return NextResponse.json({ error: `Upstream error ${res.status}` }, { status: res.status })

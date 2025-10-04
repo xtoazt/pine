@@ -41,6 +41,46 @@ async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
   }
 }
 
+async function fetchGameSnacks(baseUrl: string): Promise<Game[]> {
+  try {
+    const listUrl = new URL('/api/gamesnacks/list', baseUrl).toString()
+    const res = await fetch(listUrl, { cache: 'no-store' })
+    if (!res.ok) return []
+    const data = await res.json()
+    const ids: string[] = Array.isArray(data.ids) ? data.ids : []
+    const games: Game[] = ids.map((id, i) => {
+      const title = id.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+      const url = `https://gamesnacks.com/games/${id}`
+      return {
+        id: `gs-${id}`,
+        title,
+        description: 'GameSnacks game',
+        thumbnail: `/api/ds/proxy?url=${encodeURIComponent(url)}`, // fallback to page; thumbnails vary
+        category: 'arcade',
+        tags: ['gamesnacks'],
+        playUrl: `/api/ds/proxy?url=${encodeURIComponent(url)}`,
+        upvotes: 0,
+        downvotes: 0,
+        playCount: 0,
+        source: 'gamesnacks',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      }
+    })
+    // Filter by pinging via DS proxy
+    const filtered: Game[] = []
+    for (const g of games) {
+      try {
+        const ping = await fetch(`${new URL('/api/ds/proxy', baseUrl)}?url=${encodeURIComponent(`https://gamesnacks.com/games/${g.id.replace(/^gs-/, '')}`)}&ping=1`, { cache: 'no-store' })
+        if (ping.ok) filtered.push(g)
+      } catch {}
+    }
+    return filtered
+  } catch {
+    return []
+  }
+}
+
 // ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (4000+ total)
 const mockGames: Game[] = [
   {
@@ -8578,8 +8618,9 @@ export async function GET(request: NextRequest) {
     }
     // Pull Radon games and merge; skip entries that fail HDUN ping when hdun source
     const radonGames = await fetchRadonGames(request.url)
+    const gsGames = await fetchGameSnacks(request.url)
     
-    let filteredGames = [...mockGames, ...radonGames, ...customGames]
+    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...customGames]
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = await (async () => {
