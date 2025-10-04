@@ -7,8 +7,9 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
-import { Settings, Palette, Layout, Eye, Shield } from 'lucide-react'
+import { Settings, Palette, Layout, Eye, Shield, Heart } from 'lucide-react'
 import { useSettings } from '@/contexts/settings-context'
+import Link from 'next/link'
 
 export default function SettingsPage() {
   const { settings, updateSetting, resetSettings } = useSettings()
@@ -250,6 +251,37 @@ export default function SettingsPage() {
             </Button>
             <Button variant="outline">
               Import Settings
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Support Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Heart className="mr-2 h-5 w-5 text-red-500" />
+            Support pine
+          </CardTitle>
+          <CardDescription>
+            Help keep pine running and ad-free for everyone
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Support pine development and server costs
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Optional support - no ads on main site
+              </p>
+            </div>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/ads">
+                <Heart className="mr-2 h-4 w-4" />
+                Support
+              </Link>
             </Button>
           </div>
         </CardContent>
