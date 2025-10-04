@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GameGrid } from '@/components/game/game-grid'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -14,23 +14,57 @@ export default function GamesPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('popular')
+  const [offset, setOffset] = useState(0)
+  const [hasMore, setHasMore] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
+
+  const PAGE_SIZE = 60
+
+  const fetchPage = async (reset: boolean) => {
+    try {
+      if (reset) {
+        setLoading(true)
+      } else {
+        setIsLoadingMore(true)
+      }
+      const nextOffset = reset ? 0 : offset
+      const resp = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`)
+      const data = await resp.json()
+      const newList: Game[] = Array.isArray(data.games) ? data.games : []
+      setGames(prev => {
+        const base = reset ? [] : prev
+        const dedup = new Map<string, Game>()
+        for (const g of [...base, ...newList]) dedup.set(g.id, g)
+        return Array.from(dedup.values())
+      })
+      setHasMore(Boolean(data.hasMore))
+      setOffset(nextOffset + PAGE_SIZE)
+    } catch (e) {
+      console.error('Error fetching games:', e)
+    } finally {
+      setLoading(false)
+      setIsLoadingMore(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('/api/games?all=true')
-        const data = await response.json()
-        setGames(data.games || [])
-      } catch (error) {
-        console.error('Error fetching games:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchGames()
+    fetchPage(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!loadMoreRef.current) return
+    const el = loadMoreRef.current
+    const io = new IntersectionObserver(entries => {
+      const entry = entries[0]
+      if (entry.isIntersecting && hasMore && !isLoadingMore && !loading) {
+        fetchPage(false)
+      }
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [hasMore, isLoadingMore, loading])
 
   const filteredGames = games.filter(game => {
     if (!searchQuery) return true
@@ -128,6 +162,14 @@ export default function GamesPage() {
         </div>
         
         <GameGrid games={sortedGames} loading={loading} />
+        <div ref={loadMoreRef} />
+        {!loading && hasMore && (
+          <div className="flex justify-center py-4">
+            <Button onClick={() => fetchPage(false)} disabled={isLoadingMore} variant="outline">
+              {isLoadingMore ? 'Loading…' : 'Load more'}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
