@@ -25,6 +25,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <script src="https://cdn.jsdelivr.net/gh/Parcoil/cloak@main/src/index.min.js"></script>
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <div className="min-h-screen flex flex-col">
           <Header />

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Menu, Github, Moon, Sun } from "lucide-react"
 import { useState } from "react"
+import { CloakSelector } from "@/components/cloak/cloak-selector"
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -52,12 +53,18 @@ export function Header() {
             >
               New Games
             </Link>
-            <Link
-              href="/category/popular"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Popular
-            </Link>
+                <Link
+                  href="/category/popular"
+                  className="transition-colors hover:text-foreground/80 text-foreground/60"
+                >
+                  Popular
+                </Link>
+                <Link
+                  href="/cloak"
+                  className="transition-colors hover:text-foreground/80 text-foreground/60"
+                >
+                  Cloak
+                </Link>
             <Link
               href="/category/arcade"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
@@ -92,7 +99,8 @@ export function Header() {
               />
             </form>
           </div>
-          <nav className="flex items-center">
+          <nav className="flex items-center space-x-2">
+            <CloakSelector />
             <Link
               href="https://github.com/rohan/pine"
               target="_blank"
