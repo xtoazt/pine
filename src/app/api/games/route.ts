@@ -8500,12 +8500,16 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     
-    // Parse query parameters with performance limits
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100) // Cap at 100 for performance
+    // Check for API key (optional but recommended)
+    const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
+    
+    // Parse query parameters - no limits for API access
+    const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const sortBy = searchParams.get('sortBy') || 'popular'
+    const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     
     let filteredGames = [...mockGames]
     
@@ -8557,16 +8561,25 @@ export async function GET(request: NextRequest) {
         filteredGames.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
     }
     
-    // Apply pagination
-    const paginatedGames = filteredGames.slice(offset, offset + limit)
+    // Apply pagination - if includeAll is true, return all games
+    const paginatedGames = includeAll ? filteredGames : filteredGames.slice(offset, offset + limit)
     
     const response: GameApiResponse = {
       games: paginatedGames,
       total: filteredGames.length,
-      hasMore: offset + limit < filteredGames.length
+      hasMore: includeAll ? false : offset + limit < filteredGames.length
     }
     
-    return NextResponse.json(response)
+    // Add API metadata
+    const apiResponse = {
+      ...response,
+      apiKey: apiKey ? 'valid' : 'none',
+      message: includeAll ? 'All games included' : 'Paginated results',
+      limit: includeAll ? filteredGames.length : limit,
+      offset: includeAll ? 0 : offset
+    }
+    
+    return NextResponse.json(apiResponse)
   } catch (error) {
     console.error('Error fetching games:', error)
     return NextResponse.json(
