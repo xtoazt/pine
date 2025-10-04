@@ -4,9 +4,9 @@ import { GameStats } from '@/types/game'
 export async function GET() {
   try {
         const stats: GameStats = {
-          totalGames: 501,
-          totalCategories: 19,
-          totalPlays: 5000000,
+          totalGames: 606,
+          totalCategories: 20,
+          totalPlays: 8000000,
       topCategories: [
         {
           id: "arcade",
