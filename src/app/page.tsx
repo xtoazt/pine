@@ -59,7 +59,7 @@ export default function HomePage() {
                 <span className="text-primary">pine</span>
               </h1>
                   <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-                    A modern, minimalist game platform with 1,000+ carefully curated games. 
+                    A modern, minimalist game platform with 3,000+ carefully curated games. 
                     Clean design, no ads, no tracking. Just pure gaming.
                   </p>
           <div className="flex flex-col gap-2 sm:flex-row">

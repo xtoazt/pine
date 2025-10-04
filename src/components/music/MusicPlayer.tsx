@@ -14,7 +14,8 @@ import {
   Music,
   X,
   Minimize2,
-  Maximize2
+  Maximize2,
+  Search
 } from 'lucide-react'
 
 interface Track {
@@ -39,10 +40,12 @@ export function MusicPlayer({ isVisible, onToggle }: MusicPlayerProps) {
   const [duration, setDuration] = useState(0)
   const [isMinimized, setIsMinimized] = useState(false)
   const [isYouTubeReady, setIsYouTubeReady] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const playerRef = useRef<any>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Sample tracks for demonstration
+  // Expanded music library
   const sampleTracks: Track[] = [
     {
       id: '1',
@@ -67,8 +70,56 @@ export function MusicPlayer({ isVisible, onToggle }: MusicPlayerProps) {
       thumbnail: '/api/placeholder/64/64', 
       videoId: 'DWcJFNfaw9c', // Ambient space music
       duration: 0
+    },
+    {
+      id: '4',
+      title: 'Jazz Lounge',
+      artist: 'Smooth Jazz',
+      thumbnail: '/api/placeholder/64/64',
+      videoId: 'Dx5qFachd3A', // Jazz music
+      duration: 0
+    },
+    {
+      id: '5',
+      title: 'Classical Focus',
+      artist: 'Orchestral',
+      thumbnail: '/api/placeholder/64/64',
+      videoId: 'kxouWoV7W9s', // Classical music
+      duration: 0
+    },
+    {
+      id: '6',
+      title: 'Electronic Chill',
+      artist: 'EDM Vibes',
+      thumbnail: '/api/placeholder/64/64',
+      videoId: '5qap5aO4i9A', // Electronic music
+      duration: 0
+    },
+    {
+      id: '7',
+      title: 'Acoustic Folk',
+      artist: 'Indie Folk',
+      thumbnail: '/api/placeholder/64/64',
+      videoId: 'fJ9rUzIMcZQ', // Folk music
+      duration: 0
+    },
+    {
+      id: '8',
+      title: 'Piano Relaxation',
+      artist: 'Peaceful Piano',
+      thumbnail: '/api/placeholder/64/64',
+      videoId: 'rUxyKA_-grg', // Piano music
+      duration: 0
     }
   ]
+
+  // Filter tracks based on search query
+  const filteredTracks = searchQuery 
+    ? sampleTracks.filter(track => 
+        track.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        track.artist.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : sampleTracks
 
   useEffect(() => {
     // Load YouTube API
@@ -244,6 +295,13 @@ export function MusicPlayer({ isVisible, onToggle }: MusicPlayerProps) {
                   <Button
                     variant="ghost"
                     size="sm"
+                    onClick={() => setShowSearch(!showSearch)}
+                  >
+                    <Search className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setIsMinimized(true)}
                   >
                     <Minimize2 className="h-3 w-3" />
@@ -257,6 +315,44 @@ export function MusicPlayer({ isVisible, onToggle }: MusicPlayerProps) {
                   </Button>
                 </div>
               </div>
+
+              {/* Search */}
+              {showSearch && (
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    placeholder="Search music..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                  <div className="max-h-32 overflow-y-auto space-y-1">
+                    {filteredTracks.map((track) => (
+                      <div
+                        key={track.id}
+                        className="flex items-center space-x-2 p-2 hover:bg-muted rounded cursor-pointer"
+                        onClick={() => {
+                          setCurrentTrack(track)
+                          if (playerRef.current) {
+                            playerRef.current.loadVideoById(track.videoId)
+                          }
+                          setShowSearch(false)
+                        }}
+                      >
+                        <img
+                          src={track.thumbnail}
+                          alt={track.title}
+                          className="w-8 h-8 rounded object-cover"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium truncate">{track.title}</p>
+                          <p className="text-xs text-muted-foreground truncate">{track.artist}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Track Info */}
               {currentTrack && (

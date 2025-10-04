@@ -4,7 +4,6 @@ import './globals.css'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { ThemeProvider } from '@/components/theme/theme-provider'
-import { FloatingSettings } from '@/components/ui/floating-settings'
 import { SettingsProvider } from '@/contexts/settings-context'
 import { MusicProvider } from '@/contexts/MusicContext'
 import { MusicToggleWrapper } from '@/components/music/MusicToggleWrapper'
@@ -65,11 +64,10 @@ export default function RootLayout({
                 <MusicProvider>
                   <div className="min-h-screen flex flex-col">
                     <Header />
-                    <main className="flex-1">
+                    <main className="flex-1 px-4 py-6">
                       {children}
                     </main>
                     <Footer />
-                    <FloatingSettings />
                     <MusicWrapper />
                   </div>
                 </MusicProvider>
