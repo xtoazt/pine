@@ -4,9 +4,6 @@ import hdunGamesCurated from '@/data/hdun-games-curated.json'
 // Get all unique categories from games
 export async function GET(request: NextRequest) {
   try {
-    // Import the main games data to get accurate counts
-    const { default: gamesData } = await import('@/app/api/games/route')
-    
     // Get all games from the main collection
     const allGames = [
       // Original games categories
