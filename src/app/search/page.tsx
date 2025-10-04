@@ -12,7 +12,7 @@ import Link from 'next/link'
 
 function SearchContent() {
   const searchParams = useSearchParams()
-  const query = searchParams.get('q') || ''
+  const query = (searchParams?.get?.('q') as string) || ''
   
   const [games, setGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(false)
