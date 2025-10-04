@@ -2,6 +2,45 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
 import hdunGamesCurated from '@/data/hdun-games-curated.json'
 
+async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
+  try {
+    const url = new URL('/api/radon/games', baseUrl).toString()
+    const res = await fetch(url, { cache: 'no-store' })
+    if (!res.ok) return []
+    const data = await res.json()
+    const list = Array.isArray(data.games) ? data.games : []
+    const toSlug = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    return list.map((g: any, idx: number) => {
+      const title: string = g.title || g.name || `Radon Game ${idx + 1}`
+      const slug = toSlug(g.slug || title)
+      const rawUrl: string | undefined = g.url || g.playUrl || g.link
+      const proxiedUrl = rawUrl && /^https?:\/\//i.test(rawUrl)
+        ? `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}`
+        : undefined
+      const thumb: string = g.thumbnail || g.thumb || g.image || '/images/logo.png'
+      const category: string = g.category || 'arcade'
+      const tags: string[] = Array.isArray(g.tags) ? g.tags : []
+      return {
+        id: `radon-${slug || idx}`,
+        title,
+        description: g.description || '',
+        thumbnail: thumb,
+        category,
+        tags,
+        playUrl: proxiedUrl || '/proxy',
+        upvotes: Number(g.upvotes || 0),
+        downvotes: Number(g.downvotes || 0),
+        playCount: Number(g.playCount || 0),
+        source: 'radon',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      } as Game
+    })
+  } catch {
+    return []
+  }
+}
+
 // ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (4000+ total)
 const mockGames: Game[] = [
   {
@@ -8537,8 +8576,10 @@ export async function GET(request: NextRequest) {
         console.error('Error parsing custom games:', e)
       }
     }
+    // Pull Radon games and merge
+    const radonGames = await fetchRadonGames(request.url)
     
-    let filteredGames = [...mockGames, ...customGames]
+    let filteredGames = [...mockGames, ...radonGames, ...customGames]
     
     // Apply search filter
     if (search) {
