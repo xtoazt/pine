@@ -13,7 +13,14 @@ export function GameGrid({ games, loading = false }: GameGridProps) {
   const { customGames } = useCustomGames()
   
   // Combine regular games with custom games
-  const allGames = [...games, ...customGames]
+  const allGames = [...games, ...customGames].filter(g => {
+    // Hide obviously invalid entries to prevent wasted clicks
+    if (!g || !g.title || !g.playUrl) return false
+    const bad = ['crms', 'not found', 'unavailable']
+    const t = `${g.title} ${g.description || ''}`.toLowerCase()
+    if (bad.some(k => t.includes(k))) return false
+    return true
+  })
   if (loading) {
     return (
       <div className="game-grid">

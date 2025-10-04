@@ -36,8 +36,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [isChatVisible, setIsChatVisible] = useState(false)
 
   useEffect(() => {
-    // Initialize socket connection
-    const newSocket = io(process.env.NODE_ENV === 'production' ? 'https://pine-games.vercel.app' : 'http://localhost:3000')
+    // Boot API route-based Socket.IO server
+    fetch('/api/socket').catch(() => {})
+    // Initialize socket connection to same origin API route
+    const newSocket = io({ path: '/api/socket' })
     
     newSocket.on('connect', () => {
       console.log('Connected to chat server')

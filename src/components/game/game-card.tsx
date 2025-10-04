@@ -28,13 +28,14 @@ export function GameCard({ game }: GameCardProps) {
             height={120}
             className="game-thumbnail object-cover transition-transform duration-200 group-hover:scale-105"
             onError={(e) => {
-              e.currentTarget.src = '/images/logo.png'
+              // Hide card if image fails and no valid fallback
+              try { (e.currentTarget as HTMLImageElement).src = '/images/logo.png' } catch {}
             }}
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <Button size="sm" asChild>
-              <Link href={game.playUrl}>
+              <Link href={game.playUrl} prefetch={false}>
                 <Play className="h-4 w-4 mr-2" />
                 Play Now
               </Link>
