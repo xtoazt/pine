@@ -4,9 +4,10 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Menu, Github, Moon, Sun } from "lucide-react"
+import { Search, Menu, Github, Settings } from "lucide-react"
 import { useState } from "react"
 import { CloakSelector } from "@/components/cloak/cloak-selector"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -65,12 +66,18 @@ export function Header() {
             >
               Arcade
             </Link>
-            <Link
-              href="/api"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              API
-            </Link>
+                <Link
+                  href="/api"
+                  className="transition-colors hover:text-foreground/80 text-foreground/60"
+                >
+                  API
+                </Link>
+                <Link
+                  href="/settings"
+                  className="transition-colors hover:text-foreground/80 text-foreground/60"
+                >
+                  Settings
+                </Link>
           </nav>
         </div>
         <Button
@@ -105,11 +112,7 @@ export function Header() {
                 <span className="sr-only">GitHub</span>
               </Button>
             </Link>
-            <Button variant="ghost" size="icon">
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
+            <ThemeToggle />
           </nav>
         </div>
       </div>

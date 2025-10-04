@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { ThemeProvider } from '@/components/theme/theme-provider'
+import { FloatingSettings } from '@/components/ui/floating-settings'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -30,13 +32,21 @@ export default function RootLayout({
         <script src="https://cdn.jsdelivr.net/gh/Parcoil/cloak@main/src/index.min.js"></script>
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <div className="min-h-screen flex flex-col">
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <FloatingSettings />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )
