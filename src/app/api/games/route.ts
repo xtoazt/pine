@@ -8667,6 +8667,7 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'popular'
     const source = searchParams.get('source') || '' // Filter by source: lessons, hdun, fortnite, custom
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
+    const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
     
     // Get custom games from request headers (passed from client-side)
     const customGamesHeader = request.headers.get('x-custom-games')
@@ -8691,23 +8692,25 @@ export async function GET(request: NextRequest) {
     let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...customGames]
 
     // Filter: remove entries with obviously invalid play URLs
-    filteredGames = await (async () => {
-      const checks = await Promise.all(filteredGames.map(async (g) => {
-        if (!g?.playUrl) return null
-        // Quick ping for HDUN-backed ids
+    filteredGames = filteredGames.filter(g => g && g.playUrl)
+
+    // Optional heavy verification (off by default to avoid timeouts and truncation)
+    if (verify) {
+      const verified: Game[] = []
+      for (const g of filteredGames) {
         if (g.id?.startsWith('hdun-') || g.source === 'hdun') {
           try {
             const r = await fetch(`${new URL('/api/hdun/proxy', request.url)}?id=${encodeURIComponent(g.id.replace(/^hdun-/, ''))}&ping=1`, { cache: 'no-store' })
-            if (!r.ok) return null
+            if (!r.ok) continue
           } catch {
-            return null
+            continue
           }
         }
-        // Keep others
-        return g
-      }))
-      return checks.filter(Boolean) as Game[]
-    })()
+        verified.push(g)
+        if (!includeAll && verified.length >= limit) break
+      }
+      filteredGames = verified
+    }
     
     // Apply search filter
     if (search) {
@@ -8732,6 +8735,8 @@ export async function GET(request: NextRequest) {
       } else if (category === 'new') {
         // Sort by newest first
         filteredGames = filteredGames.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      } else if (category === 'all') {
+        // No filtering for 'all'
       } else {
         // Regular category filter
         filteredGames = filteredGames.filter(game => game.category === category)
@@ -8788,4 +8793,5 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     )
   }
+}
 }
