@@ -8576,10 +8576,29 @@ export async function GET(request: NextRequest) {
         console.error('Error parsing custom games:', e)
       }
     }
-    // Pull Radon games and merge
+    // Pull Radon games and merge; skip entries that fail HDUN ping when hdun source
     const radonGames = await fetchRadonGames(request.url)
     
     let filteredGames = [...mockGames, ...radonGames, ...customGames]
+
+    // Filter: remove entries with obviously invalid play URLs
+    filteredGames = await (async () => {
+      const checks = await Promise.all(filteredGames.map(async (g) => {
+        if (!g?.playUrl) return null
+        // Quick ping for HDUN-backed ids
+        if (g.id?.startsWith('hdun-') || g.source === 'hdun') {
+          try {
+            const r = await fetch(`${new URL('/api/hdun/proxy', request.url)}?id=${encodeURIComponent(g.id.replace(/^hdun-/, ''))}&ping=1`, { cache: 'no-store' })
+            if (!r.ok) return null
+          } catch {
+            return null
+          }
+        }
+        // Keep others
+        return g
+      }))
+      return checks.filter(Boolean) as Game[]
+    })()
     
     // Apply search filter
     if (search) {

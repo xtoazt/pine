@@ -56,6 +56,9 @@ export async function GET(request: NextRequest) {
       : `${baseUrl}/index.html`
     
     // Fetch the game content
+    // Lightweight ping mode
+    const isPing = searchParams.get('ping') === '1'
+
     let response = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -69,6 +72,10 @@ export async function GET(request: NextRequest) {
       }
     })
     
+    if (isPing) {
+      return new NextResponse(null, { status: response.ok ? 204 : 404 })
+    }
+
     if (!response.ok) {
       return NextResponse.json({ error: 'Game not found' }, { status: 404 })
     }

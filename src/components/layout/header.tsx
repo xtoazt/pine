@@ -50,47 +50,11 @@ export function Header() {
               All Games
             </Link>
             <Link
-              href="/category/new"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              New Games
-            </Link>
-                <Link
-                  href="/category/popular"
-                  className="transition-colors hover:text-foreground/80 text-foreground/60"
-                >
-                  Popular
-                </Link>
-            <Link
-              href="/category/arcade"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Arcade
-            </Link>
-            <Link
-              href="/add-game"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Add Game
-            </Link>
-            <Link
-              href="/hdun-games"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              HDUN Games
-            </Link>
-            <Link
               href="/proxy"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
               Proxy
             </Link>
-                <Link
-                  href="/api"
-                  className="transition-colors hover:text-foreground/80 text-foreground/60"
-                >
-                  API
-                </Link>
                 <Link
                   href="/settings"
                   className="transition-colors hover:text-foreground/80 text-foreground/60"
