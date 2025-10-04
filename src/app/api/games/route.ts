@@ -81,6 +81,38 @@ async function fetchGameSnacks(baseUrl: string): Promise<Game[]> {
   }
 }
 
+async function fetchHdunList(baseUrl: string): Promise<Game[]> {
+  try {
+    const res = await fetch(new URL('/api/hdun/list', baseUrl).toString(), { cache: 'no-store' })
+    if (!res.ok) return []
+    const data = await res.json()
+    const ids: string[] = Array.isArray(data.ids) ? data.ids : []
+    const out: Game[] = []
+    for (const id of ids) {
+      const ping = await fetch(new URL(`/api/hdun/proxy?id=${encodeURIComponent(id)}&ping=1`, baseUrl).toString(), { cache: 'no-store' })
+      if (!ping.ok) continue
+      out.push({
+        id: `hdun-${id}`,
+        title: id.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        description: 'HDUN game',
+        thumbnail: `/api/hdun/proxy?id=${encodeURIComponent(id)}`,
+        category: 'arcade',
+        tags: ['hdun'],
+        playUrl: `/api/hdun/proxy?id=${encodeURIComponent(id)}`,
+        upvotes: 0,
+        downvotes: 0,
+        playCount: 0,
+        source: 'hdun',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      })
+    }
+    return out
+  } catch {
+    return []
+  }
+}
+
 // ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (4000+ total)
 const mockGames: Game[] = [
   {
@@ -8619,8 +8651,9 @@ export async function GET(request: NextRequest) {
     // Pull Radon games and merge; skip entries that fail HDUN ping when hdun source
     const radonGames = await fetchRadonGames(request.url)
     const gsGames = await fetchGameSnacks(request.url)
+    const hdunGamesDynamic = await fetchHdunList(request.url)
     
-    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...customGames]
+    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...customGames]
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = await (async () => {
