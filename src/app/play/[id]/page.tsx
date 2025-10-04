@@ -165,9 +165,11 @@ export default function GamePage() {
             <CardContent className="p-0">
               <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
                     <iframe
-                      src={game.source === 'hdun' ? `/play.html?game=${gameId}` : 
+                      src={game.source === 'hdun' ? `/api/hdun/proxy?id=${gameId}` : 
                             game.source === 'custom' ? game.playUrl : 
                             gameId.startsWith('hdun-') ? `/api/hdun/proxy?id=${gameId.replace('hdun-', '')}` :
+                            gameId.startsWith('lesson-') ? `/api/proxy/lessons/${gameId}` :
+                            gameId.startsWith('fortnite-') ? `/api/proxy/lessons/${gameId}` :
                             `/api/proxy/lessons/${gameId}`}
                       className="w-full h-full border-0"
                       allowFullScreen

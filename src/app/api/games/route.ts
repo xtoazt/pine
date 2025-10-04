@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
-import hdunGamesCurated from '@/data/hdun-games-curated.json'
+import { getAllGames } from '@/data/games'
 
 // ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (1058+ total)
 const mockGames: Game[] = [
@@ -8538,7 +8538,7 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    let filteredGames = [...mockGames, ...customGames]
+    let filteredGames = [...getAllGames(), ...customGames]
     
     // Apply search filter
     if (search) {
