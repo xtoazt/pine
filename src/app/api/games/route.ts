@@ -147,6 +147,63 @@ async function fetchGnMath(baseUrl: string): Promise<Game[]> {
   }
 }
 
+// s16.lol source (20k+). We seed queries to discover entries without user searching.
+async function fetchS16Games(baseUrl: string): Promise<Game[]> {
+  const seeds = ['a','e','i','o','u','s','r','t','n','l','m','c','p','g','b','d','f','h','k','2','3','4','5','6','7','8','9']
+  const endpoint = (q: string) => `https://api.s16.lol/v0/api/games/q=${encodeURIComponent(q)}`
+  const out: Game[] = []
+  const seen = new Set<string>()
+  const toSlug = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  const mapOne = (g: any, idx: number): Game | null => {
+    const title = g?.title || g?.name || `S16 Game ${idx+1}`
+    const slug = toSlug(g?.slug || title)
+    const rawUrl: string | undefined = g?.url || g?.playUrl || g?.link
+    if (!rawUrl) return null
+    const id = `s16-${g?.id || slug || idx}`
+    if (seen.has(id)) return null
+    seen.add(id)
+    return {
+      id,
+      title,
+      description: g?.description || '',
+      thumbnail: g?.thumbnail || g?.thumb || g?.image || `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}`,
+      category: (g?.category || 'arcade').toLowerCase(),
+      tags: Array.isArray(g?.tags) ? g.tags : [],
+      playUrl: `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}`,
+      upvotes: Number(g?.upvotes || 0),
+      downvotes: Number(g?.downvotes || 0),
+      playCount: Number(g?.plays || g?.playCount || 0),
+      source: 's16',
+      createdAt: new Date('2024-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+    }
+  }
+  try {
+    // Limit concurrency to avoid serverless timeouts
+    const batchSize = 6
+    for (let i = 0; i < seeds.length; i += batchSize) {
+      const batch = seeds.slice(i, i + batchSize)
+      const results = await Promise.all(batch.map(async (q) => {
+        try {
+          const res = await fetch(endpoint(q), { cache: 'no-store' })
+          if (!res.ok) return [] as Game[]
+          const json = await res.json()
+          const arr = Array.isArray(json) ? json : (Array.isArray(json?.games) ? json.games : [])
+          return arr.map(mapOne).filter(Boolean) as Game[]
+        } catch {
+          return [] as Game[]
+        }
+      }))
+      for (const list of results) out.push(...list)
+      // Early cap to keep payloads reasonable
+      if (out.length > 5000) break
+    }
+    return out
+  } catch {
+    return []
+  }
+}
+
 // ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (4000+ total)
 const mockGames: Game[] = [
   {
@@ -8688,8 +8745,9 @@ export async function GET(request: NextRequest) {
     const gsGames = await fetchGameSnacks(request.url)
     const hdunGamesDynamic = await fetchHdunList(request.url)
     const gnGames = await fetchGnMath(request.url)
+    const s16Games = await fetchS16Games(request.url)
     
-    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...customGames]
+    let filteredGames = [...mockGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games, ...customGames]
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = filteredGames.filter(g => g && g.playUrl)
