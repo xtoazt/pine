@@ -5,18 +5,9 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { SettingsProvider } from '@/contexts/settings-context'
-import { MusicProvider } from '@/contexts/MusicContext'
-import { MusicToggleWrapper } from '@/components/music/MusicToggleWrapper'
-import { MusicPlayerWrapper } from '@/components/music/MusicPlayerWrapper'
+import { ChatProvider } from '@/contexts/ChatContext'
+import { ChatWrapper } from '@/components/chat/ChatWrapper'
 
-function MusicWrapper() {
-  return (
-    <>
-      <MusicToggleWrapper />
-      <MusicPlayerWrapper />
-    </>
-  )
-}
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -61,16 +52,16 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <SettingsProvider>
-                <MusicProvider>
+                <ChatProvider>
                   <div className="min-h-screen flex flex-col">
                     <Header />
                     <main className="flex-1 px-4 py-6">
                       {children}
                     </main>
                     <Footer />
-                    <MusicWrapper />
+                    <ChatWrapper />
                   </div>
-                </MusicProvider>
+                </ChatProvider>
               </SettingsProvider>
             </ThemeProvider>
       </body>
