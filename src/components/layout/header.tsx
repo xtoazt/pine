@@ -8,6 +8,7 @@ import { Search, Menu, Github, Settings } from "lucide-react"
 import { useState } from "react"
 import { CloakSelector } from "@/components/cloak/cloak-selector"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
+import { CategoryDropdown } from "@/components/ui/category-dropdown"
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -87,19 +88,22 @@ export function Header() {
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle Menu</span>
         </Button>
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search games..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="pl-8 md:w-[100px] lg:w-[300px]"
-              />
-            </form>
-          </div>
+            <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+              <div className="flex items-center space-x-2">
+                <CategoryDropdown />
+                <div className="w-full flex-1 md:w-auto md:flex-none">
+                  <form onSubmit={handleSearch} className="relative">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search games..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      className="pl-8 md:w-[100px] lg:w-[200px]"
+                    />
+                  </form>
+                </div>
+              </div>
           <nav className="flex items-center space-x-2">
             <CloakSelector />
             <Link

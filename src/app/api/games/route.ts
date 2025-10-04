@@ -8500,8 +8500,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     
-    // Parse query parameters
-    const limit = parseInt(searchParams.get('limit') || '20')
+    // Parse query parameters with performance limits
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100) // Cap at 100 for performance
     const offset = parseInt(searchParams.get('offset') || '0')
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''

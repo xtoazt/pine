@@ -19,7 +19,7 @@ export default function GamesPage() {
     const fetchGames = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/games?limit=10000')
+        const response = await fetch('/api/games?limit=100')
         const data = await response.json()
         setGames(data.games || [])
       } catch (error) {

@@ -158,6 +158,23 @@ export default function GamePage() {
                   className="w-full h-full border-0"
                   allowFullScreen
                   title={game.title}
+                  onError={(e) => {
+                    console.error('Game failed to load:', gameId)
+                    // Fallback to a simple error message
+                    e.currentTarget.style.display = 'none'
+                    const errorDiv = document.createElement('div')
+                    errorDiv.className = 'flex items-center justify-center h-full bg-muted text-muted-foreground'
+                    errorDiv.innerHTML = `
+                      <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-2">Game Not Available</h3>
+                        <p class="text-sm">This game is currently unavailable.</p>
+                        <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">
+                          Try Again
+                        </button>
+                      </div>
+                    `
+                    e.currentTarget.parentNode?.appendChild(errorDiv)
+                  }}
                 />
                 
                 {/* Fullscreen overlay controls */}
