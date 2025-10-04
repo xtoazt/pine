@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -8,77 +7,11 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
-import { Settings, Palette, Layout, Eye, Shield, Gamepad2, Monitor, Smartphone, Tablet } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { Settings, Palette, Layout, Eye, Shield } from 'lucide-react'
+import { useSettings } from '@/contexts/settings-context'
 
 export default function SettingsPage() {
-  const { theme, setTheme } = useTheme()
-  const [settings, setSettings] = useState({
-    // Theme settings
-    theme: 'system',
-    accentColor: 'blue',
-    fontSize: 16,
-    boldText: true,
-    
-    // Layout settings
-    layout: 'grid',
-    gamesPerRow: 4,
-    showGameCounts: true,
-    compactMode: false,
-    
-    // Display settings
-    showThumbnails: true,
-    showDescriptions: true,
-    showTags: true,
-    showStats: true,
-    
-    // Privacy settings
-    enableCloaking: true,
-    rememberPreferences: true,
-    analytics: false,
-  })
-
-  useEffect(() => {
-    // Load saved settings
-    const savedSettings = localStorage.getItem('pine-settings')
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings))
-    }
-  }, [])
-
-  const updateSetting = (key: string, value: any) => {
-    const newSettings = { ...settings, [key]: value }
-    setSettings(newSettings)
-    localStorage.setItem('pine-settings', JSON.stringify(newSettings))
-    
-    // Apply theme changes immediately
-    if (key === 'theme') {
-      setTheme(value)
-    }
-  }
-
-  const resetSettings = () => {
-    const defaultSettings = {
-      theme: 'system',
-      accentColor: 'blue',
-      fontSize: 16,
-      boldText: true,
-      layout: 'grid',
-      gamesPerRow: 4,
-      showGameCounts: true,
-      compactMode: false,
-      showThumbnails: true,
-      showDescriptions: true,
-      showTags: true,
-      showStats: true,
-      enableCloaking: true,
-      rememberPreferences: true,
-      analytics: false,
-    }
-    setSettings(defaultSettings)
-    localStorage.setItem('pine-settings', JSON.stringify(defaultSettings))
-    setTheme('system')
-  }
+  const { settings, updateSetting, resetSettings } = useSettings()
 
   return (
     <div className="container py-8 space-y-8">

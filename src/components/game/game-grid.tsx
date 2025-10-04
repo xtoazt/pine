@@ -1,5 +1,6 @@
 import { GameCard } from "./game-card"
 import { Game } from "@/types/game"
+import { useSettings } from "@/contexts/settings-context"
 
 interface GameGridProps {
   games: Game[]
@@ -7,6 +8,7 @@ interface GameGridProps {
 }
 
 export function GameGrid({ games, loading = false }: GameGridProps) {
+  const { settings } = useSettings()
   if (loading) {
     return (
       <div className="game-grid">
@@ -38,8 +40,12 @@ export function GameGrid({ games, loading = false }: GameGridProps) {
     )
   }
 
+  const gridCols = settings.layout === 'list' ? 'grid-cols-1' : 
+                   settings.layout === 'compact' ? `grid-cols-${Math.min(settings.gamesPerRow * 2, 8)}` :
+                   `grid-cols-${settings.gamesPerRow}`
+
   return (
-    <div className="game-grid">
+    <div className={`game-grid grid gap-4 ${gridCols}`}>
       {games.map((game) => (
         <GameCard key={game.id} game={game} />
       ))}

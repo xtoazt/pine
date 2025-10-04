@@ -6,12 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Settings, X, Palette, Layout, Eye } from 'lucide-react'
-import { useTheme } from 'next-themes'
+import { useSettings } from '@/contexts/settings-context'
 import Link from 'next/link'
 
 export function FloatingSettings() {
   const [isOpen, setIsOpen] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const { settings, updateSetting } = useSettings()
 
   const quickSettings = [
     {
@@ -19,24 +19,24 @@ export function FloatingSettings() {
       label: 'Dark Mode',
       icon: Palette,
       type: 'switch',
-      value: theme === 'dark',
-      onChange: (checked: boolean) => setTheme(checked ? 'dark' : 'light')
+      value: settings.theme === 'dark',
+      onChange: (checked: boolean) => updateSetting('theme', checked ? 'dark' : 'light')
     },
     {
       id: 'compact',
       label: 'Compact Mode',
       icon: Layout,
       type: 'switch',
-      value: false,
-      onChange: () => {}
+      value: settings.compactMode,
+      onChange: (checked: boolean) => updateSetting('compactMode', checked)
     },
     {
       id: 'thumbnails',
       label: 'Show Thumbnails',
       icon: Eye,
       type: 'switch',
-      value: true,
-      onChange: () => {}
+      value: settings.showThumbnails,
+      onChange: (checked: boolean) => updateSetting('showThumbnails', checked)
     }
   ]
 

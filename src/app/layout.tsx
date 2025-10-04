@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { FloatingSettings } from '@/components/ui/floating-settings'
+import { SettingsProvider } from '@/contexts/settings-context'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -38,14 +39,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-            <FloatingSettings />
-          </div>
+          <SettingsProvider>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+              <FloatingSettings />
+            </div>
+          </SettingsProvider>
         </ThemeProvider>
       </body>
     </html>
