@@ -33,7 +33,7 @@ function CategoryDropdownContent() {
       try {
         const response = await fetch('/api/categories')
         const data = await response.json()
-        setCategories(data.categories || [])
+        setCategories(Array.isArray(data.categories) ? data.categories : [])
       } catch (error) {
         console.error('Error fetching categories:', error)
       } finally {
@@ -52,7 +52,7 @@ function CategoryDropdownContent() {
     }
   }
 
-  const currentCategoryData = categories.find(cat => cat.slug === currentCategory)
+  const currentCategoryData = (categories || []).find(cat => cat && cat.slug === currentCategory)
 
   if (loading) {
     return (
@@ -106,9 +106,9 @@ function CategoryDropdownContent() {
         <DropdownMenuSeparator />
         
         {/* Game Categories */}
-        {categories
-          .filter(cat => !['all', 'popular', 'new'].includes(cat.slug))
-          .filter(cat => cat.gameCount > 0)
+        {(categories || [])
+          .filter(cat => cat && !['all', 'popular', 'new'].includes(cat.slug))
+          .filter(cat => cat && cat.gameCount > 0)
           .slice(0, 20) // Limit to top 20 categories for performance
           .map((category) => (
             <DropdownMenuItem 

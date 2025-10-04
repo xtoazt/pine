@@ -13,14 +13,16 @@ export async function GET(request: NextRequest) {
     ]
     
     // Add HDUN game categories
-    const hdunCategories = Array.from(new Set(hdunGames.map(game => game.category)))
+    const hdunCategories = Array.isArray(hdunGames) ? 
+      Array.from(new Set(hdunGames.map(game => game && game.category ? game.category : 'unknown').filter(cat => cat !== 'unknown'))) : 
+      []
     
     // Combine and deduplicate
     const allCategories = Array.from(new Set([...allGames, ...hdunCategories]))
     
     // Create category objects with counts
     const categoriesWithCounts = allCategories.map(category => {
-      const count = hdunGames.filter(game => game.category === category).length
+      const count = Array.isArray(hdunGames) ? hdunGames.filter(game => game && game.category === category).length : 0
       return {
         id: category,
         name: category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' '),

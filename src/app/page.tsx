@@ -32,8 +32,8 @@ export default function HomePage() {
         const categoriesData = await categoriesRes.json()
         const statsData = await statsRes.json()
 
-        setGames(gamesData.games || [])
-        setCategories(categoriesData.categories || [])
+        setGames(Array.isArray(gamesData.games) ? gamesData.games : [])
+        setCategories(Array.isArray(categoriesData.categories) ? categoriesData.categories : [])
         setStats(statsData || null)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -129,7 +129,7 @@ export default function HomePage() {
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          {categories.slice(0, 14).map((category) => (
+          {(categories || []).slice(0, 14).map((category) => (
             <Card key={category.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-4 text-center">
                 <h3 className="font-semibold mb-2">{category.name}</h3>
