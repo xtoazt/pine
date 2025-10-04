@@ -12,8 +12,8 @@ import { Search, Filter, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 export default function CategoryPage() {
-  const params = useParams()
-  const slug = params.slug as string
+  const params = useParams() as { slug?: string } | null
+  const slug = (params?.slug as string) || ''
   
   const [games, setGames] = useState<Game[]>([])
   const [category, setCategory] = useState<GameCategory | null>(null)
