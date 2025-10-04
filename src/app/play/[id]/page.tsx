@@ -13,8 +13,8 @@ import { useVirtualController } from '@/hooks/use-virtual-controller'
 import { useCustomGames } from '@/hooks/useCustomGames'
 
 export default function GamePage() {
-  const params = useParams()
-  const gameId = params.id as string
+  const params = useParams() as { id?: string } | null
+  const gameId = (params?.id as string) || ''
   
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
