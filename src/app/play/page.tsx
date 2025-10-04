@@ -15,7 +15,7 @@ export default function PlayPage() {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch('/api/games?limit=100')
+        const response = await fetch('/api/games?all=true')
         const data = await response.json()
         setGames(data.games || [])
       } catch (error) {
