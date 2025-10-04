@@ -41,6 +41,12 @@ export function Header() {
               Home
             </Link>
             <Link
+              href="/games"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              All Games
+            </Link>
+            <Link
               href="/category/new"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >

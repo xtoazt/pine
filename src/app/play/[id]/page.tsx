@@ -95,11 +95,9 @@ export default function GamePage() {
           </div>
         </div>
         
-        <Button asChild>
-          <Link href={game.playUrl}>
-            <Play className="mr-2 h-4 w-4" />
-            Play Game
-          </Link>
+        <Button onClick={() => window.location.reload()}>
+          <Play className="mr-2 h-4 w-4" />
+          Reload Game
         </Button>
       </div>
 
@@ -108,22 +106,13 @@ export default function GamePage() {
         <div className="lg:col-span-2">
           <Card>
             <CardContent className="p-0">
-              <div className="aspect-video bg-muted rounded-t-lg flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <div className="text-6xl">🎮</div>
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Game Player</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Click the button below to play this game
-                    </p>
-                    <Button size="lg" asChild>
-                      <Link href={game.playUrl} target="_blank">
-                        <Play className="mr-2 h-5 w-5" />
-                        Launch Game
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
+              <div className="aspect-video bg-muted rounded-t-lg overflow-hidden">
+                <iframe
+                  src={`/proxy/lessons/${gameId}`}
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                  title={game.title}
+                />
               </div>
             </CardContent>
           </Card>
