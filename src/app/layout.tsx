@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/theme/theme-provider'
 import { SettingsProvider } from '@/contexts/settings-context'
 import { ChatProvider } from '@/contexts/ChatContext'
 import { ChatWrapper } from '@/components/chat/ChatWrapper'
+import { BugFixer } from '@/components/diagnostics/BugFixer'
 
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
@@ -60,6 +61,7 @@ export default function RootLayout({
                     </main>
                     <Footer />
                     <ChatWrapper />
+                    <BugFixer />
                   </div>
                 </ChatProvider>
               </SettingsProvider>

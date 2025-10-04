@@ -99,14 +99,17 @@ export default function GamePage() {
   if (!game) {
     return (
       <div className="container py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Game not found</h1>
-          <Button asChild>
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Link>
-          </Button>
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold">Game not found</h1>
+          <p className="text-muted-foreground">We couldn't find this game. Try reloading or browse all games.</p>
+          <div className="flex items-center justify-center gap-2">
+            <Button onClick={() => window.location.reload()}>
+              <Play className="mr-2 h-4 w-4" /> Reload
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/games">Browse all games</Link>
+            </Button>
+          </div>
         </div>
       </div>
     )
