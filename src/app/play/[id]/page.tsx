@@ -153,11 +153,11 @@ export default function GamePage() {
           <Card>
             <CardContent className="p-0">
               <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
-                <iframe
-                  src={game.source === 'hdun' ? `/play.html` : `/api/proxy/lessons/${gameId}`}
-                  className="w-full h-full border-0"
-                  allowFullScreen
-                  title={game.title}
+                    <iframe
+                      src={game.source === 'hdun' ? `/play.html?game=${gameId}` : `/api/proxy/lessons/${gameId}`}
+                      className="w-full h-full border-0"
+                      allowFullScreen
+                      title={game.title}
                   onError={(e) => {
                     console.error('Game failed to load:', gameId)
                     // Fallback to a simple error message

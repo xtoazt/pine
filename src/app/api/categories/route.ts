@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import hdunGames from '@/data/hdun-games.json'
+import hdunGamesCurated from '@/data/hdun-games-curated.json'
 
 // Get all unique categories from games
 export async function GET(request: NextRequest) {
   try {
-    // Get all games (original + HDUN)
+    // Get all games (original + curated HDUN)
     const allGames = [
       // Original games categories
       'action', 'adventure', 'arcade', 'puzzle', 'racing', 'sports', 'strategy', 
@@ -13,8 +13,8 @@ export async function GET(request: NextRequest) {
     ]
     
     // Add HDUN game categories
-    const hdunCategories = Array.isArray(hdunGames) ? 
-      Array.from(new Set(hdunGames.map(game => game && game.category ? game.category : 'unknown').filter(cat => cat !== 'unknown'))) : 
+    const hdunCategories = Array.isArray(hdunGamesCurated) ? 
+      Array.from(new Set(hdunGamesCurated.map(game => game && game.category ? game.category : 'unknown').filter(cat => cat !== 'unknown'))) : 
       []
     
     // Combine and deduplicate
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     
     // Create category objects with counts
     const categoriesWithCounts = allCategories.map(category => {
-      const count = Array.isArray(hdunGames) ? hdunGames.filter(game => game && game.category === category).length : 0
+      const count = Array.isArray(hdunGamesCurated) ? hdunGamesCurated.filter(game => game && game.category === category).length : 0
       return {
         id: category,
         name: category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' '),
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
         name: 'All Games',
         slug: 'all',
         description: 'Browse all games',
-        gameCount: hdunGames.length + 606,
+        gameCount: 1058, // Updated count with curated HDUN games
         icon: '🎮'
       }
     ]

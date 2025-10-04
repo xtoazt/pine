@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
-import hdunGames from '@/data/hdun-games.json'
+import hdunGamesCurated from '@/data/hdun-games-curated.json'
 
-// ALL games from lessons data + Fortnite games + HTML5 games + HDUN games (6656+ total)
+// ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (1058+ total)
 const mockGames: Game[] = [
   {
     id: "lesson-1",
@@ -8489,12 +8489,10 @@ const mockGames: Game[] = [
     createdAt: new Date("2023-12-01T00:00:00.000Z"),
     updatedAt: new Date("2023-12-01T00:00:00.000Z")
   },
-  // Add all HDUN games with proper Date objects and source
-  ...hdunGames.map(game => ({
+  // Add all curated HDUN games
+  ...hdunGamesCurated.map(game => ({
     ...game,
-    source: 'hdun',
-    createdAt: new Date(game.createdAt),
-    updatedAt: new Date(game.updatedAt)
+    source: 'hdun'
   }))
 ].map(game => {
   // Add source property based on game ID pattern if not already set

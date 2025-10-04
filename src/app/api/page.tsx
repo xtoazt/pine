@@ -143,16 +143,16 @@ export default function ApiPage() {
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
+        <Card>
+          <CardHeader>
                 <CardTitle className="flex items-center">
                   <Key className="mr-2 h-5 w-5" />
                   API Key Generation
                 </CardTitle>
-                <CardDescription>
+            <CardDescription>
                   Generate an API key for unlimited access to all games
-                </CardDescription>
-              </CardHeader>
+            </CardDescription>
+          </CardHeader>
               <CardContent className="space-y-4">
                 <Button onClick={generateApiKey} className="w-full">
                   <Key className="mr-2 h-4 w-4" />
@@ -176,18 +176,18 @@ export default function ApiPage() {
                   </div>
                 )}
               </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
+        </Card>
+        
+        <Card>
+          <CardHeader>
                 <CardTitle className="flex items-center">
                   <Gamepad2 className="mr-2 h-5 w-5" />
                   Quick Start
                 </CardTitle>
-                <CardDescription>
+            <CardDescription>
                   Get started with our API in seconds
-                </CardDescription>
-              </CardHeader>
+            </CardDescription>
+          </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <h4 className="font-semibold">Without API Key (Limited)</h4>
@@ -199,20 +199,20 @@ export default function ApiPage() {
                   <h4 className="font-semibold">With API Key (Unlimited)</h4>
                   <code className="block p-2 bg-muted rounded text-sm">
                     GET /api/games?api_key=your_key
-                  </code>
-                </div>
-              </CardContent>
-            </Card>
+              </code>
+            </div>
+          </CardContent>
+        </Card>
           </div>
         </TabsContent>
 
         <TabsContent value="endpoints" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
-            <Card>
-              <CardHeader>
+        <Card>
+          <CardHeader>
                 <CardTitle>GET /api/games</CardTitle>
                 <CardDescription>Retrieve games with optional filtering and pagination</CardDescription>
-              </CardHeader>
+          </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-semibold mb-2">Query Parameters</h4>
@@ -252,44 +252,44 @@ export default function ApiPage() {
   "message": "All games included"
 }`}
                   </pre>
-                </div>
-              </CardContent>
-            </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card>
-              <CardHeader>
+        <Card>
+          <CardHeader>
                 <CardTitle>GET /api/categories</CardTitle>
                 <CardDescription>Get all available game categories with counts</CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
                 <div className="space-y-2 text-sm">
                   <div>Returns all categories with game counts and icons</div>
                   <div>No parameters required</div>
-                </div>
-              </CardContent>
-            </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card>
-              <CardHeader>
+        <Card>
+          <CardHeader>
                 <CardTitle>GET /api/key</CardTitle>
                 <CardDescription>Generate a new API key</CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
                 <div className="space-y-2 text-sm">
                   <div>Generates a new API key for unlimited access</div>
                   <div>No parameters required</div>
-                </div>
-              </CardContent>
-            </Card>
+            </div>
+          </CardContent>
+        </Card>
           </div>
         </TabsContent>
 
         <TabsContent value="examples" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
-            <Card>
-              <CardHeader>
+        <Card>
+          <CardHeader>
                 <CardTitle>JavaScript Examples</CardTitle>
-              </CardHeader>
+          </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-semibold mb-2">Fetch All Games</h4>
@@ -319,10 +319,10 @@ console.log(data.games); // Car racing games`}
 {`const response = await fetch('https://pine-games.vercel.app/api/categories');
 const data = await response.json();
 console.log(data.categories); // All categories with counts`}
-                  </pre>
-                </div>
-              </CardContent>
-            </Card>
+              </pre>
+            </div>
+          </CardContent>
+        </Card>
           </div>
         </TabsContent>
 
@@ -350,7 +350,7 @@ console.log(data.categories); // All categories with counts`}
               </div>
               <pre className="bg-muted p-4 rounded text-xs overflow-x-auto max-h-96">
                 {htmlSnippet}
-              </pre>
+                </pre>
               <div className="flex gap-2">
                 <Button asChild>
                   <a href="data:text/html;charset=utf-8,${encodeURIComponent(htmlSnippet)}" download="pine-games.html">
@@ -367,11 +367,11 @@ console.log(data.categories); // All categories with counts`}
             </CardContent>
           </Card>
         </TabsContent>
-
+          
         <TabsContent value="developer" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
-            <Card>
-              <CardHeader>
+          <Card>
+            <CardHeader>
                 <CardTitle className="flex items-center">
                   <Code className="mr-2 h-5 w-5" />
                   Game Sources & Data
@@ -379,7 +379,7 @@ console.log(data.categories); // All categories with counts`}
                 <CardDescription>
                   Information about where games come from and how to identify them
                 </CardDescription>
-              </CardHeader>
+            </CardHeader>
               <CardContent className="space-y-6">
                 <div>
                   <h4 className="font-semibold mb-3">Game Sources</h4>
@@ -391,13 +391,13 @@ console.log(data.categories); // All categories with counts`}
                         Educational and classic games from the original lessons collection
                       </p>
                     </div>
-                    <div className="p-4 border rounded-lg">
-                      <h5 className="font-medium text-blue-600">HDUN Games</h5>
-                      <p className="text-sm text-muted-foreground">6,050 games</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Large collection of HTML5 games from HDUN.org
-                      </p>
-                    </div>
+                        <div className="p-4 border rounded-lg">
+                          <h5 className="font-medium text-blue-600">HDUN Games</h5>
+                          <p className="text-sm text-muted-foreground">417 games</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Curated collection of high-quality HTML5 games
+                          </p>
+                        </div>
                     <div className="p-4 border rounded-lg">
                       <h5 className="font-medium text-purple-600">Fortnite Games</h5>
                       <p className="text-sm text-muted-foreground">35 games</p>
@@ -434,7 +434,7 @@ console.log(data.categories); // All categories with counts`}
   "source": "hdun",  // "lessons", "hdun", or "fortnite"
   ...
 }`}
-                      </pre>
+                </pre>
                     </div>
                   </div>
                 </div>
@@ -456,23 +456,23 @@ console.log(data.categories); // All categories with counts`}
                       <div className="text-2xl font-bold text-green-600">606</div>
                       <div className="text-xs text-muted-foreground">Lessons</div>
                     </div>
-                    <div className="p-3 border rounded">
-                      <div className="text-2xl font-bold text-blue-600">6,050</div>
-                      <div className="text-xs text-muted-foreground">HDUN</div>
-                    </div>
+                        <div className="p-3 border rounded">
+                          <div className="text-2xl font-bold text-blue-600">417</div>
+                          <div className="text-xs text-muted-foreground">HDUN</div>
+                        </div>
                     <div className="p-3 border rounded">
                       <div className="text-2xl font-bold text-purple-600">35</div>
                       <div className="text-xs text-muted-foreground">Fortnite</div>
                     </div>
                     <div className="p-3 border rounded">
-                      <div className="text-2xl font-bold text-primary">6,691</div>
+                        <div className="text-2xl font-bold text-primary">1,058</div>
                       <div className="text-xs text-muted-foreground">Total</div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         </TabsContent>
       </Tabs>
     </div>

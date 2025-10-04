@@ -17,7 +17,7 @@ export default function AdsPage() {
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           Help keep pine running and ad-free for everyone. Your support helps us maintain 
-          the servers and continue providing 6,000+ games for free.
+          the servers and continue providing 1,000+ games for free.
         </p>
         <div className="flex flex-wrap justify-center gap-2">
           <Badge variant="secondary">No Ads on Main Site</Badge>
@@ -122,7 +122,7 @@ export default function AdsPage() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4">
-              <div className="text-2xl font-bold text-primary">6,000+</div>
+              <div className="text-2xl font-bold text-primary">1,000+</div>
               <div className="text-sm text-muted-foreground">Free Games</div>
             </div>
             <div className="text-center p-4">
