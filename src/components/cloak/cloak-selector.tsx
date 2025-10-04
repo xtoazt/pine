@@ -123,10 +123,10 @@ export function CloakSelector() {
   }
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1">
       <Select value={selectedCloak} onValueChange={handleCloakChange}>
-        <SelectTrigger className="w-[140px] h-8 text-xs">
-          <SelectValue placeholder="Select cloak" />
+        <SelectTrigger className="w-[100px] h-7 text-xs">
+          <SelectValue placeholder="Cloak" />
         </SelectTrigger>
         <SelectContent>
           {cloaks.map((cloak) => (
@@ -135,12 +135,12 @@ export function CloakSelector() {
                 <img 
                   src={cloak.icon} 
                   alt={cloak.name} 
-                  className="w-4 h-4"
+                  className="w-3 h-3"
                   onError={(e) => {
                     e.currentTarget.src = '/favicon.ico'
                   }}
                 />
-                <span>{cloak.title}</span>
+                <span className="text-xs">{cloak.name}</span>
               </div>
             </SelectItem>
           ))}
@@ -152,22 +152,12 @@ export function CloakSelector() {
           variant="ghost"
           size="sm"
           onClick={resetCloak}
-          className="h-8 px-2"
+          className="h-7 w-7 p-0"
           title="Reset cloak"
         >
           <EyeOff className="h-3 w-3" />
         </Button>
       )}
-      
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={openAboutBlank}
-        className="h-8 px-2"
-        title="Open in about:blank"
-      >
-        <Shield className="h-3 w-3" />
-      </Button>
     </div>
   )
 }

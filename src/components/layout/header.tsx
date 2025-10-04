@@ -59,12 +59,6 @@ export function Header() {
                 >
                   Popular
                 </Link>
-                <Link
-                  href="/cloak"
-                  className="transition-colors hover:text-foreground/80 text-foreground/60"
-                >
-                  Cloak
-                </Link>
             <Link
               href="/category/arcade"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
