@@ -6,17 +6,15 @@ import { Footer } from '@/components/layout/footer'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { FloatingSettings } from '@/components/ui/floating-settings'
 import { SettingsProvider } from '@/contexts/settings-context'
-import { MusicProvider, useMusic } from '@/contexts/MusicContext'
-import { MusicPlayer } from '@/components/music/MusicPlayer'
-import { MusicToggle } from '@/components/music/MusicToggle'
+import { MusicProvider } from '@/contexts/MusicContext'
+import { MusicToggleWrapper } from '@/components/music/MusicToggleWrapper'
+import { MusicPlayerWrapper } from '@/components/music/MusicPlayerWrapper'
 
-function MusicPlayerWrapper() {
-  const { isMusicVisible, toggleMusic } = useMusic()
-  
+function MusicWrapper() {
   return (
     <>
-      <MusicToggle onToggle={toggleMusic} isVisible={isMusicVisible} />
-      <MusicPlayer isVisible={isMusicVisible} onToggle={toggleMusic} />
+      <MusicToggleWrapper />
+      <MusicPlayerWrapper />
     </>
   )
 }
@@ -72,7 +70,7 @@ export default function RootLayout({
                     </main>
                     <Footer />
                     <FloatingSettings />
-                    <MusicPlayerWrapper />
+                    <MusicWrapper />
                   </div>
                 </MusicProvider>
               </SettingsProvider>
