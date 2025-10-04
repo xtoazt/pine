@@ -33,7 +33,7 @@ export default function HomePage() {
         const statsData = await statsRes.json()
 
         setGames(gamesData.games || [])
-        setCategories(categoriesData || [])
+        setCategories(categoriesData.categories || [])
         setStats(statsData || null)
       } catch (error) {
         console.error('Error fetching data:', error)

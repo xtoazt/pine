@@ -11,13 +11,19 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'pine - Minimalist Game Platform',
-  description: 'A clean, minimalist game platform with 100+ carefully curated games. No ads, no tracking, just pure gaming.',
-  keywords: ['pine', 'games', 'platform', 'minimalist', 'clean', 'no-ads', 'gaming'],
+  description: 'A clean, minimalist game platform with 6,000+ carefully curated games. No ads, no tracking, just pure gaming.',
+  keywords: ['pine', 'games', 'platform', 'minimalist', 'clean', 'no-ads', 'gaming', '6000 games'],
   authors: [{ name: 'pine' }],
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.svg',
+  },
   openGraph: {
     title: 'pine - Minimalist Game Platform',
-    description: 'A clean, minimalist game platform with 100+ carefully curated games. No ads, no tracking.',
+    description: 'A clean, minimalist game platform with 6,000+ carefully curated games. No ads, no tracking.',
     type: 'website',
+    images: ['/favicon.svg'],
   },
 }
 
@@ -27,11 +33,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <script src="https://cdn.jsdelivr.net/gh/Parcoil/cloak@main/src/index.min.js"></script>
-      </head>
+        <html lang="en" suppressHydrationWarning>
+          <head>
+            <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+            <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+            <link rel="apple-touch-icon" href="/favicon.svg" />
+            <meta name="theme-color" content="#000000" />
+            <script src="https://cdn.jsdelivr.net/gh/Parcoil/cloak@main/src/index.min.js"></script>
+          </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
