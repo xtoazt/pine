@@ -4,39 +4,39 @@ import { GameStats } from '@/types/game'
 export async function GET() {
   try {
         const stats: GameStats = {
-          totalGames: 606,
-          totalCategories: 20,
-          totalPlays: 8000000,
+          totalGames: 4000,
+          totalCategories: 25,
+          totalPlays: 15000000,
       topCategories: [
         {
-          id: "arcade",
-          name: "Arcade",
-          slug: "arcade",
-          gameCount: 35
+          id: "casual",
+          name: "Casual",
+          slug: "casual",
+          gameCount: 250
         },
         {
           id: "puzzle",
           name: "Puzzle", 
           slug: "puzzle",
-          gameCount: 18
+          gameCount: 200
+        },
+        {
+          id: "arcade",
+          name: "Arcade",
+          slug: "arcade",
+          gameCount: 180
         },
         {
           id: "adventure",
           name: "Adventure",
           slug: "adventure", 
-          gameCount: 12
+          gameCount: 130
         },
         {
           id: "action",
           name: "Action",
           slug: "action",
-          gameCount: 8
-        },
-        {
-          id: "racing",
-          name: "Racing",
-          slug: "racing",
-          gameCount: 6
+          gameCount: 150
         }
       ]
     }

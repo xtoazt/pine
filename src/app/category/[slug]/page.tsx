@@ -33,7 +33,7 @@ export default function CategoryPage() {
         setCategory(currentCategory)
         
         // Fetch games for this category
-        const gamesRes = await fetch(`/api/games?category=${slug}&limit=50`)
+        const gamesRes = await fetch(`/api/games?category=${slug}&all=true`)
         const gamesData = await gamesRes.json()
         setGames(gamesData.games)
       } catch (error) {

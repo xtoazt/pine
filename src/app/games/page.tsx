@@ -19,7 +19,7 @@ export default function GamesPage() {
     const fetchGames = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/games?limit=100')
+        const response = await fetch('/api/games?all=true')
         const data = await response.json()
         setGames(data.games || [])
       } catch (error) {
@@ -66,7 +66,7 @@ export default function GamesPage() {
           <h1 className="text-4xl font-bold">All Games</h1>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Discover our complete collection of 606+ carefully curated games. 
+          Discover our complete collection of 4,000+ carefully curated games. 
           From classic arcade to modern adventures, find your next favorite game.
         </p>
         <Badge variant="secondary" className="text-sm">
