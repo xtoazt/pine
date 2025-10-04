@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   // Proxy lessons requests
   if (pathname.startsWith('/proxy/lessons/')) {
     const lessonPath = pathname.replace('/proxy/lessons/', '')
-    const targetUrl = `https://classroom.mathify.space/lessons/${lessonPath}`
+    const targetUrl = `https://classroom.mathify.space/lessons/${lessonPath}/`
     
     return NextResponse.rewrite(new URL(targetUrl))
   }
