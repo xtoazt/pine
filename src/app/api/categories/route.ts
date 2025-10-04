@@ -100,6 +100,83 @@ const mockCategories: GameCategory[] = [
     slug: "strategy",
     description: "Strategic thinking games",
     gameCount: 1
+  },
+  {
+    id: "shooter",
+    name: "Shooter",
+    slug: "shooter",
+    description: "First-person and third-person shooter games",
+    gameCount: 15
+  },
+  {
+    id: "car",
+    name: "Car Games",
+    slug: "car",
+    description: "Car racing and driving simulation games",
+    gameCount: 12
+  },
+  {
+    id: "horror",
+    name: "Horror",
+    slug: "horror",
+    description: "Scary and suspenseful horror games",
+    gameCount: 8
+  },
+  {
+    id: "battle",
+    name: "Battle",
+    slug: "battle",
+    description: "Battle royale and combat games",
+    gameCount: 10
+  },
+  {
+    id: "simulation",
+    name: "Simulation",
+    slug: "simulation",
+    description: "Life and city simulation games",
+    gameCount: 6
+  },
+  {
+    id: "educational",
+    name: "Educational",
+    slug: "educational",
+    description: "Learning and educational games",
+    gameCount: 5
+  },
+  {
+    id: "building",
+    name: "Building",
+    slug: "building",
+    description: "Construction and building games",
+    gameCount: 4
+  },
+  {
+    id: "tower-defense",
+    name: "Tower Defense",
+    slug: "tower-defense",
+    description: "Strategic tower defense games",
+    gameCount: 3
+  },
+  {
+    id: "board",
+    name: "Board Games",
+    slug: "board",
+    description: "Classic board and card games",
+    gameCount: 8
+  },
+  {
+    id: "rpg",
+    name: "RPG",
+    slug: "rpg",
+    description: "Role-playing games",
+    gameCount: 7
+  },
+  {
+    id: "casual",
+    name: "Casual",
+    slug: "casual",
+    description: "Relaxing casual games",
+    gameCount: 25
   }
 ]
 

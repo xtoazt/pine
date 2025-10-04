@@ -68,7 +68,7 @@ export default function CategoryPage() {
         return ratingB - ratingA
       case 'newest':
       default:
-        return b.createdAt.getTime() - a.createdAt.getTime()
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     }
   })
 

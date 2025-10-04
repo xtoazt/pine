@@ -8514,16 +8514,25 @@ export async function GET(request: NextRequest) {
     
     // Apply category filter
     if (category) {
-      filteredGames = filteredGames.filter(game => game.category === category)
+      if (category === 'popular') {
+        // Sort by popularity (upvotes - downvotes) and take top games
+        filteredGames = filteredGames.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
+      } else if (category === 'new') {
+        // Sort by newest first
+        filteredGames = filteredGames.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      } else {
+        // Regular category filter
+        filteredGames = filteredGames.filter(game => game.category === category)
+      }
     }
     
     // Apply sorting
     switch (sortBy) {
       case 'newest':
-        filteredGames.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        filteredGames.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         break
       case 'oldest':
-        filteredGames.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+        filteredGames.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
         break
       case 'most-played':
         filteredGames.sort((a, b) => b.playCount - a.playCount)
