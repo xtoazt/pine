@@ -50,10 +50,10 @@ export async function GET(request: NextRequest) {
     }
     
     // Construct the HDUN game URL
-    const baseUrl = `https://www.hdun.org/games/alotofgames/${gameId}`
-    const targetUrl = path
-      ? `${baseUrl}/${path}`
-      : `${baseUrl}/index.html`
+    // Normalize slug (HDUN paths are lowercase and hyphenated)
+    const normalizedId = (gameId || '').toLowerCase().replace(/[^a-z0-9-]/g, '')
+    let baseUrl = `https://www.hdun.org/games/alotofgames/${normalizedId}`
+    let targetUrl = path ? `${baseUrl}/${path}` : `${baseUrl}/index.html`
     
     // Fetch the game content
     // Lightweight ping mode
@@ -77,7 +77,16 @@ export async function GET(request: NextRequest) {
     }
 
     if (!response.ok) {
-      return NextResponse.json({ error: 'Game not found' }, { status: 404 })
+      // Fallback attempts: try without index.html, then try original (unsanitized) id
+      let alt = await fetch(`${baseUrl}/`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': baseUrl, 'Origin': 'https://www.hdun.org' } })
+      if (!alt.ok && normalizedId !== gameId) {
+        const rawBase = `https://www.hdun.org/games/alotofgames/${gameId}`
+        alt = await fetch(`${rawBase}/`, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': rawBase, 'Origin': 'https://www.hdun.org' } })
+      }
+      if (!alt.ok) {
+        return NextResponse.json({ error: 'Game not found' }, { status: 404 })
+      }
+      response = alt
     }
     
     const contentType = response.headers.get('content-type') || ''

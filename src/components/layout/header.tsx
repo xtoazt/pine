@@ -50,10 +50,52 @@ export function Header() {
               All Games
             </Link>
             <Link
-              href="/proxy"
+              href="/category/popular"
               className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              Proxy
+              Popular
+            </Link>
+            <Link
+              href="/category/new"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              New
+            </Link>
+            <Link
+              href="/category/action"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Action
+            </Link>
+            <Link
+              href="/category/shooter"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Shooter
+            </Link>
+            <Link
+              href="/category/car"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Car
+            </Link>
+            <Link
+              href="/category/arcade"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Arcade
+            </Link>
+            <Link
+              href="/category/puzzle"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Puzzle
+            </Link>
+            <Link
+              href="/category/multiplayer"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Multiplayer
             </Link>
                 <Link
                   href="/settings"
