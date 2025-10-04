@@ -1,9 +1,9 @@
-import type { NextApiRequest } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Server as NetServer } from 'http'
 import type { Socket } from 'net'
 import { Server as IOServer } from 'socket.io'
 
-type NextApiResponseServerIO = {
+type NextApiResponseServerIO = NextApiResponse & {
   socket: Socket & {
     server: NetServer & {
       io?: IOServer
