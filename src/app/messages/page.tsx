@@ -56,7 +56,7 @@ export default function MessagesPage() {
 
     // Load friends
     const loadFriends = async () => {
-      const friendsRef = collection(db, 'friendships')
+      const friendsRef = collection(db as any, 'friendships')
       const q = query(
         friendsRef,
         where('users', 'array-contains', user.uid),
@@ -71,7 +71,7 @@ export default function MessagesPage() {
         const friendId = data.users?.find((id: string) => id !== user.uid)
         
         if (friendId) {
-          const userDoc = await getDocs(query(collection(db, 'users'), where('__name__', '==', friendId)))
+          const userDoc = await getDocs(query(collection(db as any, 'users'), where('__name__', '==', friendId)))
           if (!userDoc.empty) {
             const friendData = userDoc.docs[0].data()
             friendsList.push({
@@ -96,7 +96,7 @@ export default function MessagesPage() {
     if (!selectedFriend || !user || !db || !user.uid) return
 
     // Listen to messages with selected friend
-    const messagesRef = collection(db, 'directMessages')
+    const messagesRef = collection(db as any, 'directMessages')
     const q = query(
       messagesRef,
       where('participants', 'array-contains', user.uid),
@@ -164,7 +164,8 @@ export default function MessagesPage() {
 
   if (!user) {
     return (
-      <div className="container py-8">
+      <div className="container py-8 relative">
+        <div className="absolute inset-0 -z-10 hero-gradient opacity-40" />
         <Card className="max-w-2xl mx-auto">
           <CardContent className="p-12 text-center space-y-4">
             <MessageCircle className="h-16 w-16 mx-auto text-muted-foreground" />

@@ -59,21 +59,27 @@ export function Header() {
             <Link href="/streak" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Streak
             </Link>
-            <Link href="/friends" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Friends
-            </Link>
-            <Link href="/messages" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Messages
-            </Link>
-            <Link href="/goals" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Goals
-            </Link>
-            <Link href="/leagues" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Leagues
-            </Link>
-            <Link href="/shop" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Shop
-            </Link>
+            {user && (
+              <>
+                <Link href="/friends" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                  Friends
+                </Link>
+                <Link href="/messages" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                  Messages
+                </Link>
+                <Link href="/goals" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                  Goals
+                </Link>
+                <Link href="/leagues" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                  Leagues
+                </Link>
+              </>
+            )}
+            {user && (
+              <Link href="/shop" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Shop
+              </Link>
+            )}
             <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Stats
             </Link>

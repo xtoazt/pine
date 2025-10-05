@@ -45,7 +45,7 @@ export default function FriendsPage() {
     if (!user || !db) return
 
     // Listen to friend requests and friends
-    const friendsRef = collection(db, 'friendships')
+    const friendsRef = collection(db as any, 'friendships')
     const q = query(
       friendsRef,
       where('users', 'array-contains', user.uid)
@@ -60,7 +60,7 @@ export default function FriendsPage() {
         
         if (friendId) {
           // Fetch friend's profile
-          const userDoc = await getDocs(query(collection(db, 'users'), where('__name__', '==', friendId)))
+          const userDoc = await getDocs(query(collection(db as any, 'users'), where('__name__', '==', friendId)))
           if (!userDoc.empty) {
             const friendData = userDoc.docs[0].data()
             friendsList.push({
@@ -144,7 +144,8 @@ export default function FriendsPage() {
 
   if (!user) {
     return (
-      <div className="container py-8">
+      <div className="container py-8 relative">
+        <div className="absolute inset-0 -z-10 hero-gradient opacity-40" />
         <Card className="max-w-2xl mx-auto">
           <CardContent className="p-12 text-center space-y-4">
             <Users className="h-16 w-16 mx-auto text-muted-foreground" />
