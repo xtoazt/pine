@@ -8742,19 +8742,20 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    // Start with static games (fast)
+    // Start with static games (lessons, fortnite, hdun curated)
     let filteredGames = [...mockGames, ...customGames]
     
-    // Only fetch external sources if explicitly requested or if searching for specific source
-    if (includeExternal || includeAll || source) {
-      const radonGames = source === 'radon' || includeExternal ? await fetchRadonGames(request.url) : []
-      const gsGames = source === 'gamesnacks' || includeExternal ? await fetchGameSnacks(request.url) : []
-      const hdunGamesDynamic = source === 'hdun' || includeExternal ? await fetchHdunList(request.url) : []
-      const gnGames = source === 'gnmath' || includeExternal ? await fetchGnMath(request.url) : []
-      const s16Games = source === 's16' || includeExternal ? await fetchS16Games(request.url) : []
-      
-      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games]
-    }
+    // Always include all sources for a complete game catalog
+    // Fetch external sources in parallel for better performance
+    const [radonGames, gsGames, hdunGamesDynamic, gnGames, s16Games] = await Promise.all([
+      source === 'radon' || !source ? fetchRadonGames(request.url) : Promise.resolve([]),
+      source === 'gamesnacks' || !source ? fetchGameSnacks(request.url) : Promise.resolve([]),
+      source === 'hdun' || !source ? fetchHdunList(request.url) : Promise.resolve([]),
+      source === 'gnmath' || !source ? fetchGnMath(request.url) : Promise.resolve([]),
+      source === 's16' || !source ? fetchS16Games(request.url) : Promise.resolve([])
+    ])
+    
+    filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games]
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = filteredGames.filter(g => g && g.playUrl)

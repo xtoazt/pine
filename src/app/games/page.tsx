@@ -30,7 +30,7 @@ export default function GamesPage() {
         setIsLoadingMore(true)
       }
       const nextOffset = reset ? 0 : offset
-      const resp = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=true`)
+      const resp = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`)
       const data = await resp.json()
       const newList: Game[] = Array.isArray(data.games) ? data.games : []
       setGames(prev => {
