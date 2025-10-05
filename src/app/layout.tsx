@@ -5,8 +5,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { SettingsProvider } from '@/contexts/settings-context'
-import { ChatProvider } from '@/contexts/ChatContext'
-import { ChatWrapper } from '@/components/chat/ChatWrapper'
+import { AuthProvider } from '@/contexts/auth-context'
 import { BugFixer } from '@/components/diagnostics/BugFixer'
 
 
@@ -52,19 +51,18 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <SettingsProvider>
-                <ChatProvider>
+              <AuthProvider>
+                <SettingsProvider>
                   <div className="min-h-screen flex flex-col">
                     <Header />
                     <main className="flex-1 px-4 py-6">
                       {children}
                     </main>
                     <Footer />
-                    <ChatWrapper />
                     <BugFixer />
                   </div>
-                </ChatProvider>
-              </SettingsProvider>
+                </SettingsProvider>
+              </AuthProvider>
             </ThemeProvider>
       </body>
     </html>

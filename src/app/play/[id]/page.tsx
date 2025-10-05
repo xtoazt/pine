@@ -13,6 +13,7 @@ import { useVirtualController } from '@/hooks/use-virtual-controller'
 import { useCustomGames } from '@/hooks/useCustomGames'
 import { useGameStats } from '@/hooks/useGameStats'
 import { AchievementToast } from '@/components/gamification/achievement-toast'
+import { LikeButton } from '@/components/game/like-button'
 
 export default function GamePage() {
   const params = useParams() as { id?: string } | null
@@ -285,7 +286,8 @@ export default function GamePage() {
             <CardHeader>
               <CardTitle>Share</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-2">
+              <LikeButton gameId={game.id} className="w-full" />
               <Button variant="outline" className="w-full" asChild>
                 <Link href={`/play/${game.id}`}>
                   <Share2 className="mr-2 h-4 w-4" />
