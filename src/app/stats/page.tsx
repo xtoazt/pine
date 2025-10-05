@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useGameStats } from '@/hooks/useGameStats'
 import { useAuth } from '@/contexts/auth-context'
-import { Trophy, Flame, Star, Target, Award, Users, TrendingUp, Crown, User } from 'lucide-react'
+import { Trophy, Flame, Star, Target, Award, Users, TrendingUp, Crown, User, Gamepad2, Map, Zap, Shuffle, Moon, Heart } from 'lucide-react'
 import { StatsPanel } from '@/components/gamification/stats-panel'
 
 interface LeaderboardEntry {
@@ -26,6 +26,21 @@ interface GlobalStats {
   highestLevel: number
 }
 
+// Map icon names to Lucide components
+const iconMap = {
+  Gamepad2,
+  Map,
+  Flame,
+  Crown,
+  Zap,
+  Star,
+  Shuffle,
+  Moon,
+  Heart,
+  Trophy,
+  Award
+}
+
 export default function StatsPage() {
   const { stats, achievements } = useGameStats()
   const { user } = useAuth()
@@ -33,7 +48,7 @@ export default function StatsPage() {
   const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null)
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
   const [loadingGlobal, setLoadingGlobal] = useState(false)
-  
+
   const unlockedCount = achievements.filter(a => a.unlocked).length
   const completionPercentage = (unlockedCount / achievements.length) * 100
 
@@ -176,7 +191,9 @@ export default function StatsPage() {
             >
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div className="text-4xl mb-2">{achievement.icon}</div>
+                  <div className={`text-4xl mb-2 ${achievement.unlocked ? 'text-primary' : 'text-muted-foreground opacity-50'}`}>
+                    {React.createElement(iconMap[achievement.icon as keyof typeof iconMap] || Trophy, { className: "w-10 h-10" })}
+                  </div>
                   {achievement.unlocked && (
                     <Badge variant="secondary" className="bg-primary/20 text-primary">
                       ✓ Unlocked

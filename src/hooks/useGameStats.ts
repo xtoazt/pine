@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { checkAchievements, type Achievement } from '@/lib/achievements'
+import { checkAchievements, ACHIEVEMENTS, type Achievement } from '@/lib/achievements'
 import { useAuth } from '@/contexts/auth-context'
 import { doc, updateDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
@@ -38,7 +38,7 @@ export function useGameStats() {
     xp: 0
   })
 
-  const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [achievements, setAchievements] = useState<Achievement[]>(ACHIEVEMENTS.map(a => ({ ...a })))
   const [newAchievement, setNewAchievement] = useState<Achievement | null>(null)
 
   // Load from Firestore if logged in, otherwise localStorage
@@ -66,6 +66,9 @@ export function useGameStats() {
 
       return () => unsubscribe()
     } else {
+      // Initialize achievements for guest users
+      updateAchievements()
+    }
       // Use localStorage for guest users
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
@@ -92,22 +95,23 @@ export function useGameStats() {
         parsedStats.lastVisit = today
         setStats(parsedStats)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedStats))
+        updateAchievements()
       } else {
         const initialStats = { ...stats, lastVisit: new Date().toDateString(), streak: 1 }
         setStats(initialStats)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(initialStats))
+        updateAchievements()
       }
-      
-      updateAchievements()
-    }
-  }, [user])
+  }, [user, stats])
 
   const updateAchievements = () => {
+    if (stats.gamesPlayed === 0 && stats.streak === 0) return // Don't update if stats aren't loaded yet
+
     const newAchievements = checkAchievements(stats)
     const previousAchievements = achievements
-    
+
     if (previousAchievements.length > 0) {
-      const newlyUnlocked = newAchievements.find((a, i) => 
+      const newlyUnlocked = newAchievements.find((a, i) =>
         a.unlocked && !previousAchievements[i]?.unlocked
       )
       if (newlyUnlocked) {
@@ -115,7 +119,7 @@ export function useGameStats() {
         setTimeout(() => setNewAchievement(null), 5000)
       }
     }
-    
+
     setAchievements(newAchievements)
   }
 
@@ -142,6 +146,7 @@ export function useGameStats() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newStats))
     }
     setStats(newStats)
+    updateAchievements()
   }
 
   const recordGamePlayed = (gameId: string, source: string, category: string) => {
@@ -164,15 +169,15 @@ export function useGameStats() {
       newStats.xp -= XP_PER_LEVEL
       newStats.level += 1
     }
-    
+
     saveStats(newStats)
-    setTimeout(updateAchievements, 100)
+    updateAchievements()
   }
 
   const updateFavoritesCount = (count: number) => {
     const newStats = { ...stats, favoritesCount: count }
     saveStats(newStats)
-    setTimeout(updateAchievements, 100)
+    updateAchievements()
   }
 
   return {

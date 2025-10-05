@@ -14,81 +14,81 @@ export interface Achievement {
 export const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'first-game',
-    title: '🎮 First Steps',
+    title: 'First Steps',
     description: 'Play your first game',
-    icon: '🎮',
+    icon: 'Gamepad2',
     unlocked: false,
     progress: 0,
     maxProgress: 1
   },
   {
     id: 'explorer',
-    title: '🗺️ Explorer',
+    title: 'Explorer',
     description: 'Play games from 3 different sources',
-    icon: '🗺️',
+    icon: 'Map',
     unlocked: false,
     progress: 0,
     maxProgress: 3
   },
   {
     id: 'dedicated',
-    title: '🔥 Dedicated',
+    title: 'Dedicated',
     description: 'Visit pine 3 days in a row',
-    icon: '🔥',
+    icon: 'Flame',
     unlocked: false,
     progress: 0,
     maxProgress: 3
   },
   {
     id: 'game-master',
-    title: '👑 Game Master',
+    title: 'Game Master',
     description: 'Play 10 different games',
-    icon: '👑',
+    icon: 'Crown',
     unlocked: false,
     progress: 0,
     maxProgress: 10
   },
   {
     id: 'marathon',
-    title: '🏃 Marathon',
+    title: 'Marathon',
     description: 'Play 25 games',
-    icon: '🏃',
+    icon: 'Zap',
     unlocked: false,
     progress: 0,
     maxProgress: 25
   },
   {
     id: 'legend',
-    title: '⭐ Legend',
+    title: 'Legend',
     description: 'Play 50 games',
-    icon: '⭐',
+    icon: 'Star',
     unlocked: false,
     progress: 0,
     maxProgress: 50
   },
   {
     id: 'variety-lover',
-    title: '🌈 Variety Lover',
+    title: 'Variety Lover',
     description: 'Play games from all 5 categories',
-    icon: '🌈',
+    icon: 'Shuffle',
     unlocked: false,
     progress: 0,
     maxProgress: 5
   },
   {
     id: 'night-owl',
-    title: '🦉 Night Owl',
+    title: 'Night Owl',
     description: 'Play a game after midnight',
-    icon: '🦉',
+    icon: 'Moon',
     unlocked: false,
     progress: 0,
     maxProgress: 1
   },
   {
     id: 'completionist',
-    title: '💯 Completionist',
+    title: 'Completionist',
     description: 'Add 10 games to favorites',
-    icon: '💯',
+    icon: 'Heart',
     unlocked: false,
     progress: 0,
     maxProgress: 10
