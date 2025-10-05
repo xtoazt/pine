@@ -26,7 +26,6 @@ const sourceInfo: Record<string, { name: string; color: string }> = {
 
 export function GameCard({ game }: GameCardProps) {
   const { settings } = useSettings()
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, show: false })
   
   const rating = game.upvotes + game.downvotes > 0 
     ? (game.upvotes / (game.upvotes + game.downvotes)) * 5 
@@ -37,25 +36,14 @@ export function GameCard({ game }: GameCardProps) {
   const handleClick = () => {
     recordGameInteraction(game)
   }
-  
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setTooltipPos({ x: e.clientX, y: e.clientY, show: true })
-  }
-  
-  const handleMouseLeave = () => {
-    setTooltipPos(prev => ({ ...prev, show: false }))
-  }
 
   return (
-    <>
-      <Link 
-        href={`/play/${game.id}`} 
-        prefetch={false} 
-        onClick={handleClick} 
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg"
-      >
+    <Link 
+      href={`/play/${game.id}`} 
+      prefetch={false} 
+      onClick={handleClick} 
+      className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg"
+    >
         <Card className={`game-card group ${settings.compactMode ? 'compact' : ''} hover:shadow-lg hover:scale-[1.02] transition-all duration-200`}>
           {settings.showThumbnails && (
             <div className="relative overflow-hidden">
@@ -83,12 +71,6 @@ export function GameCard({ game }: GameCardProps) {
                 </span>
               </div>
               
-              {/* Minimal source indicator dot */}
-              <div 
-                className="absolute top-2 right-2 w-2 h-2 rounded-full transition-transform duration-200 group-hover:scale-150"
-                style={{ backgroundColor: source.color }}
-              />
-              
               <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
               
               {/* Play icon on hover */}
@@ -105,12 +87,11 @@ export function GameCard({ game }: GameCardProps) {
             <h3 className="game-title font-semibold text-lg line-clamp-2 flex-1">
               {game.title}
             </h3>
-            {!settings.showThumbnails && (
-              <div 
-                className="w-2 h-2 rounded-full shrink-0 mt-2"
-                style={{ backgroundColor: source.color }}
-              />
-            )}
+          {!settings.showThumbnails && (
+            <Badge variant="secondary" className="text-xs shrink-0">
+              {source.name}
+            </Badge>
+          )}
           </div>
           
           {settings.showDescriptions && game.description && (
@@ -157,20 +138,5 @@ export function GameCard({ game }: GameCardProps) {
           )}
         </Card>
       </Link>
-      
-      {/* Cursor-following tooltip */}
-      {tooltipPos.show && (
-        <div
-          className="fixed z-[9999] pointer-events-none px-3 py-1.5 rounded-md text-xs font-medium text-white shadow-lg"
-          style={{
-            left: tooltipPos.x + 15,
-            top: tooltipPos.y + 15,
-            backgroundColor: source.color,
-          }}
-        >
-          {source.name}
-        </div>
-      )}
-    </>
   )
 }

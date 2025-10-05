@@ -33,8 +33,13 @@ export default function GamesPage() {
       }
       const nextOffset = reset ? 0 : offset
       
+      // Check for source filter using URL params
+      const urlParams = new URLSearchParams(window.location.search)
+      const sourceFilter = urlParams.get('source') || ''
+      const sourceParam = sourceFilter ? `&source=${sourceFilter}` : ''
+      
       // INSTANT LOAD: Show static games first (< 500ms)
-      const staticResponse = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=false`, { 
+      const staticResponse = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=false${sourceParam}`, { 
         headers: buildUserSignalsHeaders(),
         cache: 'force-cache'
       })
@@ -48,7 +53,7 @@ export default function GamesPage() {
       
       // BACKGROUND: Stream external games in without blocking
       setIsLoadingExternal(true)
-      fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`, { 
+      fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}${sourceParam}`, { 
         headers: buildUserSignalsHeaders()
       })
         .then(r => r.json())
@@ -95,8 +100,28 @@ export default function GamesPage() {
   }, [hasMore, isLoadingMore, loading, offset])
 
   const filteredGames = games.filter(game => {
-    if (!searchQuery) return true
-    const query = searchQuery.toLowerCase()
+    let query = searchQuery.toLowerCase()
+    let sourceFilter = ''
+    
+    // Check if search starts with @ for source filtering
+    if (query.startsWith('@')) {
+      const parts = query.split(' ')
+      sourceFilter = parts[0].substring(1) // Remove @
+      query = parts.slice(1).join(' ') // Rest of the search
+      
+      // Check if game matches the source
+      const gameSource = (game.source || '').toLowerCase()
+      const matchesSource = 
+        gameSource === sourceFilter ||
+        gameSource.includes(sourceFilter) ||
+        sourceFilter.includes(gameSource)
+      
+      if (!matchesSource) return false
+    }
+    
+    // If no search query (only source filter or empty search), show all from that source
+    if (!query) return true
+    
     return (
       game.title.toLowerCase().includes(query) ||
       game.description?.toLowerCase().includes(query) ||
@@ -159,11 +184,16 @@ export default function GamesPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search games by name, description, or tags..."
+                placeholder="Search games... (Try @s16 or @gamesnacks)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
+              {searchQuery.startsWith('@') && (
+                <Badge variant="secondary" className="ml-2">
+                  Source: {searchQuery.split(' ')[0].substring(1)}
+                </Badge>
+              )}
             </div>
             <select
               value={sortBy}

@@ -30,7 +30,13 @@ export function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      // Check if it's a source filter
+      if (searchQuery.trim().startsWith('@')) {
+        const sourceName = searchQuery.trim().substring(1).split(' ')[0]
+        router.push(`/games?source=${encodeURIComponent(sourceName)}`)
+      } else {
+        router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      }
     }
   }
 
@@ -83,13 +89,13 @@ export function Header() {
             <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
               <form onSubmit={handleSearch} className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="pl-8 w-[150px] lg:w-[250px]"
-                />
+                        <Input
+                          placeholder="Search... (Try @s16)"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onKeyPress={handleKeyPress}
+                          className="pl-8 w-[150px] lg:w-[250px]"
+                        />
               </form>
           <nav className="flex items-center space-x-2">
             {/* Streak Indicator */}

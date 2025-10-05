@@ -33,12 +33,18 @@ export default function HomePage() {
   }, [])
 
   const categories = [
-    { name: 'Action', slug: 'action' },
-    { name: 'Puzzle', slug: 'puzzle' },
-    { name: 'Arcade', slug: 'arcade' },
-    { name: 'Multiplayer', slug: 'multiplayer' },
-    { name: 'Sports', slug: 'sports' },
-    { name: 'Racing', slug: 'racing' },
+    { name: 'Action', slug: 'action', icon: '⚔️' },
+    { name: 'Puzzle', slug: 'puzzle', icon: '🧩' },
+    { name: 'Arcade', slug: 'arcade', icon: '🕹️' },
+    { name: 'Multiplayer', slug: 'multiplayer', icon: '👥' },
+    { name: 'Sports', slug: 'sports', icon: '⚽' },
+    { name: 'Racing', slug: 'racing', icon: '🏎️' },
+    { name: 'Adventure', slug: 'adventure', icon: '🗺️' },
+    { name: 'Strategy', slug: 'strategy', icon: '♟️' },
+    { name: 'Shooter', slug: 'shooter', icon: '🎯' },
+    { name: 'RPG', slug: 'rpg', icon: '🐉' },
+    { name: 'Platformer', slug: 'platformer', icon: '🦘' },
+    { name: 'Simulation', slug: 'simulation', icon: '🎮' },
   ]
 
   return (
@@ -72,12 +78,40 @@ export default function HomePage() {
       {/* Categories */}
       <section className="container pb-12">
         <h2 className="text-2xl font-bold mb-6">Browse by Category</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {categories.map((cat) => (
             <Link key={cat.slug} href={`/category/${cat.slug}`}>
+              <Card className="hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer border-2 hover:border-primary">
+                <CardContent className="p-4 text-center space-y-2">
+                  <div className="text-3xl">{cat.icon}</div>
+                  <h3 className="font-semibold text-sm">{cat.name}</h3>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Game Sources Section */}
+      <section className="container pb-12">
+        <h2 className="text-2xl font-bold mb-6">Browse by Source</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { name: 's16.lol', source: 's16', count: '20,000+', color: 'bg-red-500/10 text-red-600' },
+            { name: 'GameSnacks', source: 'gamesnacks', count: '500+', color: 'bg-pink-500/10 text-pink-600' },
+            { name: 'gn-math', source: 'gnmath', count: '300+', color: 'bg-yellow-500/10 text-yellow-600' },
+            { name: 'Radon', source: 'radon', count: '300+', color: 'bg-orange-500/10 text-orange-600' },
+            { name: 'Classwork', source: 'classwork', count: '100+', color: 'bg-indigo-500/10 text-indigo-600' },
+            { name: 'Arcade', source: 'arcade', count: '150+', color: 'bg-green-500/10 text-green-600' },
+            { name: 'Lessons', source: 'lessons', count: '600+', color: 'bg-blue-500/10 text-blue-600' },
+            { name: 'Fortnite', source: 'fortnite', count: '50+', color: 'bg-purple-500/10 text-purple-600' },
+          ].map((src) => (
+            <Link key={src.source} href={`/games?source=${src.source}`}>
               <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-6 text-center">
-                  <h3 className="font-semibold">{cat.name}</h3>
+                <CardContent className="p-4">
+                  <Badge className={`${src.color} mb-2`}>{src.name}</Badge>
+                  <p className="text-2xl font-bold">{src.count}</p>
+                  <p className="text-xs text-muted-foreground">games</p>
                 </CardContent>
               </Card>
             </Link>
