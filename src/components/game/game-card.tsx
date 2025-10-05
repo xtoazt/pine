@@ -26,6 +26,7 @@ const sourceInfo: Record<string, { name: string; color: string }> = {
 
 export function GameCard({ game }: GameCardProps) {
   const { settings } = useSettings()
+  const [showSource, setShowSource] = useState(false)
   
   const rating = game.upvotes + game.downvotes > 0 
     ? (game.upvotes / (game.upvotes + game.downvotes)) * 5 
@@ -41,7 +42,9 @@ export function GameCard({ game }: GameCardProps) {
     <Link 
       href={`/play/${game.id}`} 
       prefetch={false} 
-      onClick={handleClick} 
+      onClick={handleClick}
+      onMouseEnter={() => setShowSource(true)}
+      onMouseLeave={() => setShowSource(false)}
       className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg"
     >
         <Card className={`game-card group ${settings.compactMode ? 'compact' : ''} hover:shadow-lg hover:scale-[1.02] transition-all duration-200`}>
@@ -70,6 +73,15 @@ export function GameCard({ game }: GameCardProps) {
                   {game.title}
                 </span>
               </div>
+              
+              {/* Source badge on hover */}
+              {showSource && (
+                <div className="absolute top-2 right-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <Badge variant="secondary" className="text-xs shadow-lg">
+                    {source.name}
+                  </Badge>
+                </div>
+              )}
               
               <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
               

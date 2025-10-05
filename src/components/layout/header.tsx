@@ -30,13 +30,9 @@ export function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      // Check if it's a source filter
-      if (searchQuery.trim().startsWith('@')) {
-        const sourceName = searchQuery.trim().substring(1).split(' ')[0]
-        router.push(`/games?source=${encodeURIComponent(sourceName)}`)
-      } else {
-        router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
-      }
+      // Both @ source searches and regular searches go to /search
+      // The search page will handle @ source filtering
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
     }
   }
 

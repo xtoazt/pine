@@ -30,7 +30,22 @@ function SearchContent() {
       setLoading(true)
       setError(null)
       
-      const fast = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30`, { headers: buildUserSignalsHeaders() })
+      // Check if it's a source filter search
+      let apiUrl = `/api/games?limit=30`
+      if (searchQuery.startsWith('@')) {
+        const parts = searchQuery.split(' ')
+        const sourceName = parts[0].substring(1)
+        const actualSearch = parts.slice(1).join(' ')
+        
+        apiUrl = `/api/games?source=${encodeURIComponent(sourceName)}&limit=30`
+        if (actualSearch) {
+          apiUrl += `&search=${encodeURIComponent(actualSearch)}`
+        }
+      } else {
+        apiUrl += `&search=${encodeURIComponent(searchQuery)}`
+      }
+      
+      const fast = await fetch(apiUrl, { headers: buildUserSignalsHeaders() })
       
       if (!fast.ok) {
         throw new Error('Failed to search games')
@@ -38,10 +53,12 @@ function SearchContent() {
       
       const data = await fast.json()
       setGames(data.games || [])
+      
       // Hydrate with externals
       ;(async () => {
         try {
-          const slow = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30&external=true`, { headers: buildUserSignalsHeaders() })
+          const externalUrl = apiUrl.includes('external=') ? apiUrl : `${apiUrl}&external=true`
+          const slow = await fetch(externalUrl, { headers: buildUserSignalsHeaders() })
           if (slow.ok) {
             const s = await slow.json()
             const slowList: Game[] = Array.isArray(s.games) ? s.games : []
@@ -77,9 +94,14 @@ function SearchContent() {
           <div>
             <h1 className="text-3xl font-bold">Search Results</h1>
             {query && (
-              <p className="text-muted-foreground mt-2">
-                Results for "{query}"
-              </p>
+              <div className="text-muted-foreground mt-2 space-y-1">
+                <p>Results for "{query}"</p>
+                {query.startsWith('@') && (
+                  <Badge variant="secondary" className="text-xs">
+                    Filtering by source: {query.split(' ')[0].substring(1)}
+                  </Badge>
+                )}
+              </div>
             )}
           </div>
         </div>
