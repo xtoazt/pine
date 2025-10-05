@@ -36,16 +36,29 @@ export function GameCard({ game }: GameCardProps) {
       <Card className={`game-card group ${settings.compactMode ? 'compact' : ''}`}>
         {settings.showThumbnails && (
           <div className="relative overflow-hidden">
-            <Image
-              src={game.thumbnail}
-              alt={game.title}
-              width={200}
-              height={120}
-              className="game-thumbnail object-cover transition-transform duration-200 group-hover:scale-105"
-              onError={(e) => {
-                try { (e.currentTarget as HTMLImageElement).src = '/images/logo.png' } catch {}
-              }}
-            />
+            {game.thumbnail ? (
+              <Image
+                src={game.thumbnail}
+                alt={game.title}
+                width={200}
+                height={120}
+                className="game-thumbnail object-cover transition-transform duration-200 group-hover:scale-105"
+                onError={(e) => {
+                  try { (e.currentTarget as HTMLImageElement).style.display = 'none' } catch {}
+                  const fallback = (e.currentTarget.parentElement?.querySelector('[data-fallback]') as HTMLElement | null)
+                  if (fallback) fallback.style.display = 'flex'
+                }}
+              />
+            ) : null}
+            <div
+              data-fallback
+              style={{ display: game.thumbnail ? 'none' : 'flex' }}
+              className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted to-muted-foreground/10"
+            >
+              <span className="px-2 text-center font-semibold text-sm line-clamp-3">
+                {game.title}
+              </span>
+            </div>
             {/* Subtle source badge in top-right corner */}
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <Badge variant="secondary" className={`text-xs ${source.color} border-0`}>

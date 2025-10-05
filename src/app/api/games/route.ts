@@ -8880,9 +8880,36 @@ export async function GET(request: NextRequest) {
       default: // popular
         filteredGames.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
     }
-    
-    // Apply pagination - if includeAll is true, return all games
-    const paginatedGames = includeAll ? filteredGames : filteredGames.slice(offset, offset + limit)
+
+    // Balance sources on the first page so all sources are represented
+    // Only applies when no specific source is requested and we are including externals
+    let paginatedGames: Game[]
+    if (!source && shouldFetchExternal && !includeAll && offset === 0) {
+      const groups = new Map<string, Game[]>()
+      for (const g of filteredGames) {
+        const key = g.source || 'lessons'
+        if (!groups.has(key)) groups.set(key, [])
+        groups.get(key)!.push(g)
+      }
+      // Interleave one-by-one from each source group
+      const result: Game[] = []
+      let added = true
+      while (result.length < limit && added) {
+        added = false
+        for (const list of groups.values()) {
+          if (result.length >= limit) break
+          const item = list.shift()
+          if (item) {
+            result.push(item)
+            added = true
+          }
+        }
+      }
+      paginatedGames = result
+    } else {
+      // Apply pagination - if includeAll is true, return all games
+      paginatedGames = includeAll ? filteredGames : filteredGames.slice(offset, offset + limit)
+    }
     
     const response: GameApiResponse = {
       games: paginatedGames,
