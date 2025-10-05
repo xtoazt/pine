@@ -36,12 +36,17 @@ export default function GamePage() {
         }
         
         // Fetch all games and find the specific one by ID
-        const response = await fetch(`/api/games?all=true`)
+        const response = await fetch(`/api/games?external=true`)
         const data = await response.json()
         
         // Find the specific game by ID
-        const foundGame = data.games.find((g: Game) => g.id === gameId)
-        setGame(foundGame)
+        const foundGame = data.games?.find((g: Game) => g.id === gameId)
+        
+        if (foundGame) {
+          setGame(foundGame)
+        } else {
+          console.error('Game not found:', gameId)
+        }
       } catch (error) {
         console.error('Error fetching game:', error)
       } finally {
@@ -52,7 +57,7 @@ export default function GamePage() {
     if (gameId) {
       fetchGame()
     }
-  }, [gameId])
+  }, [gameId, customGames])
 
   const toggleFullscreen = () => {
     const gameContainer = document.getElementById('game-container')
@@ -173,17 +178,19 @@ export default function GamePage() {
             <CardContent className="p-0">
               <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
                     <iframe
-                      src={game.source === 'hdun' ? `/api/hdun/proxy?id=${gameId}` : 
-                            game.source === 'custom' ? game.playUrl : 
-                            gameId.startsWith('hdun-') ? `/api/hdun/proxy?id=${gameId.replace('hdun-', '')}` :
-                            gameId.startsWith('lesson-') ? `/api/proxy/lessons/${gameId}` :
-                            gameId.startsWith('fortnite-') ? `/api/proxy/lessons/${gameId}` :
-                            `/api/proxy/lessons/${gameId}`}
+                      src={
+                        game.playUrl.startsWith('http') ? game.playUrl :
+                        game.playUrl.startsWith('/api/') ? game.playUrl :
+                        game.source === 'lessons' || game.source === 'fortnite' ? `/api/proxy/lessons/${gameId}` :
+                        game.source === 'hdun' ? `/api/hdun/proxy?id=${gameId.replace('hdun-', '')}` :
+                        game.playUrl
+                      }
                       className="w-full h-full border-0"
                       allowFullScreen
                       title={game.title}
+                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
                   onError={(e) => {
-                    console.error('Game failed to load:', gameId)
+                    console.error('Game failed to load:', gameId, 'URL:', e.currentTarget.src)
                     // Fallback to a simple error message
                     e.currentTarget.style.display = 'none'
                     const errorDiv = document.createElement('div')
