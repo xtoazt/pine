@@ -65,7 +65,30 @@ export default function CategoriesPage() {
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center justify-between">
                 <span className="text-lg">{category.name}</span>
-                <span className="text-2xl">{category.icon}</span>
+                <span className="text-2xl">
+                  {/* Map icon string to lucide component */}
+                  {(() => {
+                    const map: any = {
+                      Gamepad2: require('lucide-react').Gamepad2,
+                      Flame: require('lucide-react').Flame,
+                      Star: require('lucide-react').Star,
+                      Sword: require('lucide-react').Sword,
+                      Target: require('lucide-react').Target,
+                      Car: require('lucide-react').Car,
+                      Joystick: require('lucide-react').Joystick,
+                      Puzzle: require('lucide-react').Puzzle,
+                      Users: require('lucide-react').Users,
+                      Brain: require('lucide-react').Brain,
+                      Trophy: require('lucide-react').Trophy,
+                      Map: require('lucide-react').Map,
+                      Crown: require('lucide-react').Crown,
+                      Zap: require('lucide-react').Zap,
+                      Monitor: require('lucide-react').Monitor
+                    }
+                    const Icon = map[category.icon] || require('lucide-react').Gamepad2
+                    return <Icon className="h-6 w-6" />
+                  })()}
+                </span>
               </CardTitle>
               <CardDescription className="text-sm">
                 {category.description}

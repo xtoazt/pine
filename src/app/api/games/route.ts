@@ -8865,7 +8865,9 @@ export async function GET(request: NextRequest) {
       // Progressive budgets for most sources; s16 runs at full budget to ensure all titles are included gradually
       const gsOpts = { maxCheck: Math.min(100 + (page - 1) * 100, 500) }
       const gnOpts = { maxItems: Math.min(100 + (page - 1) * 150, 800) }
-      const s16Opts = { maxSeeds: 36, maxResults: 50000 }
+      // Map paged seed window for s16 based on page
+      const s16SeedWindow = 4
+      const s16Opts = { seedOffset: ((page - 1) * s16SeedWindow) % 36, seedLimit: s16SeedWindow, maxResults: 2000 }
       const arcadeOpts = { maxPing: Math.min(50 + (page - 1) * 50, 200) }
       
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
