@@ -202,7 +202,8 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
       thumbnail: `https://classwork.cc/wp-content/uploads/${g.slug}.png`,
       category: g.category,
       tags: ['unblocked', g.category],
-      playUrl: `/api/ds/proxy?url=${encodeURIComponent(`https://classwork.cc/${g.slug}/`)}`,
+      // Try to embed the game iframe directly with clean zoomed view
+      playUrl: `/api/ds/proxy?url=${encodeURIComponent(`https://classwork.cc/${g.slug}/`)}&embed=1&zoom=1.1`,
       upvotes: Math.floor(Math.random() * 3000) + 1000,
       downvotes: Math.floor(Math.random() * 100) + 10,
       playCount: Math.floor(Math.random() * 50000) + 5000,

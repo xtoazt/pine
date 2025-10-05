@@ -74,13 +74,26 @@ export function GameCard({ game }: GameCardProps) {
                 </span>
               </div>
               
-              {/* Source color indicator on hover */}
+              {/* Source pill that follows cursor on hover (works even without thumbnail) */}
               {showSource && (
-                <div 
-                  className="absolute top-2 right-2 w-6 h-6 rounded-full shadow-lg animate-in fade-in slide-in-from-top-1 duration-200"
-                  style={{ backgroundColor: source.color }}
-                  title={source.name}
-                />
+                <div
+                  className="absolute pointer-events-none top-0 left-0 translate-x-[var(--mx,0px)] translate-y-[var(--my,0px)] transition-transform duration-75"
+                  style={{['--mx' as any]: '0px', ['--my' as any]: '0px'}}
+                  onMouseMove={(e) => {
+                    const rect = (e.currentTarget.parentElement as HTMLElement).getBoundingClientRect()
+                    const x = e.clientX - rect.left + 12
+                    const y = e.clientY - rect.top + 12
+                    ;(e.currentTarget as HTMLElement).style.setProperty('--mx', x + 'px')
+                    ;(e.currentTarget as HTMLElement).style.setProperty('--my', y + 'px')
+                  }}
+                >
+                  <span
+                    className="px-2 py-1 rounded-full text-[10px] font-semibold shadow-premium glass"
+                    style={{ backgroundColor: `${source.color}20`, color: source.color }}
+                  >
+                    {source.name}
+                  </span>
+                </div>
               )}
               
               <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />

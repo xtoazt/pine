@@ -43,6 +43,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const rawUrl = searchParams.get('url')
     const ping = searchParams.get('ping') === '1'
+    const embed = searchParams.get('embed') === '1'
+    const zoom = Math.max(0.5, Math.min(2, Number(searchParams.get('zoom') || '1')))
     if (!rawUrl) {
       return NextResponse.json({ error: 'Missing url param' }, { status: 400 })
     }
@@ -116,6 +118,16 @@ export async function GET(request: NextRequest) {
     }
 
     let html = await res.text()
+    if (embed) {
+      // Try to extract first iframe src and render a clean wrapper focusing only on the game
+      const m = html.match(/<iframe[^>]+src=["']([^"']+)["'][^>]*>/i)
+      if (m && m[1]) {
+        const iframeUrl = new URL(m[1], base)
+        const proxied = `/api/ds/proxy?url=${encodeURIComponent(iframeUrl.toString())}`
+        const clean = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"/><style>html,body{margin:0;height:100%;background:#000} .wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden} iframe{width:${zoom*100}%;height:${zoom*100}%;border:0;transform:scale(${zoom}); transform-origin: 50% 0%;}</style></head><body><div class="wrap"><iframe src="${proxied}" allowfullscreen allow="autoplay; fullscreen; gamepad; xr-spatial-tracking; clipboard-read; clipboard-write"></iframe></div></body></html>`
+        return new NextResponse(clean, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=120' } })
+      }
+    }
     if (html.trim().length < 64) {
       // Attempt fetching index.html if we landed on a directory
       const alt = new URL('index.html', base)
