@@ -8977,7 +8977,7 @@ export async function GET(request: NextRequest) {
           if (result.length >= limit) break
           const item = list.shift()
           if (item) {
-            result.push(item)
+            result.push(item as Game)
             added = true
           }
         }
