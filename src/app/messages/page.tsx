@@ -52,7 +52,7 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!user || !db) return
+    if (!user || !db || !user.uid) return
 
     // Load friends
     const loadFriends = async () => {
@@ -93,7 +93,7 @@ export default function MessagesPage() {
   }, [user])
 
   useEffect(() => {
-    if (!selectedFriend || !user || !db) return
+    if (!selectedFriend || !user || !db || !user.uid) return
 
     // Listen to messages with selected friend
     const messagesRef = collection(db, 'directMessages')
@@ -130,7 +130,7 @@ export default function MessagesPage() {
   }, [selectedFriend, user])
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedFriend || !user || !db) return
+    if (!newMessage.trim() || !selectedFriend || !user || !db || !user.uid) return
 
     setLoading(true)
     try {

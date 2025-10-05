@@ -70,7 +70,7 @@ export default function ShopPage() {
   const [loading, setLoading] = useState<string | null>(null)
 
   const purchaseItem = async (item: ShopItem) => {
-    if (!user || !db || stats.xp < item.price) return
+    if (!user || !db || !user.uid || stats.xp < item.price) return
 
     setLoading(item.id)
     try {

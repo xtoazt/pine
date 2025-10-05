@@ -19,22 +19,32 @@ let auth: Auth
 let db: Firestore
 let analytics: Analytics | null = null
 
-if (typeof window !== 'undefined') {
-  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
-  auth = getAuth(app)
-  db = getFirestore(app)
-  
-  // Initialize analytics only in browser
-  try {
-    analytics = getAnalytics(app)
-  } catch (error) {
-    console.warn('Analytics not available:', error)
+try {
+  if (typeof window !== 'undefined') {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+    auth = getAuth(app)
+    db = getFirestore(app)
+
+    // Initialize analytics only in browser
+    try {
+      analytics = getAnalytics(app)
+    } catch (error) {
+      console.warn('Analytics not available:', error)
+    }
+  } else {
+    // Server-side: Create placeholder app for build time
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+    auth = getAuth(app)
+    db = getFirestore(app)
   }
-} else {
-  // Server-side: Create placeholder app for build time
-  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
-  auth = getAuth(app)
-  db = getFirestore(app)
+} catch (error) {
+  console.error('Firebase initialization failed:', error)
+  // Create fallback instances for error cases
+  if (typeof window !== 'undefined') {
+    app = initializeApp(firebaseConfig)
+    auth = getAuth(app)
+    db = getFirestore(app)
+  }
 }
 
 const isConfigured = true

@@ -43,7 +43,7 @@ export function useGameStats() {
 
   // Load from Firestore if logged in, otherwise localStorage
   useEffect(() => {
-    if (user && db) {
+    if (user && db && user.uid) {
       // Real-time sync with Firestore
       const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (doc) => {
         if (doc.exists()) {

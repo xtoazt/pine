@@ -47,13 +47,13 @@ export default function RootLayout({
             <script src="https://www.youtube.com/iframe_api"></script>
           </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <ErrorBoundary>
+            <ErrorBoundary>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
                 <AuthProvider>
                   <SettingsProvider>
                     <TabCloak />
@@ -67,8 +67,8 @@ export default function RootLayout({
                     </div>
                   </SettingsProvider>
                 </AuthProvider>
-              </ErrorBoundary>
-            </ThemeProvider>
+              </ThemeProvider>
+            </ErrorBoundary>
       </body>
     </html>
   )
