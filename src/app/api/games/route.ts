@@ -8778,10 +8778,6 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const cacheKey = buildCacheKey(request.url)
-    const cached = memoryCache.get(cacheKey)
-    if (cached && cached.expires > Date.now()) {
-      return NextResponse.json(cached.data, { headers: cached.headers })
-    }
     
     // Check for API key (optional but recommended)
     const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
@@ -8796,6 +8792,17 @@ export async function GET(request: NextRequest) {
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
     const includeExternal = searchParams.get('external') !== 'false' // Fetch external sources by default; allow opt-out with external=false
+    
+    // Aggressive caching: 5 minute cache for external, 30 sec for static
+    const cached = memoryCache.get(cacheKey)
+    if (cached && cached.expires > Date.now()) {
+      return NextResponse.json(cached.data, { 
+        headers: { 
+          ...cached.headers,
+          'X-Cache': 'HIT'
+        } 
+      })
+    }
     
     // Get custom games from request headers (passed from client-side)
     const customGamesHeader = request.headers.get('x-custom-games')
@@ -8977,14 +8984,19 @@ export async function GET(request: NextRequest) {
       offset: offset
     }
     
+    const cacheControl = includeExternal 
+      ? 'public, max-age=300, s-maxage=600, stale-while-revalidate=3600' 
+      : 'public, max-age=30, s-maxage=60, stale-while-revalidate=300'
+    
     const resp = NextResponse.json(apiResponse, {
       headers: {
-        'Cache-Control': 'public, max-age=10, s-maxage=20, stale-while-revalidate=120'
+        'Cache-Control': cacheControl,
+        'X-Cache': 'MISS'
       }
     })
     try {
-      const ttlMs = includeAll ? 10_000 : 15_000
-      memoryCache.set(cacheKey, { expires: Date.now() + ttlMs, data: apiResponse, headers: { 'Cache-Control': resp.headers.get('Cache-Control') || '' } })
+      const ttlMs = includeExternal ? 300_000 : 30_000
+      memoryCache.set(cacheKey, { expires: Date.now() + ttlMs, data: apiResponse, headers: { 'Cache-Control': cacheControl } })
     } catch {}
     return resp
   } catch (error) {

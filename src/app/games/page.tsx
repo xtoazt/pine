@@ -19,6 +19,7 @@ export default function GamesPage() {
   const [totalGames, setTotalGames] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [isLoadingExternal, setIsLoadingExternal] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
   const PAGE_SIZE = 500
@@ -32,20 +33,44 @@ export default function GamesPage() {
       }
       const nextOffset = reset ? 0 : offset
       
-      // Fetch fresh batch of 500 games with max sources - replaces current games
-      const response = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`, { headers: buildUserSignalsHeaders() })
-      const data = await response.json()
+      // INSTANT LOAD: Show static games first (< 500ms)
+      const staticResponse = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=false`, { 
+        headers: buildUserSignalsHeaders(),
+        cache: 'force-cache'
+      })
+      const staticData = await staticResponse.json()
+      const staticGames: Game[] = Array.isArray(staticData.games) ? staticData.games : []
       
-      const newList: Game[] = Array.isArray(data.games) ? data.games : []
+      // Show static games immediately
+      setGames(staticGames)
+      setLoading(false)
+      setIsLoadingMore(false)
       
-      // Replace games instead of accumulating
-      setGames(newList)
-      setTotalGames(data.total || 0)
-      setHasMore(Boolean(data.hasMore))
+      // BACKGROUND: Stream external games in without blocking
+      setIsLoadingExternal(true)
+      fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`, { 
+        headers: buildUserSignalsHeaders()
+      })
+        .then(r => r.json())
+        .then(data => {
+          const allGames: Game[] = Array.isArray(data.games) ? data.games : []
+          if (allGames.length > staticGames.length) {
+            setGames(allGames)
+            setTotalGames(data.total || 0)
+            setHasMore(Boolean(data.hasMore))
+          }
+          setIsLoadingExternal(false)
+        })
+        .catch(err => {
+          console.error('Background external fetch error:', err)
+          setIsLoadingExternal(false)
+        })
+      
+      setTotalGames(staticData.total || 0)
+      setHasMore(Boolean(staticData.hasMore))
       setOffset(nextOffset + PAGE_SIZE)
     } catch (e) {
       console.error('Error fetching games:', e)
-    } finally {
       setLoading(false)
       setIsLoadingMore(false)
     }
@@ -106,9 +131,16 @@ export default function GamesPage() {
           Discover our complete collection of {totalGames.toLocaleString()}+ carefully curated games. 
           From classic arcade to modern adventures, find your next favorite game.
         </p>
-        <Badge variant="secondary" className="text-sm">
-          Showing {games.length.toLocaleString()} games (batch {Math.floor(offset / PAGE_SIZE)} of {Math.ceil(totalGames / PAGE_SIZE)}) • Scroll for next batch
-        </Badge>
+        <div className="flex flex-col items-center gap-2">
+          <Badge variant="secondary" className="text-sm">
+            Showing {games.length.toLocaleString()} games (batch {Math.floor(offset / PAGE_SIZE)} of {Math.ceil(totalGames / PAGE_SIZE)}) • Scroll for next batch
+          </Badge>
+          {isLoadingExternal && (
+            <Badge variant="outline" className="text-xs animate-pulse">
+              Loading more games from external sources...
+            </Badge>
+          )}
+        </div>
       </div>
 
       {/* Filters */}

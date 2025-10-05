@@ -11,6 +11,8 @@ import Link from 'next/link'
 import { VirtualController } from '@/components/game/virtual-controller'
 import { useVirtualController } from '@/hooks/use-virtual-controller'
 import { useCustomGames } from '@/hooks/useCustomGames'
+import { useGameStats } from '@/hooks/useGameStats'
+import { AchievementToast } from '@/components/gamification/achievement-toast'
 
 export default function GamePage() {
   const params = useParams() as { id?: string } | null
@@ -21,6 +23,7 @@ export default function GamePage() {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const virtualController = useVirtualController()
   const { customGames } = useCustomGames()
+  const { recordGamePlayed, newAchievement } = useGameStats()
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -35,13 +38,22 @@ export default function GamePage() {
           return
         }
         
-        // Fetch games to find the specific one (includes external by default)
-        const response = await fetch(`/api/games?limit=1000`)
-        const data = await response.json()
-        const foundGame = data.games?.find((g: Game) => g.id === gameId)
+        // FAST: Try static games first (instant)
+        let response = await fetch(`/api/games?limit=500&external=false`, { cache: 'force-cache' })
+        let data = await response.json()
+        let foundGame = data.games?.find((g: Game) => g.id === gameId)
+        
+        // If not in static, check external (slower but thorough)
+        if (!foundGame) {
+          response = await fetch(`/api/games?limit=1000`)
+          data = await response.json()
+          foundGame = data.games?.find((g: Game) => g.id === gameId)
+        }
         
         if (foundGame) {
           setGame(foundGame)
+          // Record game play for achievements
+          recordGamePlayed(foundGame.id, foundGame.source || 'lessons', foundGame.category)
         } else {
           console.error('Game not found:', gameId)
         }
@@ -123,7 +135,9 @@ export default function GamePage() {
     : 0
 
   return (
-    <div className="container py-8 space-y-8">
+    <>
+      <AchievementToast achievement={newAchievement} />
+      <div className="container py-8 space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -289,5 +303,6 @@ export default function GamePage() {
         onKeyRelease={virtualController.handleKeyRelease}
       />
     </div>
+    </>
   )
 }

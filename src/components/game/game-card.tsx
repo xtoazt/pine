@@ -38,7 +38,7 @@ export function GameCard({ game }: GameCardProps) {
 
   return (
     <Link href={`/play/${game.id}`} prefetch={false} onClick={handleClick} className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg">
-      <Card className={`game-card group ${settings.compactMode ? 'compact' : ''}`}>
+      <Card className={`game-card group ${settings.compactMode ? 'compact' : ''} hover:shadow-lg hover:scale-[1.02] transition-all duration-200`}>
         {settings.showThumbnails && (
           <div className="relative overflow-hidden">
             {game.thumbnail ? (
@@ -65,12 +65,19 @@ export function GameCard({ game }: GameCardProps) {
               </span>
             </div>
             {/* Source badge always visible in top-right corner */}
-            <div className="absolute top-2 right-2">
+            <div className="absolute top-2 right-2 transition-transform duration-200 group-hover:scale-110">
               <Badge variant="secondary" className={`text-xs ${source.color} border-0 shadow-sm`}>
                 {source.name}
               </Badge>
             </div>
             <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
+            
+            {/* Play icon on hover */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="bg-primary text-primary-foreground rounded-full p-4 shadow-lg">
+                <Play className="h-8 w-8" />
+              </div>
+            </div>
           </div>
         )}
       

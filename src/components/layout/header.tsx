@@ -4,8 +4,10 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Menu, Github, Settings, Plus, MessageCircle } from "lucide-react"
+import { Search, Menu, Github, Settings, Plus, MessageCircle, Trophy, Flame } from "lucide-react"
 import { useState } from "react"
+import { useGameStats } from "@/hooks/useGameStats"
+import { AchievementToast } from "@/components/gamification/achievement-toast"
 import { CloakSelector } from "@/components/cloak/cloak-selector"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { CategoryDropdown } from "@/components/ui/category-dropdown"
@@ -13,6 +15,7 @@ import { CategoryDropdown } from "@/components/ui/category-dropdown"
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
   const router = useRouter()
+  const { stats, achievements, newAchievement } = useGameStats()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -97,12 +100,18 @@ export function Header() {
             >
               Multiplayer
             </Link>
-                <Link
-                  href="/settings"
-                  className="transition-colors hover:text-foreground/80 text-foreground/60"
-                >
-                  Settings
-                </Link>
+            <Link
+              href="/stats"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Stats
+            </Link>
+            <Link
+              href="/settings"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Settings
+            </Link>
           </nav>
         </div>
         <Button
@@ -129,6 +138,24 @@ export function Header() {
                 </div>
               </div>
           <nav className="flex items-center space-x-2">
+            {/* Streak Indicator */}
+            {stats.streak > 0 && (
+              <Link href="/stats">
+                <Button variant="ghost" size="sm" className="gap-1 hidden sm:flex">
+                  <Flame className="h-4 w-4 text-orange-500" />
+                  <span className="text-sm font-semibold">{stats.streak}</span>
+                </Button>
+              </Link>
+            )}
+            
+            {/* Level Indicator */}
+            <Link href="/stats">
+              <Button variant="ghost" size="sm" className="gap-1 hidden sm:flex">
+                <Trophy className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm font-semibold">Lv. {stats.level}</span>
+              </Button>
+            </Link>
+            
             <CloakSelector />
             <Link href="/chat">
               <Button variant="ghost" size="icon">
@@ -148,6 +175,9 @@ export function Header() {
             </Link>
             <ThemeToggle />
           </nav>
+          
+          {/* Achievement Toast */}
+          <AchievementToast achievement={newAchievement} />
         </div>
       </div>
     </header>

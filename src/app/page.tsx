@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Game, GameCategory, GameStats } from '@/types/game'
-import { Gamepad2, Users, Zap, TrendingUp, ArrowRight } from 'lucide-react'
+import { Gamepad2, Users, Zap, TrendingUp, ArrowRight, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import { buildUserSignalsHeaders } from '@/lib/user-signals'
 
@@ -32,13 +32,28 @@ export default function HomePage() {
           setStats(statsData || null)
         }
 
-        // Load popular games with external sources included by default
-        const gamesRes = await fetch('/api/games?category=popular&limit=50', { headers: buildUserSignalsHeaders() })
-        if (gamesRes.ok) {
-          const gamesData = await gamesRes.json()
-          const popularGames = Array.isArray(gamesData.games) ? gamesData.games : []
-          setGames(popularGames)
+        // INSTANT LOAD: Show static games first (< 500ms)
+        const staticRes = await fetch('/api/games?category=popular&limit=24&external=false', { 
+          headers: buildUserSignalsHeaders(),
+          cache: 'force-cache'
+        })
+        if (staticRes.ok) {
+          const staticData = await staticRes.json()
+          const staticGames = Array.isArray(staticData.games) ? staticData.games : []
+          setGames(staticGames)
+          setLoading(false)
         }
+        
+        // BACKGROUND: Load external games without blocking
+        fetch('/api/games?category=popular&limit=100', { headers: buildUserSignalsHeaders() })
+          .then(r => r.json())
+          .then(data => {
+            const allGames = Array.isArray(data.games) ? data.games : []
+            if (allGames.length > 0) {
+              setGames(allGames)
+            }
+          })
+          .catch(() => {})
       } catch (error) {
         console.error('Error fetching data:', error)
         setGames([])
@@ -56,25 +71,25 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="space-y-6 py-8 md:py-12 lg:py-32">
         <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
-              <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
                 Welcome to{" "}
                 <span className="text-primary">pine</span>
               </h1>
-                  <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-                    A modern, minimalist game platform with 3,000+ carefully curated games. 
+                  <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-100">
+                    A modern, minimalist game platform with 20,000+ carefully curated games. 
                     Clean design, no ads, no tracking. Just pure gaming.
                   </p>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button size="lg" asChild>
-              <Link href="/category/popular">
+          <div className="flex flex-col gap-2 sm:flex-row animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+            <Button size="lg" asChild className="hover:scale-105 transition-transform">
+              <Link href="/games">
                 <Gamepad2 className="mr-2 h-4 w-4" />
-                Get Started
+                Start Playing
               </Link>
             </Button>
-                <Button variant="outline" size="lg" asChild>
-                  <Link href="/api">
-                    <Zap className="mr-2 h-4 w-4" />
-                    API Docs
+                <Button variant="outline" size="lg" asChild className="hover:scale-105 transition-transform">
+                  <Link href="/stats">
+                    <Trophy className="mr-2 h-4 w-4" />
+                    Track Progress
                   </Link>
                 </Button>
           </div>
