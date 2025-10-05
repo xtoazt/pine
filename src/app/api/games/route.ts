@@ -8776,7 +8776,9 @@ export async function GET(request: NextRequest) {
     
     // Get custom games from request headers (passed from client-side)
     const customGamesHeader = request.headers.get('x-custom-games')
+    const userSignalsHeader = request.headers.get('x-user-signals')
     let customGames: Game[] = []
+    let userSignals: any = null
     if (customGamesHeader) {
       try {
         customGames = JSON.parse(customGamesHeader).map((game: any) => ({
@@ -8787,6 +8789,9 @@ export async function GET(request: NextRequest) {
       } catch (e) {
         console.error('Error parsing custom games:', e)
       }
+    }
+    if (userSignalsHeader) {
+      try { userSignals = JSON.parse(userSignalsHeader) } catch {}
     }
     
     // Start with static games (lessons, fortnite, arcade)
@@ -8879,6 +8884,48 @@ export async function GET(request: NextRequest) {
         break
       default: // popular
         filteredGames.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
+    }
+
+    // Personalized re-ranking using user signals with diversity guardrails
+    if (userSignals) {
+      const catWeights: Record<string, number> = userSignals.categories || {}
+      const tagWeights: Record<string, number> = userSignals.tags || {}
+      const srcWeights: Record<string, number> = userSignals.sources || {}
+      const lastPlayed: Record<string, number> = userSignals.lastPlayedAt || {}
+      const playedIds: Set<string> = new Set(userSignals.playedIds || [])
+
+      const scoreOf = (g: Game): number => {
+        const base = 0
+        const cat = catWeights[g.category] || 0
+        const tag = (g.tags || []).reduce((s, t) => s + (tagWeights[t] || 0), 0)
+        const src = srcWeights[g.source || 'lessons'] || 0
+        const pop = (g.upvotes - g.downvotes) / 50
+        const recencyPenalty = (() => {
+          const ts = lastPlayed[g.id]
+          if (!ts) return 0
+          const hours = (Date.now() - ts) / 36e5
+          return hours < 6 ? -5 : hours < 24 ? -2 : 0
+        })()
+        const replayPenalty = playedIds.has(g.id) ? -0.5 : 0
+        return base + cat * 2 + tag * 0.5 + src * 0.5 + pop + recencyPenalty + replayPenalty
+      }
+
+      // Re-rank within a diversity-aware mixer: cap per-source streaks
+      const sorted = [...filteredGames].sort((a, b) => scoreOf(b) - scoreOf(a))
+      const out: Game[] = []
+      const recentSources: string[] = []
+      const maxStreak = 2
+      for (const g of sorted) {
+        const s = g.source || 'lessons'
+        const streak = recentSources.length >= maxStreak && recentSources.slice(-maxStreak).every(x => x === s)
+        if (streak) continue
+        out.push(g)
+        recentSources.push(s)
+        if (recentSources.length > maxStreak) recentSources.shift()
+      }
+      // Append leftovers
+      for (const g of sorted) if (!out.includes(g)) out.push(g)
+      filteredGames = out
     }
 
     // Balance sources on the first page so all sources are represented

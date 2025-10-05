@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Game, GameCategory } from '@/types/game'
 import { Search, Filter, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { buildUserSignalsHeaders } from '@/lib/user-signals'
 
 export default function CategoryPage() {
   const params = useParams() as { slug?: string } | null
@@ -42,7 +43,7 @@ export default function CategoryPage() {
         } else if (slug && slug !== 'all') {
           gamesUrl = `/api/games?category=${slug}&limit=30&external=true`
         }
-        const gamesRes = await fetch(gamesUrl)
+        const gamesRes = await fetch(gamesUrl, { headers: buildUserSignalsHeaders() })
         const gamesData = await gamesRes.json()
         setGames(Array.isArray(gamesData?.games) ? gamesData.games : [])
       } catch (error) {

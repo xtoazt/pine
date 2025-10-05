@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Game, GameCategory, GameStats } from '@/types/game'
 import { Gamepad2, Users, Zap, TrendingUp, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { buildUserSignalsHeaders } from '@/lib/user-signals'
 
 export default function HomePage() {
   const [games, setGames] = useState<Game[]>([])
@@ -32,7 +33,7 @@ export default function HomePage() {
         }
 
         // Then fetch games gradually (slower) - include all sources
-        const gamesRes = await fetch('/api/games?limit=24&category=popular&external=true')
+        const gamesRes = await fetch('/api/games?limit=24&category=popular&external=true', { headers: buildUserSignalsHeaders() })
         if (gamesRes.ok) {
           const gamesData = await gamesRes.json()
           setGames(Array.isArray(gamesData.games) ? gamesData.games : [])

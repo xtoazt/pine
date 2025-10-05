@@ -54,16 +54,35 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid url' }, { status: 400 })
     }
 
-    const res = await fetch(target.toString(), {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Referer': target.origin,
-        'Origin': target.origin,
-      },
-      redirect: 'follow',
-    })
+    const buildCodetabsUrl = (u: URL) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u.toString())}`
+
+    async function fetchWithFallback(u: URL): Promise<Response> {
+      try {
+        const primary = await fetch(u.toString(), {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': u.origin,
+            'Origin': u.origin,
+          },
+          redirect: 'follow',
+        })
+        if (primary.ok) return primary
+      } catch {
+        // fall through to codetabs
+      }
+      // Try Codetabs public proxy as a fallback for CORS/restrictions
+      try {
+        const fallback = await fetch(buildCodetabsUrl(u), { redirect: 'follow' })
+        return fallback
+      } catch {
+        // Surface a generic failure; caller will handle
+        return new Response(null, { status: 502 })
+      }
+    }
+
+    const res = await fetchWithFallback(target)
 
     if (ping) {
       return new NextResponse(null, { status: res.ok ? 204 : 404 })
@@ -100,7 +119,7 @@ export async function GET(request: NextRequest) {
     if (html.trim().length < 64) {
       // Attempt fetching index.html if we landed on a directory
       const alt = new URL('index.html', base)
-      const r2 = await fetch(alt.toString(), { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': target.origin } })
+      const r2 = await fetchWithFallback(alt)
       if (r2.ok && isHtml(r2.headers.get('content-type'))) {
         html = await r2.text()
       }

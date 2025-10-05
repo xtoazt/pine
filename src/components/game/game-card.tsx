@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Play, ThumbsUp, Eye } from "lucide-react"
 import { Game } from "@/types/game"
 import { useSettings } from "@/contexts/settings-context"
+import { recordGameInteraction } from "@/lib/user-signals"
 
 interface GameCardProps {
   game: Game
@@ -31,8 +32,12 @@ export function GameCard({ game }: GameCardProps) {
   
   const source = sourceInfo[game.source || 'lessons'] || sourceInfo.lessons
 
+  const handleClick = () => {
+    recordGameInteraction(game)
+  }
+
   return (
-    <Link href={`/play/${game.id}`} prefetch={false} className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg">
+    <Link href={`/play/${game.id}`} prefetch={false} onClick={handleClick} className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg">
       <Card className={`game-card group ${settings.compactMode ? 'compact' : ''}`}>
         {settings.showThumbnails && (
           <div className="relative overflow-hidden">

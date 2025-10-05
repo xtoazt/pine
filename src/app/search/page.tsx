@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Search, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
+import { buildUserSignalsHeaders } from '@/lib/user-signals'
 
 function SearchContent() {
   const searchParams = useSearchParams()
@@ -29,7 +30,7 @@ function SearchContent() {
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30&external=true`)
+      const response = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30&external=true`, { headers: buildUserSignalsHeaders() })
       
       if (!response.ok) {
         throw new Error('Failed to search games')
