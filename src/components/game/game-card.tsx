@@ -38,6 +38,8 @@ export function GameCard({ game }: GameCardProps) {
     recordGameInteraction(game)
   }
 
+  const cardBase = `group hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ${settings.showThumbnails ? 'game-card' : 'bg-card border border-border rounded-lg'}`
+
   return (
     <Link 
       href={`/play/${game.id}`} 
@@ -47,7 +49,7 @@ export function GameCard({ game }: GameCardProps) {
       onMouseLeave={() => setShowSource(false)}
       className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg"
     >
-        <Card className={`game-card group ${settings.compactMode ? 'compact' : ''} hover:shadow-lg hover:scale-[1.02] transition-all duration-200`}>
+        <Card className={cardBase}>
           {settings.showThumbnails && (
             <div className="relative overflow-hidden">
               {game.thumbnail ? (

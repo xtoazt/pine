@@ -157,7 +157,8 @@ async function fetchArcadeGames(baseUrl: string, options?: { maxPing?: number })
         thumbnail: thumb ? `/api/ds/proxy?url=${encodeURIComponent(thumb)}` : '/images/logo.png',
         category,
         tags,
-        playUrl: rawUrl ? `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}` : '/proxy',
+        // Clean embed for arcade games; extract inner iframe on the fly
+        playUrl: rawUrl ? `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}&embed=1&zoom=1` : '/proxy',
         upvotes: 0,
         downvotes: 0,
         playCount: 0,

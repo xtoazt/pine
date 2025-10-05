@@ -56,7 +56,8 @@ export default function RootLayout({
                 <AuthProvider>
                   <SettingsProvider>
                     <TabCloak />
-                    <div className="min-h-screen flex flex-col">
+                    <div className="relative min-h-screen flex flex-col">
+                      <div className="absolute inset-0 -z-10 hero-gradient opacity-40" />
                       <Header />
                       <main className="flex-1 px-4 py-6">
                         {children}
