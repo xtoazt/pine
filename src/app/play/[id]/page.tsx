@@ -35,11 +35,9 @@ export default function GamePage() {
           return
         }
         
-        // Fetch all games and find the specific one by ID
-        const response = await fetch(`/api/games?external=true`)
+        // Fetch games to find the specific one (includes external by default)
+        const response = await fetch(`/api/games?limit=1000`)
         const data = await response.json()
-        
-        // Find the specific game by ID
         const foundGame = data.games?.find((g: Game) => g.id === gameId)
         
         if (foundGame) {

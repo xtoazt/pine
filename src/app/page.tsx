@@ -32,35 +32,13 @@ export default function HomePage() {
           setStats(statsData || null)
         }
 
-        // Progressive loading: show games immediately as they arrive
-        const fastRes = await fetch('/api/games?category=popular&limit=50', { headers: buildUserSignalsHeaders() })
-        if (fastRes.ok) {
-          const fastData = await fastRes.json()
-          const initialGames = Array.isArray(fastData.games) ? fastData.games : []
-          setGames(initialGames)
-          setLoading(false) // Show initial games immediately
+        // Load popular games with external sources included by default
+        const gamesRes = await fetch('/api/games?category=popular&limit=50', { headers: buildUserSignalsHeaders() })
+        if (gamesRes.ok) {
+          const gamesData = await gamesRes.json()
+          const popularGames = Array.isArray(gamesData.games) ? gamesData.games : []
+          setGames(popularGames)
         }
-        
-        // Continue loading more games in background
-        ;(async () => {
-          try {
-            const slowRes = await fetch('/api/games?category=popular&external=true', { headers: buildUserSignalsHeaders() })
-            if (slowRes.ok) {
-              const slowData = await slowRes.json()
-              const allGames = Array.isArray(slowData.games) ? slowData.games : []
-              // Merge with existing games
-              setGames(prev => {
-                const merged = new Map<string, Game>()
-                for (const g of [...prev, ...allGames]) {
-                  if (g) merged.set(g.id, g)
-                }
-                return Array.from(merged.values())
-              })
-            }
-          } catch (err) {
-            console.error('Error loading external games:', err)
-          }
-        })()
       } catch (error) {
         console.error('Error fetching data:', error)
         setGames([])

@@ -8786,8 +8786,8 @@ export async function GET(request: NextRequest) {
     // Check for API key (optional but recommended)
     const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
     
-    // Parse query parameters - no limits for API access
-    const limit = parseInt(searchParams.get('limit') || `${Number.MAX_SAFE_INTEGER}`)
+    // Parse query parameters with reasonable defaults for fast loading
+    const limit = parseInt(searchParams.get('limit') || '500')
     const offset = parseInt(searchParams.get('offset') || '0')
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
@@ -8828,13 +8828,12 @@ export async function GET(request: NextRequest) {
       // Fetch external sources in parallel for better performance
       // When no specific source is requested, include ALL external sources so nothing is missed
       const fetchAll = !source
-      // Adapt budgets based on requested limit and mode
-      const factor = Math.max(1, Math.ceil(limit / 30))
-      const heavyMode = true // default to heavy to include as many external games as possible
-      const gsOpts = { maxCheck: heavyMode ? 500 : Math.min(200, 40 * factor) }
-      const gnOpts = { maxItems: heavyMode ? 800 : Math.min(200, 40 * factor) }
-      const s16Opts = { maxSeeds: heavyMode ? 36 : Math.min(20, 5 + factor), maxResults: heavyMode ? 30000 : Math.min(5000, 200 * factor) }
-      const arcadeOpts = { maxPing: heavyMode ? 200 : Math.min(160, 40 * factor) }
+      // Use maximum budgets for all sources to get full coverage in each batch
+      const heavyMode = includeAll // only use heavy mode when explicitly requesting all
+      const gsOpts = { maxCheck: heavyMode ? 500 : 200 }
+      const gnOpts = { maxItems: heavyMode ? 800 : 300 }
+      const s16Opts = { maxSeeds: heavyMode ? 36 : 24, maxResults: heavyMode ? 30000 : 5000 }
+      const arcadeOpts = { maxPing: heavyMode ? 200 : 150 }
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
         (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),
@@ -8958,49 +8957,24 @@ export async function GET(request: NextRequest) {
       filteredGames = out
     }
 
-    // Balance sources on the first page so all sources are represented
-    // Only applies when no specific source is requested and we are including externals
-    let paginatedGames: Game[]
-    if (false) {
-      const groups = new Map<string, Game[]>()
-      for (const g of filteredGames) {
-        const key = g.source || 'lessons'
-        if (!groups.has(key)) groups.set(key, [])
-        groups.get(key)!.push(g)
-      }
-      // Interleave one-by-one from each source group
-      const result: Game[] = []
-      let added = true
-      while (result.length < limit && added) {
-        added = false
-        for (const list of Array.from(groups.values())) {
-          if (result.length >= limit) break
-          const item = list.shift()
-          if (item) {
-            result.push(item as Game)
-            added = true
-          }
-        }
-      }
-      paginatedGames = result
-    } else {
-      // Always return all games by default
-      paginatedGames = filteredGames
-    }
+    // Apply pagination for fast loading
+    const totalGames = filteredGames.length
+    const paginatedGames = includeAll ? filteredGames : filteredGames.slice(offset, offset + limit)
+    const hasMore = offset + limit < totalGames
     
     const response: GameApiResponse = {
       games: paginatedGames,
-      total: filteredGames.length,
-      hasMore: false
+      total: totalGames,
+      hasMore: hasMore
     }
     
     // Add API metadata
     const apiResponse = {
       ...response,
       apiKey: apiKey ? 'valid' : 'none',
-      message: 'All games included',
-      limit: filteredGames.length,
-      offset: 0
+      message: includeAll ? 'All games included' : `Showing ${paginatedGames.length} of ${totalGames} games`,
+      limit: limit,
+      offset: offset
     }
     
     const resp = NextResponse.json(apiResponse, {

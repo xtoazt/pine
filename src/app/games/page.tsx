@@ -21,7 +21,7 @@ export default function GamesPage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
-  const PAGE_SIZE = 60
+  const PAGE_SIZE = 500
 
   const fetchPage = async (reset: boolean) => {
     try {
@@ -31,31 +31,17 @@ export default function GamesPage() {
         setIsLoadingMore(true)
       }
       const nextOffset = reset ? 0 : offset
-      // Fetch static first for immediate paint
-      const fast = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`, { headers: buildUserSignalsHeaders() })
-      const fastData = await fast.json()
-      // Kick off external fetch in background
-      const slowPromise = fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=true`, { headers: buildUserSignalsHeaders() }).then(r => r.json()).catch(() => ({ games: [] }))
-      const data = fastData
+      
+      // Fetch fresh batch of 500 games with max sources - replaces current games
+      const response = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`, { headers: buildUserSignalsHeaders() })
+      const data = await response.json()
+      
       const newList: Game[] = Array.isArray(data.games) ? data.games : []
-      setGames(prev => {
-        const base = reset ? [] : prev
-        const dedup = new Map<string, Game>()
-        for (const g of [...base, ...newList]) dedup.set(g.id, g)
-        return Array.from(dedup.values())
-      })
+      
+      // Replace games instead of accumulating
+      setGames(newList)
       setTotalGames(data.total || 0)
       setHasMore(Boolean(data.hasMore))
-      // Merge externals when they arrive
-      slowPromise.then((slowData) => {
-        const slowList: Game[] = Array.isArray(slowData.games) ? slowData.games : []
-        if (slowList.length === 0) return
-        setGames(prev => {
-          const dedup = new Map<string, Game>()
-          for (const g of [...prev, ...slowList]) dedup.set(g.id, g)
-          return Array.from(dedup.values())
-        })
-      })
       setOffset(nextOffset + PAGE_SIZE)
     } catch (e) {
       console.error('Error fetching games:', e)
@@ -78,10 +64,10 @@ export default function GamesPage() {
       if (entry.isIntersecting && hasMore && !isLoadingMore && !loading) {
         fetchPage(false)
       }
-    })
+    }, { threshold: 0.1 })
     io.observe(el)
     return () => io.disconnect()
-  }, [hasMore, isLoadingMore, loading])
+  }, [hasMore, isLoadingMore, loading, offset])
 
   const filteredGames = games.filter(game => {
     if (!searchQuery) return true
@@ -121,7 +107,7 @@ export default function GamesPage() {
           From classic arcade to modern adventures, find your next favorite game.
         </p>
         <Badge variant="secondary" className="text-sm">
-          {totalGames.toLocaleString()} total games • {games.length} loaded
+          Showing {games.length.toLocaleString()} games (batch {Math.floor(offset / PAGE_SIZE)} of {Math.ceil(totalGames / PAGE_SIZE)}) • Scroll for next batch
         </Badge>
       </div>
 
@@ -179,14 +165,35 @@ export default function GamesPage() {
         </div>
         
         <GameGrid games={sortedGames} loading={loading} />
-        <div ref={loadMoreRef} />
-        {!loading && hasMore && (
-          <div className="flex justify-center py-4">
-            <Button onClick={() => fetchPage(false)} disabled={isLoadingMore} variant="outline">
-              {isLoadingMore ? 'Loading…' : 'Load more'}
+        
+        {/* Navigation buttons */}
+        {!loading && (
+          <div className="flex justify-center items-center gap-4 py-8">
+            <Button 
+              onClick={() => {
+                setOffset(Math.max(0, offset - PAGE_SIZE * 2))
+                fetchPage(true)
+              }} 
+              disabled={offset === 0 || isLoadingMore} 
+              variant="outline"
+            >
+              ← Previous Batch
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Batch {Math.floor(offset / PAGE_SIZE)} of {Math.ceil(totalGames / PAGE_SIZE)}
+            </span>
+            <Button 
+              onClick={() => fetchPage(false)} 
+              disabled={!hasMore || isLoadingMore} 
+              variant="outline"
+            >
+              {isLoadingMore ? 'Loading…' : 'Next Batch →'}
             </Button>
           </div>
         )}
+        
+        {/* Infinite scroll trigger */}
+        <div ref={loadMoreRef} className="h-4" />
       </div>
     </div>
   )
