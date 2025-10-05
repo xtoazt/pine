@@ -15,90 +15,57 @@ export default function GamesPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('popular')
-  const [offset, setOffset] = useState(0)
+  const [loadedCount, setLoadedCount] = useState(0)
   const [totalGames, setTotalGames] = useState(0)
-  const [hasMore, setHasMore] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isLoadingExternal, setIsLoadingExternal] = useState(false)
-  const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
-  const PAGE_SIZE = 500
+  const LOAD_SIZE = 100 // Load 100 games at a time
 
-  const fetchPage = async (reset: boolean) => {
+  const fetchGames = async (loadMore: boolean = false) => {
     try {
-      if (reset) {
-        setLoading(true)
-      } else {
+      if (loadMore) {
         setIsLoadingMore(true)
+      } else {
+        setLoading(true)
       }
-      const nextOffset = reset ? 0 : offset
-      
+
+      const nextOffset = loadMore ? loadedCount : 0
+
       // Check for source filter using URL params
       const urlParams = new URLSearchParams(window.location.search)
       const sourceFilter = urlParams.get('source') || ''
       const sourceParam = sourceFilter ? `&source=${sourceFilter}` : ''
-      
-      // INSTANT LOAD: Show static games first (< 500ms)
-      const staticResponse = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=false${sourceParam}`, { 
-        headers: buildUserSignalsHeaders(),
-        cache: 'force-cache'
-      })
-      const staticData = await staticResponse.json()
-      const staticGames: Game[] = Array.isArray(staticData.games) ? staticData.games : []
-      
-      // Show static games immediately
-      setGames(staticGames)
-      setLoading(false)
-      setIsLoadingMore(false)
-      
-      // BACKGROUND: Stream external games in without blocking
-      setIsLoadingExternal(true)
-      fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}${sourceParam}`, { 
+
+      // Load games in chunks
+      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}${sourceParam}`, {
         headers: buildUserSignalsHeaders()
       })
-        .then(r => r.json())
-        .then(data => {
-          const allGames: Game[] = Array.isArray(data.games) ? data.games : []
-          if (allGames.length > staticGames.length) {
-            setGames(allGames)
-            setTotalGames(data.total || 0)
-            setHasMore(Boolean(data.hasMore))
-          }
-          setIsLoadingExternal(false)
-        })
-        .catch(err => {
-          console.error('Background external fetch error:', err)
-          setIsLoadingExternal(false)
-        })
-      
-      setTotalGames(staticData.total || 0)
-      setHasMore(Boolean(staticData.hasMore))
-      setOffset(nextOffset + PAGE_SIZE)
-            } catch (e) {
-              console.error('Error fetching games:', e)
-              setLoading(false)
-              setIsLoadingMore(false)
-              setHasMore(false) // Prevent infinite loading on error
-            }
+      const data = await response.json()
+      const newGames: Game[] = Array.isArray(data.games) ? data.games : []
+
+      if (loadMore) {
+        setGames(prev => [...prev, ...newGames])
+        setLoadedCount(prev => prev + newGames.length)
+      } else {
+        setGames(newGames)
+        setLoadedCount(newGames.length)
+        setTotalGames(data.total || 0)
+      }
+
+      setLoading(false)
+      setIsLoadingMore(false)
+    } catch (e) {
+      console.error('Error fetching games:', e)
+      setLoading(false)
+      setIsLoadingMore(false)
+    }
   }
 
   useEffect(() => {
-    fetchPage(true)
+    fetchGames(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (!loadMoreRef.current) return
-    const el = loadMoreRef.current
-    const io = new IntersectionObserver(entries => {
-      const entry = entries[0]
-      if (entry.isIntersecting && hasMore && !isLoadingMore && !loading) {
-        fetchPage(false)
-      }
-    }, { threshold: 0.1 })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [hasMore, isLoadingMore, loading, offset])
 
   const filteredGames = games.filter(game => {
     let query = searchQuery.toLowerCase()
@@ -154,12 +121,12 @@ export default function GamesPage() {
               <h1 className="text-4xl font-bold">All Games</h1>
             </div>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Discover our complete collection of 20,000+ games from 8 different sources. 
+              Discover our complete collection of 20,000+ games from 8 different sources.
               From classic arcade to modern adventures, find your next favorite game.
             </p>
             <div className="flex flex-col items-center gap-2">
               <Badge variant="secondary" className="text-sm">
-                Loaded {games.length.toLocaleString()} games • {hasMore ? 'Scroll to load more' : 'All games loaded'}
+                Showing {games.length.toLocaleString()} of {totalGames.toLocaleString()} games
               </Badge>
               {isLoadingExternal && (
                 <Badge variant="outline" className="text-xs animate-pulse">
@@ -202,7 +169,7 @@ export default function GamesPage() {
               className="px-3 py-2 border border-input bg-background rounded-md text-sm"
             >
               <option value="popular">Most Popular</option>
-              <option value="newest">Newest First</option>
+              <option value="newest">Newest</option>
               <option value="most-played">Most Played</option>
               <option value="alphabetical">A-Z</option>
             </select>
@@ -228,35 +195,29 @@ export default function GamesPage() {
         </div>
         
         <GameGrid games={sortedGames} loading={loading} />
-        
-        {/* Navigation buttons */}
-        {!loading && (
-          <div className="flex justify-center items-center gap-4 py-8">
-            <Button 
-              onClick={() => {
-                setOffset(Math.max(0, offset - PAGE_SIZE * 2))
-                fetchPage(true)
-              }} 
-              disabled={offset === 0 || isLoadingMore} 
-              variant="outline"
+
+        {/* Load More Button */}
+        {!loading && loadedCount < totalGames && (
+          <div className="flex justify-center py-8">
+            <Button
+              onClick={() => fetchGames(true)}
+              disabled={isLoadingMore}
+              size="lg"
+              className="px-8"
             >
-              ← Previous Batch
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              Batch {Math.floor(offset / PAGE_SIZE)} of {Math.ceil(totalGames / PAGE_SIZE)}
-            </span>
-            <Button 
-              onClick={() => fetchPage(false)} 
-              disabled={!hasMore || isLoadingMore} 
-              variant="outline"
-            >
-              {isLoadingMore ? 'Loading…' : 'Next Batch →'}
+              {isLoadingMore ? 'Loading More Games...' : `Load More Games (${Math.min(LOAD_SIZE, totalGames - loadedCount)} more available)`}
             </Button>
           </div>
         )}
-        
-        {/* Infinite scroll trigger */}
-        <div ref={loadMoreRef} className="h-4" />
+
+        {/* All games loaded message */}
+        {!loading && loadedCount >= totalGames && totalGames > 0 && (
+          <div className="text-center py-8">
+            <Badge variant="secondary" className="text-lg px-4 py-2">
+              🎉 All {totalGames.toLocaleString()} games loaded!
+            </Badge>
+          </div>
+        )}
       </div>
     </div>
   )
