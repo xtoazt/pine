@@ -66,7 +66,7 @@ export function useGameStats() {
 
       return () => unsubscribe()
     } else {
-      // Initialize achievements for guest users
+      // Initialize achievements for guest users once
       updateAchievements()
     }
       // Use localStorage for guest users
@@ -95,16 +95,18 @@ export function useGameStats() {
         parsedStats.lastVisit = today
         setStats(parsedStats)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedStats))
-        updateAchievements()
+        // Avoid immediate duplicate updates; let state settle first
+        setTimeout(() => updateAchievements(), 0)
       } else {
         const initialStats = { ...stats, lastVisit: new Date().toDateString(), streak: 1 }
         setStats(initialStats)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(initialStats))
-        updateAchievements()
+        setTimeout(() => updateAchievements(), 0)
       }
-  }, [user, stats])
+  }, [user])
 
   const updateAchievements = () => {
+    if (!stats) return
     if (stats.gamesPlayed === 0 && stats.streak === 0) return // Don't update if stats aren't loaded yet
 
     const newAchievements = checkAchievements(stats)

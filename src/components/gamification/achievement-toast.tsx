@@ -10,14 +10,18 @@ interface AchievementToastProps {
 
 export function AchievementToast({ achievement }: AchievementToastProps) {
   const [isVisible, setIsVisible] = useState(false)
+  const [lastId, setLastId] = useState<string | null>(null)
 
   useEffect(() => {
     if (achievement) {
+      // Prevent duplicate popups for the same achievement id
+      if (achievement.id && achievement.id === lastId) return
+      setLastId(achievement.id || null)
       setIsVisible(true)
       const timer = setTimeout(() => setIsVisible(false), 4500)
       return () => clearTimeout(timer)
     }
-  }, [achievement])
+  }, [achievement, lastId])
 
   if (!achievement || !isVisible) return null
 
