@@ -40,7 +40,7 @@ async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
   }
 }
 
-async function fetchGameSnacks(baseUrl: string): Promise<Game[]> {
+async function fetchGameSnacks(baseUrl: string, options?: { maxCheck?: number }): Promise<Game[]> {
   try {
     const listUrl = new URL('/api/gamesnacks/list', baseUrl).toString()
     const res = await fetch(listUrl, { cache: 'no-store' })
@@ -66,9 +66,10 @@ async function fetchGameSnacks(baseUrl: string): Promise<Game[]> {
         updatedAt: new Date('2024-01-01T00:00:00.000Z'),
       }
     })
-    // Filter by pinging via DS proxy
+    // Filter by pinging via DS proxy (limit checks to speed up)
     const filtered: Game[] = []
-    for (const g of games) {
+    const maxCheck = Math.max(10, Math.min(80, options?.maxCheck ?? 60))
+    for (const g of games.slice(0, maxCheck)) {
       try {
         const ping = await fetch(`${new URL('/api/ds/proxy', baseUrl)}?url=${encodeURIComponent(`https://gamesnacks.com/games/${g.id.replace(/^gs-/, '')}`)}&ping=1`, { cache: 'no-store' })
         if (ping.ok) filtered.push(g)
@@ -82,14 +83,15 @@ async function fetchGameSnacks(baseUrl: string): Promise<Game[]> {
 
 // HDUN removed - replaced with GameMonetize arcade games
 
-async function fetchGnMath(baseUrl: string): Promise<Game[]> {
+async function fetchGnMath(baseUrl: string, options?: { maxItems?: number }): Promise<Game[]> {
   try {
     const res = await fetch(new URL('/api/gnmath/list', baseUrl).toString(), { cache: 'no-store' })
     if (!res.ok) return []
     const data = await res.json()
     const ids: string[] = Array.isArray(data.ids) ? data.ids : []
     const games: Game[] = []
-    for (const id of ids) {
+    const maxItems = Math.max(20, Math.min(120, options?.maxItems ?? 80))
+    for (const id of ids.slice(0, maxItems)) {
       const raw = `https://cdn.jsdelivr.net/gh/gn-math/html@main/${id}.html`
       // ping via DS proxy
       const ping = await fetch(new URL(`/api/ds/proxy?url=${encodeURIComponent(raw)}&ping=1`, baseUrl).toString(), { cache: 'no-store' })
@@ -117,7 +119,7 @@ async function fetchGnMath(baseUrl: string): Promise<Game[]> {
 }
 
 // Arcade CMS (GameMonetize) source
-async function fetchArcadeGames(baseUrl: string): Promise<Game[]> {
+async function fetchArcadeGames(baseUrl: string, options?: { maxPing?: number }): Promise<Game[]> {
   try {
     // Fetch up to 1000 games from GameMonetize feed (JSON format)
     const feedUrl = 'https://gamemonetize.com/feed.php?format=0&num=1000'
@@ -153,7 +155,7 @@ async function fetchArcadeGames(baseUrl: string): Promise<Game[]> {
     })
 
     // Optional quick ping to remove obviously dead links (limit to first 200 to keep fast)
-    const maxPing = 200
+    const maxPing = Math.max(40, Math.min(200, options?.maxPing ?? 200))
     const filtered: Game[] = []
     for (let i = 0; i < games.length; i++) {
       const g = games[i]
@@ -201,8 +203,10 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
 }
 
 // s16.lol source (20k+). We seed queries to discover entries without user searching.
-async function fetchS16Games(baseUrl: string): Promise<Game[]> {
+async function fetchS16Games(baseUrl: string, options?: { maxSeeds?: number, maxResults?: number }): Promise<Game[]> {
   const seeds = ['a','e','i','o','u','s','r','t','n','l','m','c','p','g','b','d','f','h','k','2','3','4','5','6','7','8','9']
+  const maxSeeds = Math.max(3, Math.min(seeds.length, options?.maxSeeds ?? 6))
+  const seedList = seeds.slice(0, maxSeeds)
   const endpoint = (q: string) => `https://api.s16.lol/v0/api/games/q=${encodeURIComponent(q)}`
   const out: Game[] = []
   const seen = new Set<string>()
@@ -233,9 +237,9 @@ async function fetchS16Games(baseUrl: string): Promise<Game[]> {
   }
   try {
     // Limit concurrency to avoid serverless timeouts
-    const batchSize = 6
-    for (let i = 0; i < seeds.length; i += batchSize) {
-      const batch = seeds.slice(i, i + batchSize)
+    const batchSize = 4
+    for (let i = 0; i < seedList.length; i += batchSize) {
+      const batch = seedList.slice(i, i + batchSize)
       const results = await Promise.all(batch.map(async (q) => {
         try {
           const res = await fetch(endpoint(q), { cache: 'no-store' })
@@ -249,7 +253,8 @@ async function fetchS16Games(baseUrl: string): Promise<Game[]> {
       }))
       for (const list of results) out.push(...list)
       // Early cap to keep payloads reasonable
-      if (out.length > 5000) break
+      const maxResults = Math.max(100, Math.min(2000, options?.maxResults ?? 600))
+      if (out.length > maxResults) break
     }
     return out
   } catch {
@@ -8805,13 +8810,20 @@ export async function GET(request: NextRequest) {
       // Fetch external sources in parallel for better performance
       // When no specific source is requested, include ALL external sources so nothing is missed
       const fetchAll = !source
+      // Adapt budgets based on requested limit and mode
+      const factor = Math.max(1, Math.ceil(limit / 30))
+      const heavyMode = includeAll || limit > 60
+      const gsOpts = { maxCheck: heavyMode ? 80 : Math.min(60, 20 * factor) }
+      const gnOpts = { maxItems: heavyMode ? 120 : Math.min(80, 30 * factor) }
+      const s16Opts = { maxSeeds: heavyMode ? 12 : Math.min(8, 3 + factor), maxResults: heavyMode ? 1200 : Math.min(600, 200 * factor) }
+      const arcadeOpts = { maxPing: heavyMode ? 200 : Math.min(160, 40 * factor) }
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
-        (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url) : Promise.resolve([]),
-        (source === 'gnmath' || fetchAll) ? fetchGnMath(request.url) : Promise.resolve([]),
-        (source === 's16' || fetchAll) ? fetchS16Games(request.url) : Promise.resolve([]),
+        (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),
+        (source === 'gnmath' || fetchAll) ? fetchGnMath(request.url, gnOpts) : Promise.resolve([]),
+        (source === 's16' || fetchAll) ? fetchS16Games(request.url, s16Opts) : Promise.resolve([]),
         (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
-        (source === 'arcade' || fetchAll) ? fetchArcadeGames(request.url) : Promise.resolve([])
+        (source === 'arcade' || fetchAll) ? fetchArcadeGames(request.url, arcadeOpts) : Promise.resolve([])
       ])
 
       filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...s16Games, ...classworkGames, ...arcadeGames]
@@ -8973,7 +8985,11 @@ export async function GET(request: NextRequest) {
       offset: includeAll ? 0 : offset
     }
     
-    return NextResponse.json(apiResponse)
+    return NextResponse.json(apiResponse, {
+      headers: {
+        'Cache-Control': includeAll ? 'public, max-age=10, s-maxage=20, stale-while-revalidate=120' : 'public, max-age=15, s-maxage=60, stale-while-revalidate=120'
+      }
+    })
   } catch (error) {
     console.error('Error fetching games:', error)
     return NextResponse.json(
