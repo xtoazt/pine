@@ -8943,7 +8943,7 @@ export async function GET(request: NextRequest) {
       let added = true
       while (result.length < limit && added) {
         added = false
-        for (const list of groups.values()) {
+        for (const list of Array.from(groups.values())) {
           if (result.length >= limit) break
           const item = list.shift()
           if (item) {
