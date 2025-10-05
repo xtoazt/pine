@@ -70,7 +70,9 @@ export async function GET(
     return new NextResponse(rewritten, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=300'
+        'Cache-Control': 'public, max-age=300',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'Cross-Origin-Embedder-Policy': 'unsafe-none',
       }
     })
   } catch (error) {

@@ -178,17 +178,12 @@ export default function GamePage() {
             <CardContent className="p-0">
               <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
                     <iframe
-                      src={
-                        game.playUrl.startsWith('http') ? game.playUrl :
-                        game.playUrl.startsWith('/api/') ? game.playUrl :
-                        game.source === 'lessons' || game.source === 'fortnite' ? `/api/proxy/lessons/${gameId}` :
-                        game.source === 'hdun' ? `/api/hdun/proxy?id=${gameId.replace('hdun-', '')}` :
-                        game.playUrl
-                      }
+                      src={game.playUrl}
                       className="w-full h-full border-0"
                       allowFullScreen
                       title={game.title}
-                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-orientation-lock allow-top-navigation-by-user-activation"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   onError={(e) => {
                     console.error('Game failed to load:', gameId, 'URL:', e.currentTarget.src)
                     // Fallback to a simple error message

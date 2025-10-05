@@ -130,6 +130,8 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
         'Cache-Control': 'public, max-age=120',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'Cross-Origin-Embedder-Policy': 'unsafe-none',
       }
     })
   } catch (e) {
