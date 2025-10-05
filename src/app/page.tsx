@@ -32,16 +32,17 @@ export default function HomePage() {
           setStats(statsData || null)
         }
 
-        // Quick static-first fetch
-        const fastRes = await fetch('/api/games?limit=24&category=popular', { headers: buildUserSignalsHeaders() })
+        // Quick static-first fetch (no hard limit now)
+        const fastRes = await fetch('/api/games?category=popular', { headers: buildUserSignalsHeaders() })
         if (fastRes.ok) {
           const fastData = await fastRes.json()
           setGames(Array.isArray(fastData.games) ? fastData.games : [])
         }
         // Hydrate with externals in background
+        // Hydrate with externals in background (no hard limit now)
         ;(async () => {
           try {
-            const slowRes = await fetch('/api/games?limit=24&category=popular&external=true', { headers: buildUserSignalsHeaders() })
+            const slowRes = await fetch('/api/games?category=popular&external=true', { headers: buildUserSignalsHeaders() })
             if (slowRes.ok) {
               const slowData = await slowRes.json()
               const merged = new Map<string, any>()
@@ -203,7 +204,7 @@ export default function HomePage() {
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="https://github.com/rohan/pine">
+              <Link href="https://github.com/xtoazt/pine">
                 View on GitHub
               </Link>
             </Button>

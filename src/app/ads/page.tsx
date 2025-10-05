@@ -95,7 +95,7 @@ export default function AdsPage() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild className="flex-1">
-                <Link href="https://github.com/rohan/pine" target="_blank">
+                <Link href="https://github.com/xtoazt/pine" target="_blank">
                   <ExternalLink className="mr-2 h-3 w-3" />
                   GitHub
                 </Link>
@@ -122,7 +122,7 @@ export default function AdsPage() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4">
-              <div className="text-2xl font-bold text-primary">1,000+</div>
+              <div className="text-2xl font-bold text-primary">20,000+</div>
               <div className="text-sm text-muted-foreground">Free Games</div>
             </div>
             <div className="text-center p-4">

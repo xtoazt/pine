@@ -22,7 +22,7 @@ A modern, developer-friendly game platform built with React, TypeScript, and sha
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/rohan/pine.git
+git clone https://github.com/xtoazt/pine.git
 cd pine
 ```
 

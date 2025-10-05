@@ -1,19 +1,12 @@
-"use client"
-
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-
 export default function ChatPage() {
-  const router = useRouter()
-
-  useEffect(() => {
-    // Redirect to the standalone chat HTML page
-    window.location.href = '/chat.html'
-  }, [])
-
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-muted-foreground">Loading chat...</p>
+    <div className="container py-16">
+      <div className="max-w-2xl mx-auto text-center space-y-4">
+        <h1 className="text-4xl font-bold">Chat</h1>
+        <p className="text-muted-foreground">
+          Chat has been removed to keep pine focused on games and performance.
+        </p>
+      </div>
     </div>
   )
 }

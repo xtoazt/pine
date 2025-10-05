@@ -8787,7 +8787,7 @@ export async function GET(request: NextRequest) {
     const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
     
     // Parse query parameters - no limits for API access
-    const limit = parseInt(searchParams.get('limit') || '50')
+    const limit = parseInt(searchParams.get('limit') || `${Number.MAX_SAFE_INTEGER}`)
     const offset = parseInt(searchParams.get('offset') || '0')
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
@@ -8961,7 +8961,7 @@ export async function GET(request: NextRequest) {
     // Balance sources on the first page so all sources are represented
     // Only applies when no specific source is requested and we are including externals
     let paginatedGames: Game[]
-    if (!source && shouldFetchExternal && !includeAll && offset === 0) {
+    if (false) {
       const groups = new Map<string, Game[]>()
       for (const g of filteredGames) {
         const key = g.source || 'lessons'
@@ -8984,28 +8984,28 @@ export async function GET(request: NextRequest) {
       }
       paginatedGames = result
     } else {
-      // Apply pagination - if includeAll is true, return all games
-      paginatedGames = includeAll ? filteredGames : filteredGames.slice(offset, offset + limit)
+      // Always return all games by default
+      paginatedGames = filteredGames
     }
     
     const response: GameApiResponse = {
       games: paginatedGames,
       total: filteredGames.length,
-      hasMore: includeAll ? false : offset + limit < filteredGames.length
+      hasMore: false
     }
     
     // Add API metadata
     const apiResponse = {
       ...response,
       apiKey: apiKey ? 'valid' : 'none',
-      message: includeAll ? 'All games included' : 'Paginated results',
-      limit: includeAll ? filteredGames.length : limit,
-      offset: includeAll ? 0 : offset
+      message: 'All games included',
+      limit: filteredGames.length,
+      offset: 0
     }
     
     const resp = NextResponse.json(apiResponse, {
       headers: {
-        'Cache-Control': includeAll ? 'public, max-age=10, s-maxage=20, stale-while-revalidate=120' : 'public, max-age=15, s-maxage=60, stale-while-revalidate=120'
+        'Cache-Control': 'public, max-age=10, s-maxage=20, stale-while-revalidate=120'
       }
     })
     try {

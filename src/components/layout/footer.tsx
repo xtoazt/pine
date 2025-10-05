@@ -18,7 +18,7 @@ export function Footer() {
               <span>Made with</span>
               <Heart className="h-4 w-4 text-red-500" />
               <span>by</span>
-              <Link href="https://github.com/rohan" className="text-primary hover:underline">
+              <Link href="https://github.com/xtoazt" className="text-primary hover:underline">
                 Rohan
               </Link>
             </div>
@@ -69,7 +69,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="https://github.com/rohan/pine" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link href="https://github.com/xtoazt/pine" className="text-muted-foreground hover:text-primary transition-colors">
                   GitHub Repository
                 </Link>
               </li>
@@ -80,7 +80,7 @@ export function Footer() {
             <h3 className="text-sm font-semibold">Connect</h3>
             <div className="flex space-x-4">
               <Link 
-                href="https://github.com/rohan/pine" 
+                href="https://github.com/xtoazt/pine" 
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Github className="h-5 w-5" />
