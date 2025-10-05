@@ -52,7 +52,7 @@ export default function GamesPage() {
       const sourceParam = sourceFilter ? `&source=${sourceFilter}` : ''
 
       // Load games in chunks
-      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}`, {
+      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}&external=true`, {
         headers: buildUserSignalsHeaders()
       })
       const data = await response.json()

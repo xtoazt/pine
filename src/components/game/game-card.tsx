@@ -73,6 +73,13 @@ export function GameCard({ game }: GameCardProps) {
                   {game.title}
                 </span>
               </div>
+
+              {/* Always show a small source chip in top-left for clarity */}
+              <div className="absolute top-2 left-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold glass" style={{ backgroundColor: `${source.color}20`, color: source.color }}>
+                  {source.name}
+                </span>
+              </div>
               
               {/* Source pill that follows cursor on hover (works even without thumbnail) */}
               {showSource && (
