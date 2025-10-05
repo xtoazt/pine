@@ -145,9 +145,7 @@ function CategoryDropdownContent() {
               <span className="mr-2"><IconForSlug slug={category.slug} /></span>
               <div className="flex flex-col">
                 <span>{category.name}</span>
-                <span className="text-xs text-muted-foreground">
-                  {category.gameCount} games
-                </span>
+                <span className="text-xs text-muted-foreground">Browse games</span>
               </div>
             </DropdownMenuItem>
           ))}

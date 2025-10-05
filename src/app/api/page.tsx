@@ -121,11 +121,11 @@ export default function ApiPage() {
           <h1 className="text-4xl font-bold">Pine Games API</h1>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Simple, powerful API for accessing our complete collection of 6,000+ games. 
+          Simple, powerful API for accessing our complete collection of games. 
           No authentication required, but API keys unlock unlimited access.
         </p>
         <div className="flex flex-wrap justify-center gap-2">
-          <Badge variant="secondary">6,000+ Games</Badge>
+          <Badge variant="secondary">Games API</Badge>
           <Badge variant="secondary">No Rate Limits</Badge>
           <Badge variant="secondary">JSON API</Badge>
           <Badge variant="secondary">Free to Use</Badge>
@@ -297,7 +297,7 @@ export default function ApiPage() {
 {`// With API key
 const response = await fetch('https://pine-games.vercel.app/api/games?api_key=your_key');
 const data = await response.json();
-console.log(data.games); // All 6000+ games
+console.log(data.games);
 
 // Without API key (limited)
 const response = await fetch('https://pine-games.vercel.app/api/games?limit=50');

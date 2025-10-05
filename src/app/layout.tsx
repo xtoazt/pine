@@ -15,8 +15,8 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'pine - Minimalist Game Platform',
-  description: 'A clean, minimalist game platform with 1,000+ carefully curated games. No ads, no tracking, just pure gaming.',
-  keywords: ['pine', 'games', 'platform', 'minimalist', 'clean', 'no-ads', 'gaming', '1000 games'],
+  description: 'A clean, minimalist game platform with carefully curated games. No ads, no tracking, just pure gaming.',
+  keywords: ['pine', 'games', 'platform', 'minimalist', 'clean', 'no-ads', 'gaming'],
   authors: [{ name: 'pine' }],
   icons: {
     icon: '/favicon.svg',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'pine - Minimalist Game Platform',
-    description: 'A clean, minimalist game platform with 1,000+ carefully curated games. No ads, no tracking.',
+    description: 'A clean, minimalist game platform with carefully curated games. No ads, no tracking.',
     type: 'website',
     images: ['/favicon.svg'],
   },

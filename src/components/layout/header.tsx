@@ -52,36 +52,71 @@ export function Header() {
                 </span>
               </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">
-              Home
-            </Link>
-            <Link href="/games" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Games
-            </Link>
-            <Link href="/streak" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Streak
-            </Link>
-            <Link href="/friends" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Friends
-            </Link>
-            <Link href="/messages" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Messages
-            </Link>
-            <Link href="/goals" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Goals
-            </Link>
-            <Link href="/leagues" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Leagues
-            </Link>
-            <Link href="/shop" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Shop
-            </Link>
-            <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Stats
-            </Link>
-            <Link href="/settings" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Settings
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="px-2">
+                  Explore
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem asChild>
+                  <Link href="/games">All Games</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/category">Categories</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/games?sort=popular">Popular</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/games?sort=newest">New</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="px-2">
+                  Progress
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem asChild>
+                  <Link href="/streak">Streak</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/stats">Stats</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/goals">Goals</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/leagues">Leagues</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="px-2">
+                  More
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem asChild>
+                  <Link href="/friends">Friends</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/messages">Messages</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/shop">Shop</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">Settings</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
         <Button
