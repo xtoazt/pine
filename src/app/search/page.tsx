@@ -30,14 +30,31 @@ function SearchContent() {
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30&external=true`, { headers: buildUserSignalsHeaders() })
+      const fast = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30`, { headers: buildUserSignalsHeaders() })
       
-      if (!response.ok) {
+      if (!fast.ok) {
         throw new Error('Failed to search games')
       }
       
-      const data = await response.json()
+      const data = await fast.json()
       setGames(data.games || [])
+      // Hydrate with externals
+      ;(async () => {
+        try {
+          const slow = await fetch(`/api/games?search=${encodeURIComponent(searchQuery)}&limit=30&external=true`, { headers: buildUserSignalsHeaders() })
+          if (slow.ok) {
+            const s = await slow.json()
+            const slowList: Game[] = Array.isArray(s.games) ? s.games : []
+            if (slowList.length) {
+              setGames(prev => {
+                const dedup = new Map<string, Game>()
+                for (const g of [...prev, ...slowList]) dedup.set(g.id, g)
+                return Array.from(dedup.values())
+              })
+            }
+          }
+        } catch {}
+      })()
     } catch (err) {
       console.error('Search error:', err)
       setError('Failed to search games. Please try again.')

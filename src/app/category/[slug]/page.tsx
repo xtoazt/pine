@@ -34,18 +34,36 @@ export default function CategoryPage() {
         const currentCategory = categoriesArr.find((cat) => cat && cat.slug === slug) || null
         setCategory(currentCategory)
         
-        // Fetch games for this category (limited for performance) - include all sources
-        let gamesUrl = `/api/games?limit=30&external=true`
+        // Fetch games for this category: static first
+        let gamesUrl = `/api/games?limit=30`
         if (slug === 'popular') {
-          gamesUrl = `/api/games?category=popular&limit=30&external=true`
+          gamesUrl = `/api/games?category=popular&limit=30`
         } else if (slug === 'new') {
-          gamesUrl = `/api/games?category=new&limit=30&external=true`
+          gamesUrl = `/api/games?category=new&limit=30`
         } else if (slug && slug !== 'all') {
-          gamesUrl = `/api/games?category=${slug}&limit=30&external=true`
+          gamesUrl = `/api/games?category=${slug}&limit=30`
         }
         const gamesRes = await fetch(gamesUrl, { headers: buildUserSignalsHeaders() })
         const gamesData = await gamesRes.json()
         setGames(Array.isArray(gamesData?.games) ? gamesData.games : [])
+        // Hydrate with externals in background
+        ;(async () => {
+          try {
+            const extUrl = gamesUrl + (gamesUrl.includes('?') ? '&' : '?') + 'external=true'
+            const slowRes = await fetch(extUrl, { headers: buildUserSignalsHeaders() })
+            if (slowRes.ok) {
+              const slowData = await slowRes.json()
+              const slowList: Game[] = Array.isArray(slowData.games) ? slowData.games : []
+              if (slowList.length) {
+                setGames(prev => {
+                  const dedup = new Map<string, Game>()
+                  for (const g of [...prev, ...slowList]) dedup.set(g.id, g)
+                  return Array.from(dedup.values())
+                })
+              }
+            }
+          } catch {}
+        })()
       } catch (error) {
         console.error('Error fetching data:', error)
         setGames([])

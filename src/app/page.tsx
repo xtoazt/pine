@@ -32,12 +32,26 @@ export default function HomePage() {
           setStats(statsData || null)
         }
 
-        // Then fetch games gradually (slower) - include all sources
-        const gamesRes = await fetch('/api/games?limit=24&category=popular&external=true', { headers: buildUserSignalsHeaders() })
-        if (gamesRes.ok) {
-          const gamesData = await gamesRes.json()
-          setGames(Array.isArray(gamesData.games) ? gamesData.games : [])
+        // Quick static-first fetch
+        const fastRes = await fetch('/api/games?limit=24&category=popular', { headers: buildUserSignalsHeaders() })
+        if (fastRes.ok) {
+          const fastData = await fastRes.json()
+          setGames(Array.isArray(fastData.games) ? fastData.games : [])
         }
+        // Hydrate with externals in background
+        ;(async () => {
+          try {
+            const slowRes = await fetch('/api/games?limit=24&category=popular&external=true', { headers: buildUserSignalsHeaders() })
+            if (slowRes.ok) {
+              const slowData = await slowRes.json()
+              const merged = new Map<string, any>()
+              for (const g of [...(fastRes.ok ? (await fastRes.clone().json()).games || [] : []), ...(slowData.games || [])]) {
+                if (g) merged.set(g.id, g)
+              }
+              setGames(Array.from(merged.values()))
+            }
+          } catch {}
+        })()
       } catch (error) {
         console.error('Error fetching data:', error)
         setGames([])

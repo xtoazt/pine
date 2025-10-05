@@ -1,4 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
+// Simple in-memory cache (best-effort; per-runtime)
+const memoryCache: Map<string, { expires: number; data: any; headers: Record<string, string> }> = new Map()
+function buildCacheKey(urlStr: string): string {
+  try {
+    const url = new URL(urlStr)
+    const sp = url.searchParams
+    const relevant = ['limit','offset','search','category','sortBy','source','all','external']
+    const parts = relevant.map(k => `${k}=${sp.get(k) || ''}`)
+    return parts.join('&')
+  } catch {
+    return urlStr
+  }
+}
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
 
 async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
@@ -68,7 +81,7 @@ async function fetchGameSnacks(baseUrl: string, options?: { maxCheck?: number })
     })
     // Filter by pinging via DS proxy (limit checks to speed up)
     const filtered: Game[] = []
-    const maxCheck = Math.max(10, Math.min(80, options?.maxCheck ?? 60))
+    const maxCheck = Math.max(50, Math.min(500, options?.maxCheck ?? 300))
     for (const g of games.slice(0, maxCheck)) {
       try {
         const ping = await fetch(`${new URL('/api/ds/proxy', baseUrl)}?url=${encodeURIComponent(`https://gamesnacks.com/games/${g.id.replace(/^gs-/, '')}`)}&ping=1`, { cache: 'no-store' })
@@ -90,7 +103,7 @@ async function fetchGnMath(baseUrl: string, options?: { maxItems?: number }): Pr
     const data = await res.json()
     const ids: string[] = Array.isArray(data.ids) ? data.ids : []
     const games: Game[] = []
-    const maxItems = Math.max(20, Math.min(120, options?.maxItems ?? 80))
+    const maxItems = Math.max(100, Math.min(800, options?.maxItems ?? 400))
     for (const id of ids.slice(0, maxItems)) {
       const raw = `https://cdn.jsdelivr.net/gh/gn-math/html@main/${id}.html`
       // ping via DS proxy
@@ -204,8 +217,8 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
 
 // s16.lol source (20k+). We seed queries to discover entries without user searching.
 async function fetchS16Games(baseUrl: string, options?: { maxSeeds?: number, maxResults?: number }): Promise<Game[]> {
-  const seeds = ['a','e','i','o','u','s','r','t','n','l','m','c','p','g','b','d','f','h','k','2','3','4','5','6','7','8','9']
-  const maxSeeds = Math.max(3, Math.min(seeds.length, options?.maxSeeds ?? 6))
+  const seeds = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('')
+  const maxSeeds = Math.max(3, Math.min(seeds.length, options?.maxSeeds ?? seeds.length))
   const seedList = seeds.slice(0, maxSeeds)
   const endpoint = (q: string) => `https://api.s16.lol/v0/api/games/q=${encodeURIComponent(q)}`
   const out: Game[] = []
@@ -252,8 +265,8 @@ async function fetchS16Games(baseUrl: string, options?: { maxSeeds?: number, max
         }
       }))
       for (const list of results) out.push(...list)
-      // Early cap to keep payloads reasonable
-      const maxResults = Math.max(100, Math.min(2000, options?.maxResults ?? 600))
+      // Early cap to keep payloads reasonable while allowing full catalog
+      const maxResults = Math.max(100, Math.min(50000, options?.maxResults ?? 25000))
       if (out.length > maxResults) break
     }
     return out
@@ -8764,6 +8777,11 @@ const mockGames: Game[] = [
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
+    const cacheKey = buildCacheKey(request.url)
+    const cached = memoryCache.get(cacheKey)
+    if (cached && cached.expires > Date.now()) {
+      return NextResponse.json(cached.data, { headers: cached.headers })
+    }
     
     // Check for API key (optional but recommended)
     const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
@@ -8777,7 +8795,7 @@ export async function GET(request: NextRequest) {
     const source = searchParams.get('source') || '' // Filter by source: lessons, fortnite, arcade, radon, gamesnacks, gnmath, s16, classwork
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
-    const includeExternal = searchParams.get('external') === 'true' // Only fetch external sources if explicitly requested
+    const includeExternal = searchParams.get('external') !== 'false' // Fetch external sources by default; allow opt-out with external=false
     
     // Get custom games from request headers (passed from client-side)
     const customGamesHeader = request.headers.get('x-custom-games')
@@ -8804,7 +8822,7 @@ export async function GET(request: NextRequest) {
     
     // Optimize: Only fetch external sources when needed to improve performance
     // For regular browsing, use static games. For "all" or specific sources, fetch external.
-    const shouldFetchExternal = includeAll || source || searchParams.get('external') === 'true'
+    const shouldFetchExternal = includeAll || source || includeExternal
     
     if (shouldFetchExternal) {
       // Fetch external sources in parallel for better performance
@@ -8812,10 +8830,10 @@ export async function GET(request: NextRequest) {
       const fetchAll = !source
       // Adapt budgets based on requested limit and mode
       const factor = Math.max(1, Math.ceil(limit / 30))
-      const heavyMode = includeAll || limit > 60
-      const gsOpts = { maxCheck: heavyMode ? 80 : Math.min(60, 20 * factor) }
-      const gnOpts = { maxItems: heavyMode ? 120 : Math.min(80, 30 * factor) }
-      const s16Opts = { maxSeeds: heavyMode ? 12 : Math.min(8, 3 + factor), maxResults: heavyMode ? 1200 : Math.min(600, 200 * factor) }
+      const heavyMode = true // default to heavy to include as many external games as possible
+      const gsOpts = { maxCheck: heavyMode ? 500 : Math.min(200, 40 * factor) }
+      const gnOpts = { maxItems: heavyMode ? 800 : Math.min(200, 40 * factor) }
+      const s16Opts = { maxSeeds: heavyMode ? 36 : Math.min(20, 5 + factor), maxResults: heavyMode ? 30000 : Math.min(5000, 200 * factor) }
       const arcadeOpts = { maxPing: heavyMode ? 200 : Math.min(160, 40 * factor) }
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
@@ -8985,11 +9003,16 @@ export async function GET(request: NextRequest) {
       offset: includeAll ? 0 : offset
     }
     
-    return NextResponse.json(apiResponse, {
+    const resp = NextResponse.json(apiResponse, {
       headers: {
         'Cache-Control': includeAll ? 'public, max-age=10, s-maxage=20, stale-while-revalidate=120' : 'public, max-age=15, s-maxage=60, stale-while-revalidate=120'
       }
     })
+    try {
+      const ttlMs = includeAll ? 10_000 : 15_000
+      memoryCache.set(cacheKey, { expires: Date.now() + ttlMs, data: apiResponse, headers: { 'Cache-Control': resp.headers.get('Cache-Control') || '' } })
+    } catch {}
+    return resp
   } catch (error) {
     console.error('Error fetching games:', error)
     return NextResponse.json(

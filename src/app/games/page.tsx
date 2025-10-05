@@ -31,8 +31,12 @@ export default function GamesPage() {
         setIsLoadingMore(true)
       }
       const nextOffset = reset ? 0 : offset
-      const resp = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=true`, { headers: buildUserSignalsHeaders() })
-      const data = await resp.json()
+      // Fetch static first for immediate paint
+      const fast = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`, { headers: buildUserSignalsHeaders() })
+      const fastData = await fast.json()
+      // Kick off external fetch in background
+      const slowPromise = fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=true`, { headers: buildUserSignalsHeaders() }).then(r => r.json()).catch(() => ({ games: [] }))
+      const data = fastData
       const newList: Game[] = Array.isArray(data.games) ? data.games : []
       setGames(prev => {
         const base = reset ? [] : prev
@@ -42,6 +46,16 @@ export default function GamesPage() {
       })
       setTotalGames(data.total || 0)
       setHasMore(Boolean(data.hasMore))
+      // Merge externals when they arrive
+      slowPromise.then((slowData) => {
+        const slowList: Game[] = Array.isArray(slowData.games) ? slowData.games : []
+        if (slowList.length === 0) return
+        setGames(prev => {
+          const dedup = new Map<string, Game>()
+          for (const g of [...prev, ...slowList]) dedup.set(g.id, g)
+          return Array.from(dedup.values())
+        })
+      })
       setOffset(nextOffset + PAGE_SIZE)
     } catch (e) {
       console.error('Error fetching games:', e)
