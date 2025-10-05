@@ -80,9 +80,11 @@ export function Header() {
                 Shop
               </Link>
             )}
-            <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Stats
-            </Link>
+            {user && (
+              <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                Stats
+              </Link>
+            )}
             <Link href="/category" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Categories
             </Link>
@@ -120,21 +122,23 @@ export function Header() {
               </Link>
             )}
             
-            {/* Level Indicator */}
-            <Link href="/stats">
-              <Button variant="ghost" size="sm" className="gap-1">
-                <Trophy className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-semibold">Lv.{stats.level}</span>
-              </Button>
-            </Link>
-            
-            {/* XP Indicator */}
-            <Link href="/shop">
-              <Button variant="ghost" size="sm" className="gap-1">
-                <Target className="h-4 w-4 text-blue-500" />
-                <span className="text-sm font-semibold">{stats.xp}</span>
-              </Button>
-            </Link>
+            {/* Level and Rewards (only visible when signed in) */}
+            {user && (
+              <>
+                <Link href="/stats">
+                  <Button variant="ghost" size="sm" className="gap-1">
+                    <Trophy className="h-4 w-4 text-yellow-500" />
+                    <span className="text-sm font-semibold">Lv.{stats.level}</span>
+                  </Button>
+                </Link>
+                <Link href="/shop">
+                  <Button variant="ghost" size="sm" className="gap-1">
+                    <Target className="h-4 w-4 text-blue-500" />
+                    <span className="text-sm font-semibold">{stats.xp}</span>
+                  </Button>
+                </Link>
+              </>
+            )}
             
             <Link href="https://github.com/xtoazt/pine" target="_blank" rel="noreferrer">
               <Button variant="ghost" size="icon">
