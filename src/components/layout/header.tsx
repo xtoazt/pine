@@ -4,13 +4,11 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Menu, Github, Settings, Plus, MessageCircle, Trophy, Flame } from "lucide-react"
+import { Search, Menu, Github, Trophy } from "lucide-react"
 import { useState } from "react"
 import { useGameStats } from "@/hooks/useGameStats"
 import { AchievementToast } from "@/components/gamification/achievement-toast"
-import { CloakSelector } from "@/components/cloak/cloak-selector"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
-import { CategoryDropdown } from "@/components/ui/category-dropdown"
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -40,77 +38,14 @@ export function Header() {
                 </span>
               </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            <Link
-              href="/"
-              className="transition-colors hover:text-foreground/80 text-foreground"
-            >
+            <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">
               Home
             </Link>
-            <Link
-              href="/games"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              All Games
+            <Link href="/games" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Games
             </Link>
-            <Link
-              href="/category/popular"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Popular
-            </Link>
-            <Link
-              href="/category/new"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              New
-            </Link>
-            <Link
-              href="/category/action"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Action
-            </Link>
-            <Link
-              href="/category/shooter"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Shooter
-            </Link>
-            <Link
-              href="/category/car"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Car
-            </Link>
-            <Link
-              href="/category/arcade"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Arcade
-            </Link>
-            <Link
-              href="/category/puzzle"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Puzzle
-            </Link>
-            <Link
-              href="/category/multiplayer"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Multiplayer
-            </Link>
-            <Link
-              href="/stats"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
+            <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Stats
-            </Link>
-            <Link
-              href="/settings"
-              className="transition-colors hover:text-foreground/80 text-foreground/60"
-            >
-              Settings
             </Link>
           </nav>
         </div>
@@ -122,55 +57,28 @@ export function Header() {
           <span className="sr-only">Toggle Menu</span>
         </Button>
             <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-              <div className="flex items-center space-x-2">
-                <CategoryDropdown />
-                <div className="w-full flex-1 md:w-auto md:flex-none">
-                  <form onSubmit={handleSearch} className="relative">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search games..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="pl-8 md:w-[100px] lg:w-[200px]"
-                    />
-                  </form>
-                </div>
-              </div>
+              <form onSubmit={handleSearch} className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="pl-8 w-[150px] lg:w-[250px]"
+                />
+              </form>
           <nav className="flex items-center space-x-2">
-            {/* Streak Indicator */}
-            {stats.streak > 0 && (
-              <Link href="/stats">
-                <Button variant="ghost" size="sm" className="gap-1 hidden sm:flex">
-                  <Flame className="h-4 w-4 text-orange-500" />
-                  <span className="text-sm font-semibold">{stats.streak}</span>
-                </Button>
-              </Link>
-            )}
-            
             {/* Level Indicator */}
             <Link href="/stats">
-              <Button variant="ghost" size="sm" className="gap-1 hidden sm:flex">
-                <Trophy className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-semibold">Lv. {stats.level}</span>
+              <Button variant="ghost" size="sm" className="gap-1">
+                <Trophy className="h-4 w-4" />
+                <span className="text-sm">Lv.{stats.level}</span>
               </Button>
             </Link>
             
-            <CloakSelector />
-            <Link href="/chat">
-              <Button variant="ghost" size="icon">
-                <MessageCircle className="h-4 w-4" />
-                <span className="sr-only">Chat</span>
-              </Button>
-            </Link>
-            <Link
-              href="https://github.com/xtoazt/pine"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Link href="https://github.com/xtoazt/pine" target="_blank" rel="noreferrer">
               <Button variant="ghost" size="icon">
                 <Github className="h-4 w-4" />
-                <span className="sr-only">GitHub</span>
               </Button>
             </Link>
             <ThemeToggle />

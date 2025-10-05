@@ -2,253 +2,50 @@
 
 import { useEffect, useState } from 'react'
 import { GameGrid } from '@/components/game/game-grid'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Game, GameCategory, GameStats } from '@/types/game'
-import { Gamepad2, Users, Zap, TrendingUp, ArrowRight, Trophy } from 'lucide-react'
+import { Game } from '@/types/game'
 import Link from 'next/link'
-import { buildUserSignalsHeaders } from '@/lib/user-signals'
 
 export default function HomePage() {
   const [games, setGames] = useState<Game[]>([])
-  const [categories, setCategories] = useState<GameCategory[]>([])
-  const [stats, setStats] = useState<GameStats | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch stats and categories first (fast)
-        const [categoriesRes, statsRes] = await Promise.all([
-          fetch('/api/categories'),
-          fetch('/api/stats')
-        ])
-
-        if (categoriesRes.ok && statsRes.ok) {
-          const categoriesData = await categoriesRes.json()
-          const statsData = await statsRes.json()
-          setCategories(Array.isArray(categoriesData.categories) ? categoriesData.categories : [])
-          setStats(statsData || null)
-        }
-
-        // INSTANT LOAD: Show static games first (< 500ms)
-        const staticRes = await fetch('/api/games?category=popular&limit=24&external=false', { 
-          headers: buildUserSignalsHeaders(),
-          cache: 'force-cache'
-        })
-        if (staticRes.ok) {
-          const staticData = await staticRes.json()
-          const staticGames = Array.isArray(staticData.games) ? staticData.games : []
-          setGames(staticGames)
-          setLoading(false)
-        }
-        
-        // BACKGROUND: Load external games without blocking
-        fetch('/api/games?category=popular&limit=100', { headers: buildUserSignalsHeaders() })
-          .then(r => r.json())
-          .then(data => {
-            const allGames = Array.isArray(data.games) ? data.games : []
-            if (allGames.length > 0) {
-              setGames(allGames)
-            }
-          })
-          .catch(() => {})
-      } catch (error) {
-        console.error('Error fetching data:', error)
-        setGames([])
-        setCategories([])
-        setStats(null)
+    // INSTANT: Show cached games
+    fetch('/api/games?limit=50&external=false', { cache: 'force-cache' })
+      .then(r => r.json())
+      .then(data => {
+        setGames(Array.isArray(data.games) ? data.games : [])
         setLoading(false)
-      }
-    }
-
-    fetchData()
+      })
+      .catch(() => setLoading(false))
+    
+    // BACKGROUND: Load more
+    fetch('/api/games?limit=100')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data.games)) setGames(data.games)
+      })
+      .catch(() => {})
   }, [])
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="space-y-6 py-8 md:py-12 lg:py-32">
-        <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
-              <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                Welcome to{" "}
-                <span className="text-primary">pine</span>
-              </h1>
-                  <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-100">
-                    A modern, minimalist game platform with 20,000+ carefully curated games. 
-                    Clean design, no ads, no tracking. Just pure gaming.
-                  </p>
-          <div className="flex flex-col gap-2 sm:flex-row animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-            <Button size="lg" asChild className="hover:scale-105 transition-transform">
-              <Link href="/games">
-                <Gamepad2 className="mr-2 h-4 w-4" />
-                Start Playing
-              </Link>
-            </Button>
-                <Button variant="outline" size="lg" asChild className="hover:scale-105 transition-transform">
-                  <Link href="/stats">
-                    <Trophy className="mr-2 h-4 w-4" />
-                    Track Progress
-                  </Link>
-                </Button>
-          </div>
-        </div>
-      </section>
+    <div className="container py-8 space-y-8">
+      {/* Simple Hero */}
+      <div className="text-center py-12">
+        <h1 className="text-5xl font-bold mb-4">
+          <span className="text-primary">pine</span>
+        </h1>
+        <p className="text-muted-foreground mb-6">
+          20,000+ games • No ads • Play instantly
+        </p>
+        <Button size="lg" asChild>
+          <Link href="/games">Browse All Games</Link>
+        </Button>
+      </div>
 
-      {/* Featured Picks (Pinned Games) */}
-      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold">Featured Picks</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <CardTitle>Clash Royale</CardTitle>
-              <CardDescription>Classic Clash Royale playable via Ruffle</CardDescription>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <Badge variant="secondary">Pinned</Badge>
-              <Button asChild>
-                <Link href={`/api/ds/proxy?url=${encodeURIComponent('https://maddox05.github.io/basic-ruffle-player/html/clash_royale/index.html')}`}>
-                  Play
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <CardTitle>Minecraft (Eaglercraft)</CardTitle>
-              <CardDescription>Minecraft in the browser (Eaglercraft)</CardDescription>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <Badge variant="secondary">Pinned</Badge>
-              <Button asChild>
-                <Link href={`/api/ds/proxy?url=${encodeURIComponent('https://eaglrcrft.vercel.app/')}`}>
-                  Play
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      {stats && (
-        <section className="container space-y-6 py-8 md:py-12 lg:py-24">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Games</CardTitle>
-              <Gamepad2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalGames.toLocaleString()}</div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Plays</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalPlays.toLocaleString()}</div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Categories</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalCategories}</div>
-            </CardContent>
-          </Card>
-          </div>
-        </section>
-      )}
-
-      {/* Categories Section */}
-      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold">Game Categories</h2>
-          <Button variant="outline" asChild>
-            <Link href="/category">
-              View All
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          {(categories || []).slice(0, 14).map((category) => (
-            <Card key={category.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4 text-center">
-                <h3 className="font-semibold mb-2">{category.name}</h3>
-                <Badge variant="secondary" className="text-xs">
-                  {category.gameCount} games
-                </Badge>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Games Section */}
-      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold">Featured Games</h2>
-          <Button variant="outline" asChild>
-            <Link href="/category/new">
-              View All
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="mt-4 text-muted-foreground">Loading games...</p>
-              </div>
-            ) : games.length > 0 ? (
-              <GameGrid games={games} loading={false} />
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">No games found</p>
-                <p className="text-muted-foreground text-sm mt-2">
-                  There might be an issue loading the games. Please try refreshing the page.
-                </p>
-              </div>
-            )}
-      </section>
-
-      {/* Developer Section */}
-      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
-        <div className="bg-muted/50 rounded-lg p-8 text-center space-y-4">
-          <h2 className="text-3xl font-bold">Built for Developers</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            pine provides a clean, modern API for developers to easily integrate games into their own applications. 
-            No complex authentication, no rate limits, just simple HTTP requests.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild>
-              <Link href="/api">
-                <Zap className="mr-2 h-4 w-4" />
-                API Documentation
-              </Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="https://github.com/xtoazt/pine">
-                View on GitHub
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Games */}
+      <GameGrid games={games} loading={loading} />
     </div>
   )
 }
