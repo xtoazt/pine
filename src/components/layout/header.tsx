@@ -43,13 +43,11 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
             <div className="mr-4 hidden md:flex">
               <Link href="/" className="mr-6 flex items-center space-x-2">
-                <span className="hidden font-bold sm:inline-block text-2xl">
-                  pine
-                </span>
+                <span className="hidden font-bold sm:inline-block text-2xl">pine.</span>
               </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">
@@ -79,8 +77,11 @@ export function Header() {
             <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Stats
             </Link>
-            <Link href="/settings" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Settings
+            <Link href="/category" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Categories
+            </Link>
+            <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              About
             </Link>
           </nav>
         </div>
@@ -93,14 +94,14 @@ export function Header() {
         </Button>
             <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
               <form onSubmit={handleSearch} className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Search... (Try @s16)"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          onKeyPress={handleKeyPress}
-                          className="pl-8 w-[150px] lg:w-[250px]"
-                        />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Quick search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="pl-9 w-[180px] lg:w-[320px] glass"
+                />
               </form>
           <nav className="flex items-center space-x-2">
             {/* Streak Indicator */}
@@ -168,8 +169,8 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button size="sm" onClick={() => setShowAuthModal(true)}>
-                Sign In
+              <Button size="sm" className="btn-soft" onClick={() => setShowAuthModal(true)}>
+                Login / Register
               </Button>
             )}
           </nav>

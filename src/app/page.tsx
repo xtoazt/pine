@@ -66,38 +66,53 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="container py-16 md:py-24">
-        <div className="max-w-3xl mx-auto text-center space-y-6">
-          <h1 className="text-5xl md:text-6xl font-bold">
-            <span className="text-primary">pine</span>
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Play from multiple real game sources. No ads. Play instantly.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button size="lg" asChild>
-              <Link href="/games">
-                <Gamepad2 className="mr-2 h-5 w-5" />
-                Browse All Games
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/stats">
-                <TrendingUp className="mr-2 h-5 w-5" />
-                Track Progress
-              </Link>
-            </Button>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 hero-gradient" />
+        <div className="container py-16 md:py-24 relative">
+          <div className="max-w-3xl mx-auto text-center space-y-6">
+            <div className="flex justify-center">
+              <span className="pill">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                Safe & Unblocked
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold">
+              <span className="text-primary">pine</span>
+            </h1>
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Experience unblocked games with exciting streaks, challenging levels, and diverse categories.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button size="lg" className="btn-soft" asChild>
+                <Link href="/play">
+                  <Gamepad2 className="mr-2 h-5 w-5" />
+                  Play Now
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="glass" asChild>
+                <Link href="/games">
+                  <TrendingUp className="mr-2 h-5 w-5" />
+                  Browse Games
+                </Link>
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">No installs. No paywalls. Just play.</p>
           </div>
         </div>
       </section>
 
       {/* Categories */}
       <section className="container pb-12">
-        <h2 className="text-2xl font-bold mb-6">Browse by Category</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Browse by Category</h2>
+          <Button variant="ghost" asChild>
+            <Link href="/category">See all</Link>
+          </Button>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {categories.map((cat) => (
             <Link key={cat.slug} href={`/category/${cat.slug}`}>
-              <Card className="hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer border border-border glass">
                 <CardContent className="p-4 text-center space-y-2">
                   <div className="text-3xl">
                     {React.createElement(categoryIconMap[cat.icon as keyof typeof categoryIconMap] || Gamepad2, { className: "w-8 h-8 mx-auto" })}
@@ -125,7 +140,7 @@ export default function HomePage() {
             { name: 'Fortnite', source: 'fortnite', color: 'bg-purple-500/10 text-purple-600' },
           ].map((src) => (
             <Link key={src.source} href={`/games?source=${src.source}`}>
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer glass">
                 <CardContent className="p-4">
                   <Badge className={`${src.color} mb-2`}>{src.name}</Badge>
                   <p className="text-xs text-muted-foreground">Browse games</p>
@@ -147,7 +162,7 @@ export default function HomePage() {
                 <Suspense fallback={
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {Array.from({ length: 12 }).map((_, i) => (
-                      <Card key={i} className="animate-pulse">
+                      <Card key={i} className="animate-pulse glass">
                         <CardContent className="p-4">
                           <div className="aspect-video bg-muted rounded-lg mb-3"></div>
                           <div className="h-4 bg-muted rounded mb-2"></div>

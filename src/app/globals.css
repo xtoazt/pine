@@ -207,3 +207,33 @@
     gap: 1rem;
   }
 }
+
+/* Premium UI utilities */
+@layer utilities {
+  .glass {
+    @apply bg-white/60 dark:bg-white/5 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm;
+  }
+  .glass-muted {
+    @apply bg-white/50 dark:bg-white/5 backdrop-blur-lg border border-white/40 dark:border-white/10;
+  }
+  .pill {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium glass;
+  }
+  .btn-soft {
+    @apply rounded-lg px-4 py-2 bg-primary text-primary-foreground hover:opacity-90 shadow-sm;
+  }
+  .btn-ghost-soft {
+    @apply rounded-lg px-4 py-2 bg-secondary text-foreground hover:bg-secondary/80;
+  }
+  .hero-gradient {
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.18), transparent 60%),
+                radial-gradient(800px 400px at 80% 0%, rgba(168,85,247,0.18), transparent 60%);
+  }
+  .dark .hero-gradient {
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.22), transparent 60%),
+                radial-gradient(800px 400px at 80% 0%, rgba(168,85,247,0.18), transparent 60%);
+  }
+  .shadow-premium {
+    box-shadow: 0 10px 30px -12px rgba(0,0,0,.35), 0 6px 12px -8px rgba(0,0,0,.25);
+  }
+}
