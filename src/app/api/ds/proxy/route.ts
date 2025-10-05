@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
 
     const buildCodetabsUrl = (u: URL) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u.toString())}`
 
-    async function fetchWithFallback(u: URL): Promise<Response> {
+    const fetchWithFallback = async (u: URL): Promise<Response> => {
       try {
         const primary = await fetch(u.toString(), {
           headers: {
