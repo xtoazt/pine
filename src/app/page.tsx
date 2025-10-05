@@ -96,6 +96,44 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Featured Picks (Pinned Games) */}
+      <section className="container space-y-6 py-8 md:py-12 lg:py-24">
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold">Featured Picks</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader>
+              <CardTitle>Clash Royale</CardTitle>
+              <CardDescription>Classic Clash Royale playable via Ruffle</CardDescription>
+            </CardHeader>
+            <CardContent className="flex items-center justify-between">
+              <Badge variant="secondary">Pinned</Badge>
+              <Button asChild>
+                <Link href={`/api/ds/proxy?url=${encodeURIComponent('https://maddox05.github.io/basic-ruffle-player/html/clash_royale/index.html')}`}>
+                  Play
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader>
+              <CardTitle>Minecraft (Eaglercraft)</CardTitle>
+              <CardDescription>Minecraft in the browser (Eaglercraft)</CardDescription>
+            </CardHeader>
+            <CardContent className="flex items-center justify-between">
+              <Badge variant="secondary">Pinned</Badge>
+              <Button asChild>
+                <Link href={`/api/ds/proxy?url=${encodeURIComponent('https://eaglrcrft.vercel.app/')}`}>
+                  Play
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Stats Section */}
       {stats && (
         <section className="container space-y-6 py-8 md:py-12 lg:py-24">
