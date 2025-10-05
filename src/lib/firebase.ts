@@ -15,8 +15,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 let app: FirebaseApp
-let auth: Auth
-let db: Firestore
+let auth: Auth | null = null
+let db: Firestore | null = null
 let analytics: Analytics | null = null
 
 try {
@@ -32,21 +32,24 @@ try {
       console.warn('Analytics not available:', error)
     }
   } else {
-    // Server-side: Create placeholder app for build time
+    // Server-side: Initialize app only; avoid Auth (not supported in SSR) and analytics
     app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
-    auth = getAuth(app)
-    db = getFirestore(app)
+    auth = null
+    db = null
   }
 } catch (error) {
   console.error('Firebase initialization failed:', error)
   // Create fallback instances for error cases
-  if (typeof window !== 'undefined') {
-    app = initializeApp(firebaseConfig)
-    auth = getAuth(app)
-    db = getFirestore(app)
-  }
+  try {
+    if (typeof window !== 'undefined') {
+      app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
+      auth = getAuth(app)
+      db = getFirestore(app)
+    }
+  } catch {}
 }
 
-const isConfigured = true
+// Auth is only considered configured on the client where it is available
+const isConfigured = typeof window !== 'undefined' && !!auth
 
 export { app, auth, db, analytics, isConfigured }

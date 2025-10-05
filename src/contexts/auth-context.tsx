@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signUp = async (username: string, password: string) => {
-    if (!isConfigured || !auth || !db) {
+    if (!isConfigured || !auth) {
       throw new Error('Firebase is not configured. Please set up your environment variables.')
     }
 
@@ -64,7 +64,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       // Create user profile in Firestore
-      await setDoc(doc(db, 'users', userCredential.user.uid), {
+      // db may be null on SSR; this runs on client after signup; guard just in case
+      if (db) await setDoc(doc(db, 'users', userCredential.user.uid), {
         username,
         createdAt: new Date().toISOString(),
         level: 1,
