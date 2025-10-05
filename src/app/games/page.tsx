@@ -15,6 +15,7 @@ export default function GamesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('popular')
   const [offset, setOffset] = useState(0)
+  const [totalGames, setTotalGames] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
@@ -29,7 +30,7 @@ export default function GamesPage() {
         setIsLoadingMore(true)
       }
       const nextOffset = reset ? 0 : offset
-      const resp = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}`)
+      const resp = await fetch(`/api/games?limit=${PAGE_SIZE}&offset=${nextOffset}&external=true`)
       const data = await resp.json()
       const newList: Game[] = Array.isArray(data.games) ? data.games : []
       setGames(prev => {
@@ -38,6 +39,7 @@ export default function GamesPage() {
         for (const g of [...base, ...newList]) dedup.set(g.id, g)
         return Array.from(dedup.values())
       })
+      setTotalGames(data.total || 0)
       setHasMore(Boolean(data.hasMore))
       setOffset(nextOffset + PAGE_SIZE)
     } catch (e) {
@@ -100,11 +102,11 @@ export default function GamesPage() {
           <h1 className="text-4xl font-bold">All Games</h1>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Discover our complete collection of 4,000+ carefully curated games. 
+          Discover our complete collection of {totalGames.toLocaleString()}+ carefully curated games. 
           From classic arcade to modern adventures, find your next favorite game.
         </p>
         <Badge variant="secondary" className="text-sm">
-          {games.length} games available
+          {totalGames.toLocaleString()} total games • {games.length} loaded
         </Badge>
       </div>
 
