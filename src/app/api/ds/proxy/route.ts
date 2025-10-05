@@ -124,7 +124,13 @@ export async function GET(request: NextRequest) {
       if (m && m[1]) {
         const iframeUrl = new URL(m[1], base)
         const proxied = `/api/ds/proxy?url=${encodeURIComponent(iframeUrl.toString())}`
-        const clean = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"/><style>html,body{margin:0;height:100%;background:#000} .wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden} iframe{width:${zoom*100}%;height:${zoom*100}%;border:0;transform:scale(${zoom}); transform-origin: 50% 0%;}</style></head><body><div class="wrap"><iframe src="${proxied}" allowfullscreen allow="autoplay; fullscreen; gamepad; xr-spatial-tracking; clipboard-read; clipboard-write"></iframe></div></body></html>`
+        const clean = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"/><style>
+          :root{--z:${zoom};}
+          html,body{margin:0;height:100%;background:#000}
+          .wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#000}
+          /* Scale around center; fill area precisely */
+          iframe{width:calc(100%/var(--z));height:calc(100%/var(--z));border:0;transform:scale(var(--z));transform-origin:center center}
+        </style></head><body><div class="wrap"><iframe src="${proxied}" allowfullscreen allow="autoplay; fullscreen; gamepad; xr-spatial-tracking; clipboard-read; clipboard-write"></iframe></div></body></html>`
         return new NextResponse(clean, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=120' } })
       }
     }
