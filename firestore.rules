@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Public profile data (lightweight). Allow anyone to read usernames/levels.
+    match /users/{userId} {
+      allow read: if true;
+      // Users can create/update their own profile document
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Friendships: documents contain { users: [uid1, uid2], status }
+    match /friendships/{friendshipId} {
+      // Participants can read the friendship
+      allow read: if request.auth != null && request.resource.data.users.hasAny([request.auth.uid])
+                  || request.auth != null && resource.data.users.hasAny([request.auth.uid]);
+      // Create allowed when the authenticated user is one of the users array
+      allow create: if request.auth != null &&
+        request.resource.data.users is list &&
+        request.resource.data.users.size() == 2 &&
+        request.resource.data.users.hasAny([request.auth.uid]);
+      // Update allowed only for participants
+      allow update, delete: if request.auth != null && resource.data.users.hasAny([request.auth.uid]);
+    }
+
+    // Direct messages with participants array
+    match /directMessages/{messageId} {
+      // Only participants can read or write
+      allow read, update, delete: if request.auth != null && resource.data.participants.hasAny([request.auth.uid]);
+      allow create: if request.auth != null &&
+        request.resource.data.participants is list &&
+        request.resource.data.participants.size() == 2 &&
+        request.resource.data.participants.hasAny([request.auth.uid]);
+    }
+
+    // Fallback: deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+

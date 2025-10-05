@@ -5,15 +5,21 @@ export async function GET(request: NextRequest) {
   try {
     // Fetch games from the main API to get actual counts
     const baseUrl = request.url.split('/api/')[0]
-    const gamesResponse = await fetch(`${baseUrl}/api/games?limit=2000&external=true`, { cache: 'no-store' })
+    // Use larger window and page ramp to capture true counts from external sources
+    const gamesResponse = await fetch(`${baseUrl}/api/games?limit=5000&page=5&external=true`, { cache: 'no-store' })
     const gamesData = await gamesResponse.json()
     const games = Array.isArray(gamesData.games) ? gamesData.games : []
     
     // Count games per category
+    // Allowlist of categories to avoid noise; group unknowns under 'other'
+    const ALLOWED = new Set([
+      'action','adventure','arcade','puzzle','racing','sports','strategy','simulation','fighting','horror','educational','multiplayer','idle','board','rpg','shooter','platform','car','casual'
+    ])
     const categoryCounts: Record<string, number> = {}
     games.forEach((game: any) => {
-      const category = game.category || 'casual'
-      categoryCounts[category] = (categoryCounts[category] || 0) + 1
+      const raw = (game.category || 'casual').toString().toLowerCase()
+      const normalized = ALLOWED.has(raw) ? raw : 'other'
+      categoryCounts[normalized] = (categoryCounts[normalized] || 0) + 1
     })
     
     // Create category objects with actual counts
@@ -54,7 +60,9 @@ export async function GET(request: NextRequest) {
       }
     ]
     
-    const allCategoriesWithSpecial = [...specialCategories, ...categoriesWithCounts]
+    // Remove tiny categories to avoid clutter and sort
+    const filteredReal = categoriesWithCounts.filter(c => c.gameCount >= 10)
+    const allCategoriesWithSpecial = [...specialCategories, ...filteredReal]
     
     return NextResponse.json({
       categories: allCategoriesWithSpecial,

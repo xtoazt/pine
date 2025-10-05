@@ -166,7 +166,7 @@ export default function GamesPage() {
             </p>
             <div className="flex flex-col items-center gap-2">
               <Badge variant="secondary" className="text-sm">
-                Showing {games.length.toLocaleString()} of {totalGames.toLocaleString()} games
+                Showing {games.length.toLocaleString()} of {(totalGames || 22000).toLocaleString()} games
               </Badge>
               {isLoadingExternal && (
                 <Badge variant="outline" className="text-xs animate-pulse">

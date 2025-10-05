@@ -1,3 +1,36 @@
+## Firestore Rules
+
+This repo includes Firestore security rules in `firestore.rules` suitable for the app:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    match /friendships/{friendshipId} {
+      allow read: if request.auth != null && (request.resource.data.users.hasAny([request.auth.uid]) || resource.data.users.hasAny([request.auth.uid]));
+      allow create: if request.auth != null && request.resource.data.users is list && request.resource.data.users.size() == 2 && request.resource.data.users.hasAny([request.auth.uid]);
+      allow update, delete: if request.auth != null && resource.data.users.hasAny([request.auth.uid]);
+    }
+    match /directMessages/{messageId} {
+      allow read, update, delete: if request.auth != null && resource.data.participants.hasAny([request.auth.uid]);
+      allow create: if request.auth != null && request.resource.data.participants is list && request.resource.data.participants.size() == 2 && request.resource.data.participants.hasAny([request.auth.uid]);
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
+```
+
+Deploy via:
+
+```bash
+firebase deploy --only firestore:rules
+```
+
 # pine 🎮
 
 A modern, developer-friendly game platform built with React, TypeScript, and shadcn/ui. No ads, no tracking, just pure gaming fun.
