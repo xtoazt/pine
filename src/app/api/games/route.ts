@@ -8798,17 +8798,17 @@ export async function GET(request: NextRequest) {
     
     if (shouldFetchExternal) {
       // Fetch external sources in parallel for better performance
-      // Only fetch fast sources by default (Classwork), skip slow ones unless specifically requested
+      // When no specific source is requested, include ALL external sources so nothing is missed
       const fetchAll = !source
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
-        source === 'radon' ? fetchRadonGames(request.url) : Promise.resolve([]),
-        source === 'gamesnacks' ? fetchGameSnacks(request.url) : Promise.resolve([]),
-        source === 'gnmath' ? fetchGnMath(request.url) : Promise.resolve([]),
-        source === 's16' ? fetchS16Games(request.url) : Promise.resolve([]),
+        (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
+        (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url) : Promise.resolve([]),
+        (source === 'gnmath' || fetchAll) ? fetchGnMath(request.url) : Promise.resolve([]),
+        (source === 's16' || fetchAll) ? fetchS16Games(request.url) : Promise.resolve([]),
         (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
         (source === 'arcade' || fetchAll) ? fetchArcadeGames(request.url) : Promise.resolve([])
       ])
-      
+
       filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...s16Games, ...classworkGames, ...arcadeGames]
     }
 
