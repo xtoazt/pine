@@ -116,6 +116,61 @@ async function fetchGnMath(baseUrl: string): Promise<Game[]> {
   }
 }
 
+// Arcade CMS (GameMonetize) source
+async function fetchArcadeGames(baseUrl: string): Promise<Game[]> {
+  try {
+    // Fetch up to 1000 games from GameMonetize feed (JSON format)
+    const feedUrl = 'https://gamemonetize.com/feed.php?format=0&num=1000'
+    const res = await fetch(feedUrl, { cache: 'no-store' })
+    if (!res.ok) return []
+    const list: any[] = await res.json()
+    if (!Array.isArray(list)) return []
+
+    const toSlug = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+
+    const games: Game[] = list.map((g: any, idx: number) => {
+      const title: string = g?.title || `Arcade Game ${idx + 1}`
+      const slug = toSlug(title)
+      const rawUrl: string | undefined = g?.url
+      const thumb: string | undefined = g?.thumb
+      const category: string = (g?.category || 'arcade').toLowerCase()
+      const tags: string[] = typeof g?.tags === 'string' ? g.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : []
+      return {
+        id: `arcade-${g?.id || slug || idx}`,
+        title,
+        description: g?.description || '',
+        thumbnail: thumb ? `/api/ds/proxy?url=${encodeURIComponent(thumb)}` : '/images/logo.png',
+        category,
+        tags,
+        playUrl: rawUrl ? `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}` : '/proxy',
+        upvotes: 0,
+        downvotes: 0,
+        playCount: 0,
+        source: 'arcade',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      }
+    })
+
+    // Optional quick ping to remove obviously dead links (limit to first 200 to keep fast)
+    const maxPing = 200
+    const filtered: Game[] = []
+    for (let i = 0; i < games.length; i++) {
+      const g = games[i]
+      if (i >= maxPing) { filtered.push(g); continue }
+      try {
+        const ping = await fetch(new URL(`/api/ds/proxy?url=${encodeURIComponent(g.playUrl.replace(/^\/api\/ds\/proxy\?url=/, ''))}&ping=1`, baseUrl).toString(), { cache: 'no-store' })
+        if (ping.ok) filtered.push(g)
+      } catch {
+        // skip
+      }
+    }
+    return filtered
+  } catch {
+    return []
+  }
+}
+
 // Classwork.cc source - popular unblocked games
 async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
   try {
@@ -8745,15 +8800,16 @@ export async function GET(request: NextRequest) {
       // Fetch external sources in parallel for better performance
       // Only fetch fast sources by default (Classwork), skip slow ones unless specifically requested
       const fetchAll = !source
-      const [radonGames, gsGames, gnGames, s16Games, classworkGames] = await Promise.all([
+      const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         source === 'radon' ? fetchRadonGames(request.url) : Promise.resolve([]),
         source === 'gamesnacks' ? fetchGameSnacks(request.url) : Promise.resolve([]),
         source === 'gnmath' ? fetchGnMath(request.url) : Promise.resolve([]),
         source === 's16' ? fetchS16Games(request.url) : Promise.resolve([]),
-        (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([])
+        (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
+        (source === 'arcade' || fetchAll) ? fetchArcadeGames(request.url) : Promise.resolve([])
       ])
       
-      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...s16Games, ...classworkGames]
+      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...s16Games, ...classworkGames, ...arcadeGames]
     }
 
     // Filter: remove entries with obviously invalid play URLs
