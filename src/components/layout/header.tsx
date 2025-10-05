@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Menu, Github, Trophy, User, LogOut } from "lucide-react"
+import { Search, Menu, Github, Trophy, User, LogOut, Flame, MessageCircle, Target, Crown, ShoppingCart } from "lucide-react"
 import { useState } from "react"
 import { useGameStats } from "@/hooks/useGameStats"
 import { useAuth } from "@/contexts/auth-context"
@@ -58,14 +58,23 @@ export function Header() {
             <Link href="/games" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Games
             </Link>
-            <Link href="/category/popular" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Popular
+            <Link href="/streak" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Streak
             </Link>
-            <Link href="/category/action" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Action
+            <Link href="/friends" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Friends
             </Link>
-            <Link href="/category/puzzle" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              Puzzle
+            <Link href="/messages" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Messages
+            </Link>
+            <Link href="/goals" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Goals
+            </Link>
+            <Link href="/leagues" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Leagues
+            </Link>
+            <Link href="/shop" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Shop
             </Link>
             <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Stats
@@ -96,9 +105,9 @@ export function Header() {
           <nav className="flex items-center space-x-2">
             {/* Streak Indicator */}
             {stats.streak > 0 && (
-              <Link href="/stats">
+              <Link href="/streak">
                 <Button variant="ghost" size="sm" className="gap-1">
-                  <span className="text-orange-500">🔥</span>
+                  <Flame className="h-4 w-4 text-orange-500" />
                   <span className="text-sm font-semibold">{stats.streak}</span>
                 </Button>
               </Link>
@@ -109,6 +118,14 @@ export function Header() {
               <Button variant="ghost" size="sm" className="gap-1">
                 <Trophy className="h-4 w-4 text-yellow-500" />
                 <span className="text-sm font-semibold">Lv.{stats.level}</span>
+              </Button>
+            </Link>
+            
+            {/* XP Indicator */}
+            <Link href="/shop">
+              <Button variant="ghost" size="sm" className="gap-1">
+                <Target className="h-4 w-4 text-blue-500" />
+                <span className="text-sm font-semibold">{stats.xp}</span>
               </Button>
             </Link>
             

@@ -148,24 +148,24 @@ export default function GamesPage() {
     <div className="container py-8 space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="flex items-center justify-center space-x-2">
-          <Gamepad2 className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold">All Games</h1>
-        </div>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Discover our complete collection of {totalGames.toLocaleString()}+ carefully curated games. 
-          From classic arcade to modern adventures, find your next favorite game.
-        </p>
-        <div className="flex flex-col items-center gap-2">
-          <Badge variant="secondary" className="text-sm">
-            Showing {games.length.toLocaleString()} games (batch {Math.floor(offset / PAGE_SIZE)} of {Math.ceil(totalGames / PAGE_SIZE)}) • Scroll for next batch
-          </Badge>
-          {isLoadingExternal && (
-            <Badge variant="outline" className="text-xs animate-pulse">
-              Loading more games from external sources...
-            </Badge>
-          )}
-        </div>
+            <div className="flex items-center justify-center space-x-2">
+              <Gamepad2 className="h-8 w-8 text-primary" />
+              <h1 className="text-4xl font-bold">All Games</h1>
+            </div>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Discover our complete collection of 20,000+ games from 8 different sources. 
+              From classic arcade to modern adventures, find your next favorite game.
+            </p>
+            <div className="flex flex-col items-center gap-2">
+              <Badge variant="secondary" className="text-sm">
+                Loaded {games.length.toLocaleString()} games • {hasMore ? 'Scroll to load more' : 'All games loaded'}
+              </Badge>
+              {isLoadingExternal && (
+                <Badge variant="outline" className="text-xs animate-pulse">
+                  Loading more games from external sources...
+                </Badge>
+              )}
+            </div>
       </div>
 
       {/* Filters */}

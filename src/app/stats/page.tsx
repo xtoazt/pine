@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useGameStats } from '@/hooks/useGameStats'
 import { useAuth } from '@/contexts/auth-context'
-import { Trophy, Flame, Star, Target, Award, Users, TrendingUp, Crown } from 'lucide-react'
+import { Trophy, Flame, Star, Target, Award, Users, TrendingUp, Crown, User } from 'lucide-react'
 import { StatsPanel } from '@/components/gamification/stats-panel'
 
 interface LeaderboardEntry {
@@ -231,16 +231,17 @@ export default function StatsPage() {
                       }`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`text-2xl font-bold w-8 text-center ${
+                        <div className={`font-bold w-8 text-center flex items-center justify-center ${
                           index === 0 ? 'text-yellow-500' :
                           index === 1 ? 'text-gray-400' :
                           index === 2 ? 'text-orange-600' :
                           'text-muted-foreground'
                         }`}>
-                          {index === 0 ? '🥇' :
-                           index === 1 ? '🥈' :
-                           index === 2 ? '🥉' :
-                           `#${index + 1}`}
+                          {index < 3 ? (
+                            <Trophy className="h-6 w-6" />
+                          ) : (
+                            <span className="text-lg">#{index + 1}</span>
+                          )}
                         </div>
                         <div>
                           <p className="font-semibold flex items-center gap-2">
@@ -277,14 +278,22 @@ export default function StatsPage() {
       {/* Motivational Messages */}
       <Card className="bg-gradient-to-r from-primary/5 to-purple-500/5">
         <CardContent className="p-6 text-center">
-          <p className="text-lg font-medium">
-            {!user && "Sign in to save your progress and compete on the leaderboard! 🎮"}
-            {user && unlockedCount === 0 && "Start playing games to unlock your first achievement! 🎮"}
-            {user && unlockedCount > 0 && unlockedCount < 3 && "Great start! Keep playing to unlock more achievements! 🌟"}
-            {user && unlockedCount >= 3 && unlockedCount < 6 && "You're on fire! More achievements await! 🔥"}
-            {user && unlockedCount >= 6 && unlockedCount < achievements.length && "Almost there! Can you unlock them all? 👑"}
-            {user && unlockedCount === achievements.length && "Congratulations! You've unlocked everything! You're a legend! ⭐"}
-          </p>
+          <div className="flex flex-col items-center gap-4">
+            {!user && <User className="h-12 w-12 text-muted-foreground" />}
+            {user && unlockedCount === 0 && <Target className="h-12 w-12 text-primary" />}
+            {user && unlockedCount > 0 && unlockedCount < 3 && <Star className="h-12 w-12 text-yellow-500" />}
+            {user && unlockedCount >= 3 && unlockedCount < 6 && <Flame className="h-12 w-12 text-orange-500" />}
+            {user && unlockedCount >= 6 && unlockedCount < achievements.length && <Crown className="h-12 w-12 text-purple-500" />}
+            {user && unlockedCount === achievements.length && <Award className="h-12 w-12 text-yellow-500" />}
+            <p className="text-lg font-medium">
+              {!user && "Sign in to save your progress and compete on the leaderboard!"}
+              {user && unlockedCount === 0 && "Start playing games to unlock your first achievement!"}
+              {user && unlockedCount > 0 && unlockedCount < 3 && "Great start! Keep playing to unlock more achievements!"}
+              {user && unlockedCount >= 3 && unlockedCount < 6 && "You're on fire! More achievements await!"}
+              {user && unlockedCount >= 6 && unlockedCount < achievements.length && "Almost there! Can you unlock them all?"}
+              {user && unlockedCount === achievements.length && "Congratulations! You've unlocked everything! You're a legend!"}
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -74,13 +74,13 @@ export function GameCard({ game }: GameCardProps) {
                 </span>
               </div>
               
-              {/* Source badge on hover */}
+              {/* Source color indicator on hover */}
               {showSource && (
-                <div className="absolute top-2 right-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <Badge variant="secondary" className="text-xs shadow-lg">
-                    {source.name}
-                  </Badge>
-                </div>
+                <div 
+                  className="absolute top-2 right-2 w-6 h-6 rounded-full shadow-lg animate-in fade-in slide-in-from-top-1 duration-200"
+                  style={{ backgroundColor: source.color }}
+                  title={source.name}
+                />
               )}
               
               <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
@@ -100,9 +100,11 @@ export function GameCard({ game }: GameCardProps) {
               {game.title}
             </h3>
           {!settings.showThumbnails && (
-            <Badge variant="secondary" className="text-xs shrink-0">
-              {source.name}
-            </Badge>
+            <div 
+              className="w-4 h-4 rounded-full shrink-0 mt-1"
+              style={{ backgroundColor: source.color }}
+              title={source.name}
+            />
           )}
           </div>
           

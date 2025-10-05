@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/theme/theme-provider'
 import { SettingsProvider } from '@/contexts/settings-context'
 import { AuthProvider } from '@/contexts/auth-context'
 import { BugFixer } from '@/components/diagnostics/BugFixer'
+import { TabCloak } from '@/components/tab-cloak'
 
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
@@ -53,6 +54,7 @@ export default function RootLayout({
             >
               <AuthProvider>
                 <SettingsProvider>
+                  <TabCloak />
                   <div className="min-h-screen flex flex-col">
                     <Header />
                     <main className="flex-1 px-4 py-6">
