@@ -8840,13 +8840,10 @@ export async function GET(request: NextRequest) {
       // Fetch ALL external sources in parallel for complete game library
       const fetchAll = !source // Fetch all sources unless specific source requested
 
-      // Progressive budgets based on page for fast initial loads
+      // Progressive budgets for most sources; s16 runs at full budget to ensure all titles are included gradually
       const gsOpts = { maxCheck: Math.min(100 + (page - 1) * 100, 500) }
       const gnOpts = { maxItems: Math.min(100 + (page - 1) * 150, 800) }
-      const s16Opts = { 
-        maxSeeds: Math.min(3 + (page - 1) * 3, 36),
-        maxResults: Math.min(300 + (page - 1) * 300, 30000)
-      }
+      const s16Opts = { maxSeeds: 36, maxResults: 50000 }
       const arcadeOpts = { maxPing: Math.min(50 + (page - 1) * 50, 200) }
       
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([

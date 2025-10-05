@@ -235,32 +235,7 @@ export default function SettingsPage() {
         </Card>
       </div>
 
-      {/* Developer Mode */}
-      <Card className="border-2 border-primary/20 bg-primary/5">
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Code className="mr-2 h-5 w-5 text-primary" />
-            Developer Mode
-          </CardTitle>
-          <CardDescription>
-            Access advanced developer tools, stats, and playground
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Developer Mode gives you access to detailed game source statistics, 
-              API playground, proxy usage analytics, and advanced debugging tools.
-            </p>
-            <Button asChild className="w-full">
-              <Link href="/developer">
-                <Code className="mr-2 h-4 w-4" />
-                Enter Developer Mode
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Section removed for cleaner UI */}
 
       {/* Actions */}
       <Card>

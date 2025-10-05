@@ -6,7 +6,6 @@ import { Footer } from '@/components/layout/footer'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { SettingsProvider } from '@/contexts/settings-context'
 import { AuthProvider } from '@/contexts/auth-context'
-import { BugFixer } from '@/components/diagnostics/BugFixer'
 import { TabCloak } from '@/components/tab-cloak'
 import ErrorBoundary from '@/components/error-boundary'
 
@@ -63,7 +62,6 @@ export default function RootLayout({
                         {children}
                       </main>
                       <Footer />
-                      <BugFixer />
                     </div>
                   </SettingsProvider>
                 </AuthProvider>
