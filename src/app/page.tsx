@@ -32,33 +32,40 @@ export default function HomePage() {
           setStats(statsData || null)
         }
 
-        // Quick static-first fetch (no hard limit now)
-        const fastRes = await fetch('/api/games?category=popular', { headers: buildUserSignalsHeaders() })
+        // Progressive loading: show games immediately as they arrive
+        const fastRes = await fetch('/api/games?category=popular&limit=50', { headers: buildUserSignalsHeaders() })
         if (fastRes.ok) {
           const fastData = await fastRes.json()
-          setGames(Array.isArray(fastData.games) ? fastData.games : [])
+          const initialGames = Array.isArray(fastData.games) ? fastData.games : []
+          setGames(initialGames)
+          setLoading(false) // Show initial games immediately
         }
-        // Hydrate with externals in background
-        // Hydrate with externals in background (no hard limit now)
+        
+        // Continue loading more games in background
         ;(async () => {
           try {
             const slowRes = await fetch('/api/games?category=popular&external=true', { headers: buildUserSignalsHeaders() })
             if (slowRes.ok) {
               const slowData = await slowRes.json()
-              const merged = new Map<string, any>()
-              for (const g of [...(fastRes.ok ? (await fastRes.clone().json()).games || [] : []), ...(slowData.games || [])]) {
-                if (g) merged.set(g.id, g)
-              }
-              setGames(Array.from(merged.values()))
+              const allGames = Array.isArray(slowData.games) ? slowData.games : []
+              // Merge with existing games
+              setGames(prev => {
+                const merged = new Map<string, Game>()
+                for (const g of [...prev, ...allGames]) {
+                  if (g) merged.set(g.id, g)
+                }
+                return Array.from(merged.values())
+              })
             }
-          } catch {}
+          } catch (err) {
+            console.error('Error loading external games:', err)
+          }
         })()
       } catch (error) {
         console.error('Error fetching data:', error)
         setGames([])
         setCategories([])
         setStats(null)
-      } finally {
         setLoading(false)
       }
     }

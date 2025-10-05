@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Menu, Github, Settings, Plus } from "lucide-react"
+import { Search, Menu, Github, Settings, Plus, MessageCircle } from "lucide-react"
 import { useState } from "react"
 import { CloakSelector } from "@/components/cloak/cloak-selector"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
@@ -130,6 +130,12 @@ export function Header() {
               </div>
           <nav className="flex items-center space-x-2">
             <CloakSelector />
+            <Link href="/chat">
+              <Button variant="ghost" size="icon">
+                <MessageCircle className="h-4 w-4" />
+                <span className="sr-only">Chat</span>
+              </Button>
+            </Link>
             <Link
               href="https://github.com/xtoazt/pine"
               target="_blank"

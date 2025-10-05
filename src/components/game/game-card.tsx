@@ -64,9 +64,9 @@ export function GameCard({ game }: GameCardProps) {
                 {game.title}
               </span>
             </div>
-            {/* Subtle source badge in top-right corner */}
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <Badge variant="secondary" className={`text-xs ${source.color} border-0`}>
+            {/* Source badge always visible in top-right corner */}
+            <div className="absolute top-2 right-2">
+              <Badge variant="secondary" className={`text-xs ${source.color} border-0 shadow-sm`}>
                 {source.name}
               </Badge>
             </div>
@@ -75,9 +75,16 @@ export function GameCard({ game }: GameCardProps) {
         )}
       
       <CardContent className="p-4">
-        <h3 className="game-title font-semibold text-lg mb-2 line-clamp-2">
-          {game.title}
-        </h3>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="game-title font-semibold text-lg line-clamp-2 flex-1">
+            {game.title}
+          </h3>
+          {!settings.showThumbnails && (
+            <Badge variant="secondary" className={`text-xs ${source.color} border-0 shrink-0`}>
+              {source.name}
+            </Badge>
+          )}
+        </div>
         
         {settings.showDescriptions && game.description && (
           <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
