@@ -8785,6 +8785,7 @@ export async function GET(request: NextRequest) {
     // Parse query parameters with reasonable defaults for fast loading
     const limit = parseInt(searchParams.get('limit') || '500')
     const offset = parseInt(searchParams.get('offset') || '0')
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const sortBy = searchParams.get('sortBy') || 'popular'
@@ -8833,12 +8834,15 @@ export async function GET(request: NextRequest) {
     if (shouldFetchExternal) {
       // Fetch ALL external sources in parallel for complete game library
       const fetchAll = !source // Fetch all sources unless specific source requested
-      
-      // Always use maximum budgets to ensure all games are available
-      const gsOpts = { maxCheck: 500 }
-      const gnOpts = { maxItems: 800 }
-      const s16Opts = { maxSeeds: 36, maxResults: 30000 }
-      const arcadeOpts = { maxPing: 200 }
+
+      // Progressive budgets based on page for fast initial loads
+      const gsOpts = { maxCheck: Math.min(100 + (page - 1) * 100, 500) }
+      const gnOpts = { maxItems: Math.min(100 + (page - 1) * 150, 800) }
+      const s16Opts = { 
+        maxSeeds: Math.min(3 + (page - 1) * 3, 36),
+        maxResults: Math.min(300 + (page - 1) * 300, 30000)
+      }
+      const arcadeOpts = { maxPing: Math.min(50 + (page - 1) * 50, 200) }
       
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
