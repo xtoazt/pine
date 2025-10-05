@@ -215,11 +215,12 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
   }
 }
 
-// s16.lol source (20k+). We seed queries to discover entries without user searching.
-async function fetchS16Games(baseUrl: string, options?: { maxSeeds?: number, maxResults?: number }): Promise<Game[]> {
+// s16.lol source (20k+). Paged seed scanning to avoid duplicates across pages.
+async function fetchS16Games(baseUrl: string, options?: { seedOffset?: number, seedLimit?: number, maxResults?: number }): Promise<Game[]> {
   const seeds = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('')
-  const maxSeeds = Math.max(3, Math.min(seeds.length, options?.maxSeeds ?? seeds.length))
-  const seedList = seeds.slice(0, maxSeeds)
+  const start = Math.max(0, Math.min(seeds.length, options?.seedOffset ?? 0))
+  const count = Math.max(1, Math.min(seeds.length - start, options?.seedLimit ?? 4))
+  const seedList = seeds.slice(start, start + count)
   const endpoint = (q: string) => `https://api.s16.lol/v0/api/games/q=${encodeURIComponent(q)}`
   const fallbackEndpoint = (q: string) => `https://raw.githubusercontent.com/s16data/index/main/q/${encodeURIComponent(q)}.json`
   const out: Game[] = []
@@ -270,8 +271,8 @@ async function fetchS16Games(baseUrl: string, options?: { maxSeeds?: number, max
         }
       }))
       for (const list of results) out.push(...list)
-      // Early cap to keep payloads reasonable while allowing full catalog
-      const maxResults = Math.max(100, Math.min(50000, options?.maxResults ?? 25000))
+      // Early cap per-page; full catalog is covered by increasing seedOffset on subsequent pages
+      const maxResults = Math.max(100, Math.min(5000, options?.maxResults ?? 1500))
       if (out.length > maxResults) break
     }
     return out
@@ -8783,6 +8784,11 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const cacheKey = buildCacheKey(request.url)
+    // Canonical cache key ignores paging params so subsequent pages are instant
+    const urlObj = new URL(request.url)
+    const canon = new URLSearchParams(urlObj.search)
+    canon.delete('offset'); canon.delete('page'); canon.delete('limit')
+    const canonicalKey = `LIST:${urlObj.origin}${urlObj.pathname}?${canon.toString()}`
     
     // Check for API key (optional but recommended)
     const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
@@ -8809,6 +8815,22 @@ export async function GET(request: NextRequest) {
                 }
               })
             }
+
+    // Serve from canonical list cache if available
+    const canonicalCached = memoryCache.get(canonicalKey)
+    if (canonicalCached && canonicalCached.expires > Date.now()) {
+      const data = canonicalCached.data
+      const limit = parseInt(searchParams.get('limit') || '500')
+      const offset = parseInt(searchParams.get('offset') || '0')
+      const paginated = {
+        ...data,
+        games: data.games.slice(offset, offset + limit),
+        limit,
+        offset,
+        message: `Showing ${Math.min(limit, data.games.length - offset)} of ${data.total} games`
+      }
+      return NextResponse.json(paginated, { headers: canonicalCached.headers })
+    }
     
     // Get custom games from request headers (passed from client-side)
     const customGamesHeader = request.headers.get('x-custom-games')
@@ -9002,6 +9024,8 @@ export async function GET(request: NextRequest) {
             try {
               const ttlMs = includeExternal ? 600_000 : 60_000
               memoryCache.set(cacheKey, { expires: Date.now() + ttlMs, data: apiResponse, headers: { 'Cache-Control': cacheControl } })
+              // Also cache canonical full list to power instant pagination
+              memoryCache.set(canonicalKey, { expires: Date.now() + ttlMs, data: { games: filteredGames, total: totalGames, hasMore: true }, headers: { 'Cache-Control': cacheControl } })
             } catch {}
     return resp
   } catch (error) {
