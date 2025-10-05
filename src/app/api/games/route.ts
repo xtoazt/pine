@@ -8774,18 +8774,23 @@ export async function GET(request: NextRequest) {
     // Start with static games (lessons, fortnite, hdun curated)
     let filteredGames = [...mockGames, ...customGames]
     
-    // Always include all sources for a complete game catalog
-    // Fetch external sources in parallel for better performance
-    const [radonGames, gsGames, hdunGamesDynamic, gnGames, s16Games, classworkGames] = await Promise.all([
-      source === 'radon' || !source ? fetchRadonGames(request.url) : Promise.resolve([]),
-      source === 'gamesnacks' || !source ? fetchGameSnacks(request.url) : Promise.resolve([]),
-      source === 'hdun' || !source ? fetchHdunList(request.url) : Promise.resolve([]),
-      source === 'gnmath' || !source ? fetchGnMath(request.url) : Promise.resolve([]),
-      source === 's16' || !source ? fetchS16Games(request.url) : Promise.resolve([]),
-      source === 'classwork' || !source ? fetchClassworkGames(request.url) : Promise.resolve([])
-    ])
+    // Optimize: Only fetch external sources when needed to improve performance
+    // For regular browsing, use static games. For "all" or specific sources, fetch external.
+    const shouldFetchExternal = includeAll || source || searchParams.get('external') === 'true'
     
-    filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games, ...classworkGames]
+    if (shouldFetchExternal) {
+      // Fetch external sources in parallel for better performance
+      const [radonGames, gsGames, hdunGamesDynamic, gnGames, s16Games, classworkGames] = await Promise.all([
+        source === 'radon' ? fetchRadonGames(request.url) : Promise.resolve([]),
+        source === 'gamesnacks' ? fetchGameSnacks(request.url) : Promise.resolve([]),
+        source === 'hdun' ? fetchHdunList(request.url) : Promise.resolve([]),
+        source === 'gnmath' ? fetchGnMath(request.url) : Promise.resolve([]),
+        source === 's16' ? fetchS16Games(request.url) : Promise.resolve([]),
+        source === 'classwork' ? fetchClassworkGames(request.url) : Promise.resolve([])
+      ])
+      
+      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games, ...classworkGames]
+    }
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = filteredGames.filter(g => g && g.playUrl)

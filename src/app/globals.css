@@ -76,24 +76,25 @@
   }
 
   .dark {
-    --background: 0 0% 3%;
+    /* Enhanced Dark Mode - Deep blacks with subtle grays */
+    --background: 0 0% 4%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 6%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 6%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 3%;
-    --secondary: 0 0% 12%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 14%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 0 0% 12%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 14%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 12%;
-    --input: 0 0% 12%;
+    --border: 0 0% 16%;
+    --input: 0 0% 14%;
     --ring: 0 0% 98%;
   }
 }
@@ -118,7 +119,51 @@
 }
 
 .game-card {
-  @apply bg-card border border-border rounded-lg overflow-hidden transition-all duration-200 hover:shadow-lg hover:scale-105;
+  @apply bg-card border border-border rounded-lg overflow-hidden transition-all duration-200 hover:scale-105;
+}
+
+/* Enhanced dark mode shadows and effects */
+.dark .game-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.dark .game-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .card {
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.dark .card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced button styles in dark mode */
+.dark button, .dark .btn {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.dark button:hover, .dark .btn:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtle glow effect for primary elements in dark mode */
+.dark .text-primary {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced input fields in dark mode */
+.dark input, .dark textarea, .dark select {
+  background-color: hsl(0 0% 10%);
+  border-color: hsl(0 0% 20%);
+}
+
+.dark input:focus, .dark textarea:focus, .dark select:focus {
+  background-color: hsl(0 0% 12%);
+  border-color: hsl(0 0% 30%);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
 }
 
 .game-thumbnail {

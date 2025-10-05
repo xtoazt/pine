@@ -1,61 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
-import hdunGamesCurated from '@/data/hdun-games-curated.json'
 
-// Get all unique categories from games
+// Get all unique categories from games with actual counts
 export async function GET(request: NextRequest) {
   try {
-    // Get all games from the main collection
-    const allGames = [
-      // Original games categories
-      'action', 'adventure', 'arcade', 'puzzle', 'racing', 'sports', 'strategy', 
-      'simulation', 'fighting', 'horror', 'educational', 'multiplayer', 'building', 
-      'tower-defense', 'idle', 'board', 'rpg', 'shooter', 'platform', 'car', 'casual'
-    ]
+    // Fetch games from the main API to get actual counts
+    const baseUrl = request.url.split('/api/')[0]
+    const gamesResponse = await fetch(`${baseUrl}/api/games?limit=2000`, { cache: 'no-store' })
+    const gamesData = await gamesResponse.json()
+    const games = Array.isArray(gamesData.games) ? gamesData.games : []
     
-    // Add HDUN game categories
-    const hdunCategories = Array.isArray(hdunGamesCurated) ? 
-      Array.from(new Set(hdunGamesCurated.map(game => game && game.category ? game.category : 'unknown').filter(cat => cat !== 'unknown'))) : 
-      []
+    // Count games per category
+    const categoryCounts: Record<string, number> = {}
+    games.forEach((game: any) => {
+      const category = game.category || 'casual'
+      categoryCounts[category] = (categoryCounts[category] || 0) + 1
+    })
     
-    // Combine and deduplicate
-    const allCategories = Array.from(new Set([...allGames, ...hdunCategories]))
-    
-    // Create category objects with counts - we'll use estimated counts for now
-    const categoriesWithCounts = allCategories.map(category => {
-      // Estimate counts based on category type
-      let count = 0
-      if (category === 'action') count = 150
-      else if (category === 'puzzle') count = 200
-      else if (category === 'arcade') count = 180
-      else if (category === 'racing') count = 120
-      else if (category === 'sports') count = 100
-      else if (category === 'adventure') count = 130
-      else if (category === 'strategy') count = 90
-      else if (category === 'simulation') count = 80
-      else if (category === 'fighting') count = 70
-      else if (category === 'horror') count = 60
-      else if (category === 'educational') count = 110
-      else if (category === 'multiplayer') count = 140
-      else if (category === 'building') count = 85
-      else if (category === 'tower-defense') count = 75
-      else if (category === 'idle') count = 65
-      else if (category === 'board') count = 55
-      else if (category === 'rpg') count = 95
-      else if (category === 'shooter') count = 125
-      else if (category === 'platform') count = 105
-      else if (category === 'car') count = 115
-      else if (category === 'casual') count = 250
-      else count = 50
-      
-      return {
-        id: category,
-        name: category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' '),
-        slug: category,
-        description: `Play ${category} games`,
-        gameCount: count,
-        icon: getCategoryIcon(category)
-      }
-    }).sort((a, b) => b.gameCount - a.gameCount)
+    // Create category objects with actual counts
+    const categoriesWithCounts = Object.entries(categoryCounts).map(([category, count]) => ({
+      id: category,
+      name: category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+      slug: category,
+      description: `Play ${category} games`,
+      gameCount: count,
+      icon: getCategoryIcon(category)
+    })).sort((a, b) => b.gameCount - a.gameCount)
     
     // Add special categories
     const specialCategories = [
@@ -64,7 +33,7 @@ export async function GET(request: NextRequest) {
         name: 'Popular',
         slug: 'popular',
         description: 'Most popular games',
-        gameCount: 50,
+        gameCount: Math.min(50, games.length),
         icon: '🔥'
       },
       {
@@ -72,7 +41,7 @@ export async function GET(request: NextRequest) {
         name: 'New Games',
         slug: 'new',
         description: 'Recently added games',
-        gameCount: 50,
+        gameCount: Math.min(50, games.length),
         icon: '✨'
       },
       {
@@ -80,7 +49,7 @@ export async function GET(request: NextRequest) {
         name: 'All Games',
         slug: 'all',
         description: 'Browse all games',
-        gameCount: 4000, // Updated count with all games
+        gameCount: games.length,
         icon: '🎮'
       }
     ]
