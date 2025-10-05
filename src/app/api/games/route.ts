@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
-import hdunGamesCurated from '@/data/hdun-games-curated.json'
+// HDUN curated games removed - they had incorrect slugs and didn't work
+// import hdunGamesCurated from '@/data/hdun-games-curated.json'
 
 async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
   try {
@@ -8719,14 +8720,9 @@ const mockGames: Game[] = [
     playCount: 37212,
     createdAt: new Date("2023-12-01T00:00:00.000Z"),
     updatedAt: new Date("2023-12-01T00:00:00.000Z")
-  },
-  // Add all curated HDUN games with proper Date objects
-  ...hdunGamesCurated.map(game => ({
-    ...game,
-    source: 'hdun',
-    createdAt: new Date(game.createdAt),
-    updatedAt: new Date(game.updatedAt)
-  }))
+  }
+  // HDUN curated games removed - they didn't work properly
+  // Use Classwork games instead for more reliable unblocked games
 ].map(game => {
   // Add source property based on game ID pattern if not already set
   const source = game.source || (game.id.startsWith('lesson-') ? 'lessons' : 
@@ -8780,14 +8776,14 @@ export async function GET(request: NextRequest) {
     
     if (shouldFetchExternal) {
       // Fetch external sources in parallel for better performance
-      // If no specific source is requested, fetch all sources
+      // Only fetch fast sources by default (Classwork), skip slow ones unless specifically requested
       const fetchAll = !source
       const [radonGames, gsGames, hdunGamesDynamic, gnGames, s16Games, classworkGames] = await Promise.all([
-        (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
-        (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url) : Promise.resolve([]),
-        (source === 'hdun' || fetchAll) ? fetchHdunList(request.url) : Promise.resolve([]),
-        (source === 'gnmath' || fetchAll) ? fetchGnMath(request.url) : Promise.resolve([]),
-        (source === 's16' || fetchAll) ? fetchS16Games(request.url) : Promise.resolve([]),
+        source === 'radon' ? fetchRadonGames(request.url) : Promise.resolve([]),
+        source === 'gamesnacks' ? fetchGameSnacks(request.url) : Promise.resolve([]),
+        source === 'hdun' ? fetchHdunList(request.url) : Promise.resolve([]),
+        source === 'gnmath' ? fetchGnMath(request.url) : Promise.resolve([]),
+        source === 's16' ? fetchS16Games(request.url) : Promise.resolve([]),
         (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([])
       ])
       
