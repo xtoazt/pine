@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         slug: 'popular',
         description: 'Most popular games',
         gameCount: Math.min(50, games.length),
-        icon: '🔥'
+        icon: 'Flame'
       },
       {
         id: 'new',
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
         slug: 'new',
         description: 'Recently added games',
         gameCount: Math.min(50, games.length),
-        icon: '✨'
+        icon: 'Star'
       },
       {
         id: 'all',
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
         slug: 'all',
         description: 'Browse all games',
         gameCount: games.length,
-        icon: '🎮'
+        icon: 'Gamepad2'
       }
     ]
     
@@ -71,29 +71,29 @@ export async function GET(request: NextRequest) {
 
 function getCategoryIcon(category: string): string {
   const iconMap: { [key: string]: string } = {
-    'action': '⚔️',
-    'adventure': '🗺️',
-    'arcade': '🕹️',
-    'puzzle': '🧩',
-    'racing': '🏎️',
-    'sports': '⚽',
-    'strategy': '♟️',
-    'simulation': '🏗️',
-    'fighting': '👊',
-    'horror': '👻',
-    'educational': '📚',
-    'multiplayer': '👥',
-    'building': '🏗️',
-    'tower-defense': '🏰',
-    'idle': '😴',
-    'board': '🎲',
-    'rpg': '⚔️',
-    'shooter': '🔫',
-    'platform': '🦘',
-    'car': '🚗',
-    'casual': '😊',
-    'battle': '⚔️'
+    'action': 'Sword',
+    'adventure': 'Map',
+    'arcade': 'Gamepad2',
+    'puzzle': 'Puzzle',
+    'racing': 'Car',
+    'sports': 'Trophy',
+    'strategy': 'Chess',
+    'simulation': 'Monitor',
+    'fighting': 'Sword',
+    'horror': 'Skull',
+    'educational': 'BookOpen',
+    'multiplayer': 'Users',
+    'building': 'Hammer',
+    'tower-defense': 'Shield',
+    'idle': 'Clock',
+    'board': 'Grid3X3',
+    'rpg': 'Crown',
+    'shooter': 'Target',
+    'platform': 'Zap',
+    'car': 'Car',
+    'casual': 'Smile',
+    'battle': 'Sword'
   }
-  
-  return iconMap[category] || '🎮'
+
+  return iconMap[category] || 'Gamepad2'
 }

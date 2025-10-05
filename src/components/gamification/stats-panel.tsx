@@ -72,7 +72,7 @@ export function StatsPanel({ stats, achievements }: StatsPanelProps) {
         {/* Streak Encouragement */}
         {stats.streak >= 3 && (
           <Badge variant="secondary" className="w-full justify-center bg-orange-500/10 text-orange-600 dark:text-orange-400">
-            🔥 {stats.streak} day streak! Keep it up!
+            {stats.streak} day streak! Keep it up!
           </Badge>
         )}
       </CardContent>

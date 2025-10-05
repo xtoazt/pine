@@ -1,13 +1,29 @@
 "use client"
 
-import { useEffect, useState } from 'react'
-import { GameGrid } from '@/components/game/game-grid'
+import React, { useEffect, useState, useMemo, Suspense, lazy } from 'react'
+// Lazy load GameGrid for better performance
+const GameGrid = lazy(() => import('@/components/game/game-grid').then(module => ({ default: module.GameGrid })))
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Game } from '@/types/game'
-import { Gamepad2, Zap, TrendingUp } from 'lucide-react'
+import { Gamepad2, Zap, TrendingUp, Sword, Puzzle, Users, Trophy, Car, Map, Target, Crown, Monitor, LucideIcon } from 'lucide-react'
 import Link from 'next/link'
+
+// Map category icon names to Lucide components
+const categoryIconMap = {
+  Sword,
+  Puzzle,
+  Gamepad2,
+  Users,
+  Trophy,
+  Car,
+  Map,
+  Target,
+  Crown,
+  Zap,
+  Monitor,
+}
 
 export default function HomePage() {
   const [games, setGames] = useState<Game[]>([])
@@ -33,18 +49,18 @@ export default function HomePage() {
   }, [])
 
   const categories = [
-    { name: 'Action', slug: 'action', icon: '⚔️' },
-    { name: 'Puzzle', slug: 'puzzle', icon: '🧩' },
-    { name: 'Arcade', slug: 'arcade', icon: '🕹️' },
-    { name: 'Multiplayer', slug: 'multiplayer', icon: '👥' },
-    { name: 'Sports', slug: 'sports', icon: '⚽' },
-    { name: 'Racing', slug: 'racing', icon: '🏎️' },
-    { name: 'Adventure', slug: 'adventure', icon: '🗺️' },
-    { name: 'Strategy', slug: 'strategy', icon: '♟️' },
-    { name: 'Shooter', slug: 'shooter', icon: '🎯' },
-    { name: 'RPG', slug: 'rpg', icon: '🐉' },
-    { name: 'Platformer', slug: 'platformer', icon: '🦘' },
-    { name: 'Simulation', slug: 'simulation', icon: '🎮' },
+    { name: 'Action', slug: 'action', icon: 'Sword' },
+    { name: 'Puzzle', slug: 'puzzle', icon: 'Puzzle' },
+    { name: 'Arcade', slug: 'arcade', icon: 'Gamepad2' },
+    { name: 'Multiplayer', slug: 'multiplayer', icon: 'Users' },
+    { name: 'Sports', slug: 'sports', icon: 'Trophy' },
+    { name: 'Racing', slug: 'racing', icon: 'Car' },
+    { name: 'Adventure', slug: 'adventure', icon: 'Map' },
+    { name: 'Strategy', slug: 'strategy', icon: 'Chess' },
+    { name: 'Shooter', slug: 'shooter', icon: 'Target' },
+    { name: 'RPG', slug: 'rpg', icon: 'Crown' },
+    { name: 'Platformer', slug: 'platformer', icon: 'Zap' },
+    { name: 'Simulation', slug: 'simulation', icon: 'Monitor' },
   ]
 
   return (
@@ -83,7 +99,9 @@ export default function HomePage() {
             <Link key={cat.slug} href={`/category/${cat.slug}`}>
               <Card className="hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-4 text-center space-y-2">
-                  <div className="text-3xl">{cat.icon}</div>
+                  <div className="text-3xl">
+                    {React.createElement(categoryIconMap[cat.icon as keyof typeof categoryIconMap] || Gamepad2, { className: "w-8 h-8 mx-auto" })}
+                  </div>
                   <h3 className="font-semibold text-sm">{cat.name}</h3>
                 </CardContent>
               </Card>
@@ -127,7 +145,21 @@ export default function HomePage() {
             <Link href="/games">View All</Link>
           </Button>
         </div>
-        <GameGrid games={games.slice(0, 12)} loading={loading} />
+                <Suspense fallback={
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                      <Card key={i} className="animate-pulse">
+                        <CardContent className="p-4">
+                          <div className="aspect-video bg-muted rounded-lg mb-3"></div>
+                          <div className="h-4 bg-muted rounded mb-2"></div>
+                          <div className="h-3 bg-muted rounded w-2/3"></div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                }>
+                  <GameGrid games={games.slice(0, 12)} loading={loading} />
+                </Suspense>
       </section>
     </div>
   )

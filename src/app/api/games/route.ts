@@ -8793,16 +8793,16 @@ export async function GET(request: NextRequest) {
     const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
     const includeExternal = searchParams.get('external') !== 'false' // Fetch external sources by default; allow opt-out with external=false
     
-    // Aggressive caching: 5 minute cache for external, 30 sec for static
-    const cached = memoryCache.get(cacheKey)
-    if (cached && cached.expires > Date.now()) {
-      return NextResponse.json(cached.data, { 
-        headers: { 
-          ...cached.headers,
-          'X-Cache': 'HIT'
-        } 
-      })
-    }
+            // Aggressive caching: 10 minute cache for external, 1 minute for static
+            const cached = memoryCache.get(cacheKey)
+            if (cached && cached.expires > Date.now()) {
+              return NextResponse.json(cached.data, {
+                headers: {
+                  ...cached.headers,
+                  'X-Cache': 'HIT'
+                }
+              })
+            }
     
     // Get custom games from request headers (passed from client-side)
     const customGamesHeader = request.headers.get('x-custom-games')
@@ -8983,9 +8983,9 @@ export async function GET(request: NextRequest) {
       offset: offset
     }
     
-    const cacheControl = includeExternal 
-      ? 'public, max-age=300, s-maxage=600, stale-while-revalidate=3600' 
-      : 'public, max-age=30, s-maxage=60, stale-while-revalidate=300'
+            const cacheControl = includeExternal
+              ? 'public, max-age=600, s-maxage=1200, stale-while-revalidate=3600'
+              : 'public, max-age=60, s-maxage=120, stale-while-revalidate=300'
     
     const resp = NextResponse.json(apiResponse, {
       headers: {
@@ -8993,10 +8993,10 @@ export async function GET(request: NextRequest) {
         'X-Cache': 'MISS'
       }
     })
-    try {
-      const ttlMs = includeExternal ? 300_000 : 30_000
-      memoryCache.set(cacheKey, { expires: Date.now() + ttlMs, data: apiResponse, headers: { 'Cache-Control': cacheControl } })
-    } catch {}
+            try {
+              const ttlMs = includeExternal ? 600_000 : 60_000
+              memoryCache.set(cacheKey, { expires: Date.now() + ttlMs, data: apiResponse, headers: { 'Cache-Control': cacheControl } })
+            } catch {}
     return resp
   } catch (error) {
     console.error('Error fetching games:', error)

@@ -168,7 +168,7 @@ export default function StatsPage() {
               <div className="mt-4 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
                 <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
                   <Flame className="h-5 w-5" />
-                  <span className="font-semibold">Amazing {stats.streak} day streak! 🔥</span>
+                  <span className="font-semibold">Amazing {stats.streak} day streak!</span>
                 </div>
               </div>
             )}
