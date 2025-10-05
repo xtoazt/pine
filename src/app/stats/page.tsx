@@ -1,17 +1,65 @@
 "use client"
 
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useGameStats } from '@/hooks/useGameStats'
-import { Trophy, Flame, Star, Target, Award } from 'lucide-react'
+import { useAuth } from '@/contexts/auth-context'
+import { Trophy, Flame, Star, Target, Award, Users, TrendingUp, Crown } from 'lucide-react'
 import { StatsPanel } from '@/components/gamification/stats-panel'
+
+interface LeaderboardEntry {
+  username: string
+  level: number
+  xp: number
+  gamesPlayed: number
+  streak: number
+  achievements: number
+}
+
+interface GlobalStats {
+  totalUsers: number
+  totalGamesPlayed: number
+  totalAchievements: number
+  highestStreak: number
+  highestLevel: number
+}
 
 export default function StatsPage() {
   const { stats, achievements } = useGameStats()
+  const { user } = useAuth()
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+  const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null)
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
+  const [loadingGlobal, setLoadingGlobal] = useState(false)
   
   const unlockedCount = achievements.filter(a => a.unlocked).length
   const completionPercentage = (unlockedCount / achievements.length) * 100
+
+  useEffect(() => {
+    // Fetch leaderboard
+    setLoadingLeaderboard(true)
+    fetch('/api/stats?type=leaderboard')
+      .then(r => r.json())
+      .then(data => {
+        if (data.leaderboard) {
+          setLeaderboard(data.leaderboard.slice(0, 10)) // Top 10
+        }
+      })
+      .catch(err => console.error('Failed to load leaderboard:', err))
+      .finally(() => setLoadingLeaderboard(false))
+
+    // Fetch global stats
+    setLoadingGlobal(true)
+    fetch('/api/stats?type=global')
+      .then(r => r.json())
+      .then(data => {
+        setGlobalStats(data)
+      })
+      .catch(err => console.error('Failed to load global stats:', err))
+      .finally(() => setLoadingGlobal(false))
+  }, [])
 
   return (
     <div className="container py-8 space-y-8">
@@ -19,12 +67,63 @@ export default function StatsPage() {
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center space-x-2">
           <Trophy className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold">Your Progress</h1>
+          <h1 className="text-4xl font-bold">Stats & Leaderboard</h1>
         </div>
         <p className="text-muted-foreground text-lg">
-          Track your gaming journey and unlock achievements
+          Track your gaming journey and compete with others
         </p>
       </div>
+
+      {/* Global Stats */}
+      {globalStats && (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center space-y-2">
+                <Users className="h-8 w-8 mx-auto text-blue-500" />
+                <p className="text-3xl font-bold">{globalStats.totalUsers.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">Total Players</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center space-y-2">
+                <Target className="h-8 w-8 mx-auto text-green-500" />
+                <p className="text-3xl font-bold">{globalStats.totalGamesPlayed.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">Games Played</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center space-y-2">
+                <Award className="h-8 w-8 mx-auto text-purple-500" />
+                <p className="text-3xl font-bold">{globalStats.totalAchievements.toLocaleString()}</p>
+                <p className="text-xs text-muted-foreground">Achievements</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center space-y-2">
+                <Flame className="h-8 w-8 mx-auto text-orange-500" />
+                <p className="text-3xl font-bold">{globalStats.highestStreak}</p>
+                <p className="text-xs text-muted-foreground">Longest Streak</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="text-center space-y-2">
+                <Crown className="h-8 w-8 mx-auto text-yellow-500" />
+                <p className="text-3xl font-bold">{globalStats.highestLevel}</p>
+                <p className="text-xs text-muted-foreground">Highest Level</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -106,15 +205,85 @@ export default function StatsPage() {
         </div>
       </div>
 
+      {/* Leaderboard */}
+      <div>
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+          <TrendingUp className="h-6 w-6 text-primary" />
+          Top Players
+        </h2>
+        <Card>
+          <CardContent className="p-0">
+            {loadingLeaderboard ? (
+              <div className="p-8 text-center text-muted-foreground">Loading leaderboard...</div>
+            ) : leaderboard.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground">
+                No players yet. Be the first to sign up and play!
+              </div>
+            ) : (
+              <div className="divide-y">
+                {leaderboard.map((entry, index) => {
+                  const isCurrentUser = user && user.displayName === entry.username
+                  return (
+                    <div 
+                      key={entry.username} 
+                      className={`flex items-center justify-between p-4 hover:bg-muted/50 transition-colors ${
+                        isCurrentUser ? 'bg-primary/5' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`text-2xl font-bold w-8 text-center ${
+                          index === 0 ? 'text-yellow-500' :
+                          index === 1 ? 'text-gray-400' :
+                          index === 2 ? 'text-orange-600' :
+                          'text-muted-foreground'
+                        }`}>
+                          {index === 0 ? '🥇' :
+                           index === 1 ? '🥈' :
+                           index === 2 ? '🥉' :
+                           `#${index + 1}`}
+                        </div>
+                        <div>
+                          <p className="font-semibold flex items-center gap-2">
+                            {entry.username}
+                            {isCurrentUser && <Badge variant="secondary">You</Badge>}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {entry.gamesPlayed} games • {entry.achievements} achievements
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-2">
+                          <Trophy className="h-4 w-4 text-yellow-500" />
+                          <span className="font-bold">Lv.{entry.level}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{entry.xp} XP</p>
+                        {entry.streak > 0 && (
+                          <div className="flex items-center gap-1 text-xs text-orange-500">
+                            <Flame className="h-3 w-3" />
+                            {entry.streak}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Motivational Messages */}
       <Card className="bg-gradient-to-r from-primary/5 to-purple-500/5">
         <CardContent className="p-6 text-center">
           <p className="text-lg font-medium">
-            {unlockedCount === 0 && "Start playing games to unlock your first achievement! 🎮"}
-            {unlockedCount > 0 && unlockedCount < 3 && "Great start! Keep playing to unlock more achievements! 🌟"}
-            {unlockedCount >= 3 && unlockedCount < 6 && "You're on fire! More achievements await! 🔥"}
-            {unlockedCount >= 6 && unlockedCount < achievements.length && "Almost there! Can you unlock them all? 👑"}
-            {unlockedCount === achievements.length && "Congratulations! You've unlocked everything! You're a legend! ⭐"}
+            {!user && "Sign in to save your progress and compete on the leaderboard! 🎮"}
+            {user && unlockedCount === 0 && "Start playing games to unlock your first achievement! 🎮"}
+            {user && unlockedCount > 0 && unlockedCount < 3 && "Great start! Keep playing to unlock more achievements! 🌟"}
+            {user && unlockedCount >= 3 && unlockedCount < 6 && "You're on fire! More achievements await! 🔥"}
+            {user && unlockedCount >= 6 && unlockedCount < achievements.length && "Almost there! Can you unlock them all? 👑"}
+            {user && unlockedCount === achievements.length && "Congratulations! You've unlocked everything! You're a legend! ⭐"}
           </p>
         </CardContent>
       </Card>
