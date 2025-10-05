@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/contexts/auth-context'
 import { AuthModal } from '@/components/auth/auth-modal'
-import { Users, UserPlus, MessageCircle, Flame, Trophy, Send } from 'lucide-react'
+import { Users, UserPlus, MessageCircle, Flame, Trophy } from 'lucide-react'
 import { db } from '@/lib/firebase'
 import {
   collection,
@@ -39,6 +39,7 @@ export default function FriendsPage() {
   const [searchUsername, setSearchUsername] = useState('')
   const [searchResult, setSearchResult] = useState<any>(null)
   const [loading, setLoading] = useState(false)
+  const [acceptingRequest, setAcceptingRequest] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user || !db) return
@@ -55,7 +56,7 @@ export default function FriendsPage() {
       
       for (const friendDoc of snapshot.docs) {
         const data = friendDoc.data()
-        const friendId = data.users.find((id: string) => id !== user.uid)
+        const friendId = data.users?.find((id: string) => id !== user.uid)
         
         if (friendId) {
           // Fetch friend's profile
@@ -126,14 +127,18 @@ export default function FriendsPage() {
   }
 
   const acceptFriendRequest = async (friendshipId: string) => {
-    if (!db) return
+    if (!db || acceptingRequest) return
 
+    setAcceptingRequest(friendshipId)
     try {
       await updateDoc(doc(db, 'friendships', friendshipId), {
         status: 'accepted',
       })
     } catch (error) {
       console.error('Error accepting friend request:', error)
+      alert('Failed to accept friend request. Please try again.')
+    } finally {
+      setAcceptingRequest(null)
     }
   }
 
@@ -184,12 +189,13 @@ export default function FriendsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-2">
-            <Input
-              placeholder="Enter username..."
-              value={searchUsername}
-              onChange={(e) => setSearchUsername(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && searchUser()}
-            />
+                    <Input
+                      placeholder="Enter username..."
+                      value={searchUsername}
+                      onChange={(e) => setSearchUsername(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && searchUser()}
+                      aria-label="Search for friends by username"
+                    />
             <Button onClick={searchUser} disabled={loading}>
               Search
             </Button>
@@ -244,8 +250,12 @@ export default function FriendsPage() {
                     Level {friend.level} • {friend.streak} day streak
                   </p>
                 </div>
-                <Button size="sm" onClick={() => acceptFriendRequest(friend.id)}>
-                  Accept
+                <Button
+                  size="sm"
+                  onClick={() => acceptFriendRequest(friend.id)}
+                  disabled={acceptingRequest === friend.id}
+                >
+                  {acceptingRequest === friend.id ? 'Accepting...' : 'Accept'}
                 </Button>
               </div>
             ))}

@@ -68,7 +68,7 @@ export default function MessagesPage() {
       
       for (const friendDoc of snapshot.docs) {
         const data = friendDoc.data()
-        const friendId = data.users.find((id: string) => id !== user.uid)
+        const friendId = data.users?.find((id: string) => id !== user.uid)
         
         if (friendId) {
           const userDoc = await getDocs(query(collection(db, 'users'), where('__name__', '==', friendId)))

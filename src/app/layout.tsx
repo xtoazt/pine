@@ -8,6 +8,7 @@ import { SettingsProvider } from '@/contexts/settings-context'
 import { AuthProvider } from '@/contexts/auth-context'
 import { BugFixer } from '@/components/diagnostics/BugFixer'
 import { TabCloak } from '@/components/tab-cloak'
+import ErrorBoundary from '@/components/error-boundary'
 
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
@@ -52,19 +53,21 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <AuthProvider>
-                <SettingsProvider>
-                  <TabCloak />
-                  <div className="min-h-screen flex flex-col">
-                    <Header />
-                    <main className="flex-1 px-4 py-6">
-                      {children}
-                    </main>
-                    <Footer />
-                    <BugFixer />
-                  </div>
-                </SettingsProvider>
-              </AuthProvider>
+              <ErrorBoundary>
+                <AuthProvider>
+                  <SettingsProvider>
+                    <TabCloak />
+                    <div className="min-h-screen flex flex-col">
+                      <Header />
+                      <main className="flex-1 px-4 py-6">
+                        {children}
+                      </main>
+                      <Footer />
+                      <BugFixer />
+                    </div>
+                  </SettingsProvider>
+                </AuthProvider>
+              </ErrorBoundary>
             </ThemeProvider>
       </body>
     </html>

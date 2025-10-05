@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useGameStats } from '@/hooks/useGameStats'
 import { useAuth } from '@/contexts/auth-context'
-import { ShoppingCart, Zap, Shield, Flame, Crown, Star, Gift } from 'lucide-react'
+import { ShoppingCart, Zap, Shield, Flame, Crown, Star, Gift, LucideIcon } from 'lucide-react'
 import { db } from '@/lib/firebase'
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore'
 
@@ -15,7 +15,7 @@ interface ShopItem {
   name: string
   description: string
   price: number
-  icon: any
+  icon: LucideIcon
   category: 'streak' | 'cosmetic' | 'boost'
   owned?: boolean
 }
@@ -86,6 +86,7 @@ export default function ShopPage() {
       ))
     } catch (error) {
       console.error('Error purchasing item:', error)
+      alert('Failed to purchase item. Please try again.')
     } finally {
       setLoading(null)
     }

@@ -74,11 +74,12 @@ export default function GamesPage() {
       setTotalGames(staticData.total || 0)
       setHasMore(Boolean(staticData.hasMore))
       setOffset(nextOffset + PAGE_SIZE)
-    } catch (e) {
-      console.error('Error fetching games:', e)
-      setLoading(false)
-      setIsLoadingMore(false)
-    }
+            } catch (e) {
+              console.error('Error fetching games:', e)
+              setLoading(false)
+              setIsLoadingMore(false)
+              setHasMore(false) // Prevent infinite loading on error
+            }
   }
 
   useEffect(() => {
