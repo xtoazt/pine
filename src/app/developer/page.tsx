@@ -119,6 +119,7 @@ export default function DeveloperPage() {
       gamesnacks: 'bg-pink-500',
       gnmath: 'bg-yellow-500',
       s16: 'bg-red-500',
+      classwork: 'bg-indigo-500',
       unknown: 'bg-gray-500'
     }
     return colors[source] || colors.unknown
@@ -313,6 +314,13 @@ export default function DeveloperPage() {
                         Large game API with 20,000+ titles
                       </p>
                       <Badge variant="outline">API</Badge>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h4 className="font-semibold mb-2">Classwork.cc</h4>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Popular unblocked games collection
+                      </p>
+                      <Badge variant="outline">Proxied</Badge>
                     </div>
                   </div>
                 </div>

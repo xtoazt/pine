@@ -11,11 +11,25 @@ interface GameCardProps {
   game: Game
 }
 
+// Map source to display name and color
+const sourceInfo: Record<string, { name: string; color: string }> = {
+  lessons: { name: 'Lessons', color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
+  hdun: { name: 'HDUN', color: 'bg-green-500/10 text-green-600 dark:text-green-400' },
+  fortnite: { name: 'Fortnite', color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' },
+  radon: { name: 'Radon', color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
+  gamesnacks: { name: 'GameSnacks', color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400' },
+  gnmath: { name: 'gn-math', color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400' },
+  s16: { name: 's16.lol', color: 'bg-red-500/10 text-red-600 dark:text-red-400' },
+  classwork: { name: 'Classwork', color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' },
+}
+
 export function GameCard({ game }: GameCardProps) {
   const { settings } = useSettings()
   const rating = game.upvotes + game.downvotes > 0 
     ? (game.upvotes / (game.upvotes + game.downvotes)) * 5 
     : 0
+  
+  const source = sourceInfo[game.source || 'lessons'] || sourceInfo.lessons
 
   return (
     <Link href={`/play/${game.id}`} prefetch={false} className="block focus:outline-none focus:ring-2 focus:ring-ring rounded-lg">
@@ -32,6 +46,12 @@ export function GameCard({ game }: GameCardProps) {
                 try { (e.currentTarget as HTMLImageElement).src = '/images/logo.png' } catch {}
               }}
             />
+            {/* Subtle source badge in top-right corner */}
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <Badge variant="secondary" className={`text-xs ${source.color} border-0`}>
+                {source.name}
+              </Badge>
+            </div>
             <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
           </div>
         )}

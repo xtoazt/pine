@@ -133,9 +133,14 @@ export default function GamePage() {
             <h1 className="text-3xl font-bold">{game.title}</h1>
             <div className="flex items-center space-x-2 mt-2">
               <Badge variant="secondary">{game.category}</Badge>
-              {game.tags.map((tag) => (
+              {game.tags.slice(0, 3).map((tag) => (
                 <Badge key={tag} variant="outline">{tag}</Badge>
               ))}
+              {game.source && (
+                <Badge variant="outline" className="text-xs opacity-60">
+                  {game.source}
+                </Badge>
+              )}
             </div>
           </div>
         </div>

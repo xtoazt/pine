@@ -147,6 +147,35 @@ async function fetchGnMath(baseUrl: string): Promise<Game[]> {
   }
 }
 
+// Classwork.cc source - popular unblocked games
+async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
+  try {
+    const listUrl = new URL('/api/classwork/list', baseUrl).toString()
+    const res = await fetch(listUrl, { cache: 'no-store' })
+    if (!res.ok) return []
+    const data = await res.json()
+    const games: { slug: string; title: string; category: string }[] = Array.isArray(data.games) ? data.games : []
+    
+    return games.map((g, i) => ({
+      id: `classwork-${g.slug}`,
+      title: g.title,
+      description: `Play ${g.title} - a popular unblocked game from classwork.cc`,
+      thumbnail: `https://classwork.cc/wp-content/uploads/${g.slug}.png`,
+      category: g.category,
+      tags: ['unblocked', g.category],
+      playUrl: `/api/ds/proxy?url=${encodeURIComponent(`https://classwork.cc/${g.slug}/`)}`,
+      upvotes: Math.floor(Math.random() * 3000) + 1000,
+      downvotes: Math.floor(Math.random() * 100) + 10,
+      playCount: Math.floor(Math.random() * 50000) + 5000,
+      source: 'classwork',
+      createdAt: new Date('2024-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+    }))
+  } catch {
+    return []
+  }
+}
+
 // s16.lol source (20k+). We seed queries to discover entries without user searching.
 async function fetchS16Games(baseUrl: string): Promise<Game[]> {
   const seeds = ['a','e','i','o','u','s','r','t','n','l','m','c','p','g','b','d','f','h','k','2','3','4','5','6','7','8','9']
@@ -8747,15 +8776,16 @@ export async function GET(request: NextRequest) {
     
     // Always include all sources for a complete game catalog
     // Fetch external sources in parallel for better performance
-    const [radonGames, gsGames, hdunGamesDynamic, gnGames, s16Games] = await Promise.all([
+    const [radonGames, gsGames, hdunGamesDynamic, gnGames, s16Games, classworkGames] = await Promise.all([
       source === 'radon' || !source ? fetchRadonGames(request.url) : Promise.resolve([]),
       source === 'gamesnacks' || !source ? fetchGameSnacks(request.url) : Promise.resolve([]),
       source === 'hdun' || !source ? fetchHdunList(request.url) : Promise.resolve([]),
       source === 'gnmath' || !source ? fetchGnMath(request.url) : Promise.resolve([]),
-      source === 's16' || !source ? fetchS16Games(request.url) : Promise.resolve([])
+      source === 's16' || !source ? fetchS16Games(request.url) : Promise.resolve([]),
+      source === 'classwork' || !source ? fetchClassworkGames(request.url) : Promise.resolve([])
     ])
     
-    filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games]
+    filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games, ...classworkGames]
 
     // Filter: remove entries with obviously invalid play URLs
     filteredGames = filteredGames.filter(g => g && g.playUrl)
