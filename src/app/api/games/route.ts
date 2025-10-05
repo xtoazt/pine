@@ -8827,20 +8827,19 @@ export async function GET(request: NextRequest) {
     // Start with static games (lessons, fortnite, arcade)
     let filteredGames = [...mockGames, ...customGames]
     
-    // Optimize: Only fetch external sources when needed to improve performance
-    // For regular browsing, use static games. For "all" or specific sources, fetch external.
-    const shouldFetchExternal = includeAll || source || includeExternal
+    // Always fetch all external sources to show ALL available games
+    const shouldFetchExternal = includeExternal || includeAll || source
     
     if (shouldFetchExternal) {
-      // Fetch external sources in parallel for better performance
-      // When no specific source is requested, include ALL external sources so nothing is missed
-      const fetchAll = !source
-      // Use maximum budgets for all sources to get full coverage in each batch
-      const heavyMode = includeAll // only use heavy mode when explicitly requesting all
-      const gsOpts = { maxCheck: heavyMode ? 500 : 200 }
-      const gnOpts = { maxItems: heavyMode ? 800 : 300 }
-      const s16Opts = { maxSeeds: heavyMode ? 36 : 24, maxResults: heavyMode ? 30000 : 5000 }
-      const arcadeOpts = { maxPing: heavyMode ? 200 : 150 }
+      // Fetch ALL external sources in parallel for complete game library
+      const fetchAll = !source // Fetch all sources unless specific source requested
+      
+      // Always use maximum budgets to ensure all games are available
+      const gsOpts = { maxCheck: 500 }
+      const gnOpts = { maxItems: 800 }
+      const s16Opts = { maxSeeds: 36, maxResults: 30000 }
+      const arcadeOpts = { maxPing: 200 }
+      
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
         (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),

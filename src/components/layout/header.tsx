@@ -44,8 +44,20 @@ export function Header() {
             <Link href="/games" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Games
             </Link>
+            <Link href="/category/popular" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Popular
+            </Link>
+            <Link href="/category/action" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Action
+            </Link>
+            <Link href="/category/puzzle" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Puzzle
+            </Link>
             <Link href="/stats" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Stats
+            </Link>
+            <Link href="/settings" className="transition-colors hover:text-foreground/80 text-foreground/60">
+              Settings
             </Link>
           </nav>
         </div>
@@ -68,11 +80,21 @@ export function Header() {
                 />
               </form>
           <nav className="flex items-center space-x-2">
+            {/* Streak Indicator */}
+            {stats.streak > 0 && (
+              <Link href="/stats">
+                <Button variant="ghost" size="sm" className="gap-1">
+                  <span className="text-orange-500">🔥</span>
+                  <span className="text-sm font-semibold">{stats.streak}</span>
+                </Button>
+              </Link>
+            )}
+            
             {/* Level Indicator */}
             <Link href="/stats">
               <Button variant="ghost" size="sm" className="gap-1">
-                <Trophy className="h-4 w-4" />
-                <span className="text-sm">Lv.{stats.level}</span>
+                <Trophy className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm font-semibold">Lv.{stats.level}</span>
               </Button>
             </Link>
             
