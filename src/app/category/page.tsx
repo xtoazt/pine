@@ -66,9 +66,9 @@ export default function CategoriesPage() {
               <CardTitle className="flex items-center justify-between">
                 <span className="text-lg">{category.name}</span>
                 <span className="text-2xl">
-                  {/* Map icon string to lucide component */}
+                  {/* Map icon string to lucide component (type-safe) */}
                   {(() => {
-                    const map: any = {
+                    const map: Record<string, any> = {
                       Gamepad2: require('lucide-react').Gamepad2,
                       Flame: require('lucide-react').Flame,
                       Star: require('lucide-react').Star,
@@ -85,7 +85,8 @@ export default function CategoriesPage() {
                       Zap: require('lucide-react').Zap,
                       Monitor: require('lucide-react').Monitor
                     }
-                    const Icon = map[category.icon] || require('lucide-react').Gamepad2
+                    const key = String(category.icon || 'Gamepad2')
+                    const Icon = map[key] || require('lucide-react').Gamepad2
                     return <Icon className="h-6 w-6" />
                   })()}
                 </span>
