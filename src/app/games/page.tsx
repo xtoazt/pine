@@ -22,6 +22,7 @@ export default function GamesPage() {
   const [totalGames, setTotalGames] = useState(0)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isLoadingExternal, setIsLoadingExternal] = useState(false)
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   const LOAD_SIZE = 200 // Load 200 games at a time for better performance
   const [page, setPage] = useState(1)
@@ -60,6 +61,7 @@ export default function GamesPage() {
       if (loadMore) {
         setGames(prev => [...prev, ...newGames])
         setLoadedCount(prev => prev + newGames.length)
+        if ((data.total || 0) > totalGames) setTotalGames(data.total)
       } else {
         setGames(newGames)
         setLoadedCount(newGames.length)
@@ -80,20 +82,24 @@ export default function GamesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
-  // Infinite scroll observer
+  // Infinite scroll via IntersectionObserver (smooth + efficient)
   useEffect(() => {
-    const handleScroll = () => {
-      if (isLoadingMore || loading) return
-      const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 600
-      if (nearBottom && loadedCount < totalGames) {
-        setIsLoadingMore(true)
-        fetchGames(true).finally(() => setIsLoadingMore(false))
-        setPage((p) => p + 1)
-      }
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [isLoadingMore, loading, loadedCount, totalGames])
+    if (!sentinelRef.current) return
+    const el = sentinelRef.current
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0]
+        if (first.isIntersecting && !isLoadingMore && !loading && loadedCount < totalGames) {
+          setIsLoadingMore(true)
+          fetchGames(true).finally(() => setIsLoadingMore(false))
+          setPage((p) => p + 1)
+        }
+      },
+      { root: null, rootMargin: '1200px 0px', threshold: 0 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [sentinelRef.current, isLoadingMore, loading, loadedCount, totalGames])
 
   // Memoize filtered and sorted games for better performance
   const filteredGames = useMemo(() => {
@@ -238,9 +244,9 @@ export default function GamesPage() {
         </Suspense>
 
         {/* Infinite scroll sentinel (optional fallback button hidden) */}
-        {!loading && loadedCount < totalGames && (
-          <div className="flex justify-center py-8 text-sm text-muted-foreground">
-            {isLoadingMore ? 'Loading more games...' : 'Scroll to load more'}
+        {!loading && (
+          <div ref={sentinelRef} className="flex justify-center py-8 text-sm text-muted-foreground">
+            {loadedCount < totalGames ? (isLoadingMore ? 'Loading more games...' : 'Loading ready…') : 'All games loaded'}
           </div>
         )}
 

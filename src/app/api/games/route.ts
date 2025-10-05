@@ -221,6 +221,7 @@ async function fetchS16Games(baseUrl: string, options?: { maxSeeds?: number, max
   const maxSeeds = Math.max(3, Math.min(seeds.length, options?.maxSeeds ?? seeds.length))
   const seedList = seeds.slice(0, maxSeeds)
   const endpoint = (q: string) => `https://api.s16.lol/v0/api/games/q=${encodeURIComponent(q)}`
+  const fallbackEndpoint = (q: string) => `https://raw.githubusercontent.com/s16data/index/main/q/${encodeURIComponent(q)}.json`
   const out: Game[] = []
   const seen = new Set<string>()
   const toSlug = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -255,8 +256,12 @@ async function fetchS16Games(baseUrl: string, options?: { maxSeeds?: number, max
       const batch = seedList.slice(i, i + batchSize)
       const results = await Promise.all(batch.map(async (q) => {
         try {
-          const res = await fetch(endpoint(q), { cache: 'no-store' })
-          if (!res.ok) return [] as Game[]
+          let res = await fetch(endpoint(q), { cache: 'no-store' })
+          if (!res.ok) {
+            // Fallback static index mirror
+            res = await fetch(fallbackEndpoint(q), { cache: 'no-store' })
+            if (!res.ok) return [] as Game[]
+          }
           const json = await res.json()
           const arr = Array.isArray(json) ? json : (Array.isArray(json?.games) ? json.games : [])
           return arr.map(mapOne).filter(Boolean) as Game[]
