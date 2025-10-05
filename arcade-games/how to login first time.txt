@@ -1,0 +1,9 @@
+go to your website login like this https://yourwebsite.com/login  https://prnt.sc/-DbJfaC6cCdP
+
+
+user             gamemonetize
+password         gamemonetize
+
+IMPORTANT!
+1. user you can change from database
+2. password you can change only from admin your website cms https://yourwebsite.com/setting/password

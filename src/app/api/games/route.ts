@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
-// HDUN curated games removed - they had incorrect slugs and didn't work
-// import hdunGamesCurated from '@/data/hdun-games-curated.json'
 
 async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
   try {
@@ -82,37 +80,7 @@ async function fetchGameSnacks(baseUrl: string): Promise<Game[]> {
   }
 }
 
-async function fetchHdunList(baseUrl: string): Promise<Game[]> {
-  try {
-    const res = await fetch(new URL('/api/hdun/list', baseUrl).toString(), { cache: 'no-store' })
-    if (!res.ok) return []
-    const data = await res.json()
-    const ids: string[] = Array.isArray(data.ids) ? data.ids : []
-    const out: Game[] = []
-    for (const id of ids) {
-      const ping = await fetch(new URL(`/api/hdun/proxy?id=${encodeURIComponent(id)}&ping=1`, baseUrl).toString(), { cache: 'no-store' })
-      if (!ping.ok) continue
-      out.push({
-        id: `hdun-${id}`,
-        title: id.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-        description: 'HDUN game',
-        thumbnail: `/api/hdun/proxy?id=${encodeURIComponent(id)}`,
-        category: 'arcade',
-        tags: ['hdun'],
-        playUrl: `/api/hdun/proxy?id=${encodeURIComponent(id)}`,
-        upvotes: 0,
-        downvotes: 0,
-        playCount: 0,
-        source: 'hdun',
-        createdAt: new Date('2024-01-01T00:00:00.000Z'),
-        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
-      })
-    }
-    return out
-  } catch {
-    return []
-  }
-}
+// HDUN removed - replaced with GameMonetize arcade games
 
 async function fetchGnMath(baseUrl: string): Promise<Game[]> {
   try {
@@ -234,7 +202,7 @@ async function fetchS16Games(baseUrl: string): Promise<Game[]> {
   }
 }
 
-// ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (4000+ total)
+// ALL games from lessons data + Fortnite games + HTML5 games + Classwork games
 const mockGames: Game[] = [
   {
     id: "lesson-1",
@@ -8721,13 +8689,12 @@ const mockGames: Game[] = [
     createdAt: new Date("2023-12-01T00:00:00.000Z"),
     updatedAt: new Date("2023-12-01T00:00:00.000Z")
   }
-  // HDUN curated games removed - they didn't work properly
-  // Use Classwork games instead for more reliable unblocked games
+  // All static games loaded
 ].map(game => {
   // Add source property based on game ID pattern if not already set
   const source = game.source || (game.id.startsWith('lesson-') ? 'lessons' : 
                                 game.id.startsWith('fortnite-') ? 'fortnite' : 
-                                game.id.startsWith('hdun-') ? 'hdun' : 'lessons')
+                                game.id.startsWith('arcade-') ? 'arcade' : 'lessons')
   return {
     ...game,
     source
@@ -8747,7 +8714,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const sortBy = searchParams.get('sortBy') || 'popular'
-    const source = searchParams.get('source') || '' // Filter by source: lessons, hdun, fortnite, custom
+    const source = searchParams.get('source') || '' // Filter by source: lessons, fortnite, arcade, radon, gamesnacks, gnmath, s16, classwork
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
     const includeExternal = searchParams.get('external') === 'true' // Only fetch external sources if explicitly requested
@@ -8767,7 +8734,7 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    // Start with static games (lessons, fortnite, hdun curated)
+    // Start with static games (lessons, fortnite, arcade)
     let filteredGames = [...mockGames, ...customGames]
     
     // Optimize: Only fetch external sources when needed to improve performance
@@ -8778,16 +8745,15 @@ export async function GET(request: NextRequest) {
       // Fetch external sources in parallel for better performance
       // Only fetch fast sources by default (Classwork), skip slow ones unless specifically requested
       const fetchAll = !source
-      const [radonGames, gsGames, hdunGamesDynamic, gnGames, s16Games, classworkGames] = await Promise.all([
+      const [radonGames, gsGames, gnGames, s16Games, classworkGames] = await Promise.all([
         source === 'radon' ? fetchRadonGames(request.url) : Promise.resolve([]),
         source === 'gamesnacks' ? fetchGameSnacks(request.url) : Promise.resolve([]),
-        source === 'hdun' ? fetchHdunList(request.url) : Promise.resolve([]),
         source === 'gnmath' ? fetchGnMath(request.url) : Promise.resolve([]),
         source === 's16' ? fetchS16Games(request.url) : Promise.resolve([]),
         (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([])
       ])
       
-      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...hdunGamesDynamic, ...gnGames, ...s16Games, ...classworkGames]
+      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...s16Games, ...classworkGames]
     }
 
     // Filter: remove entries with obviously invalid play URLs
@@ -8797,14 +8763,7 @@ export async function GET(request: NextRequest) {
     if (verify) {
       const verified: Game[] = []
       for (const g of filteredGames) {
-        if (g.id?.startsWith('hdun-') || g.source === 'hdun') {
-          try {
-            const r = await fetch(`${new URL('/api/hdun/proxy', request.url)}?id=${encodeURIComponent(g.id.replace(/^hdun-/, ''))}&ping=1`, { cache: 'no-store' })
-            if (!r.ok) continue
-          } catch {
-            continue
-          }
-        }
+        // Verification logic can be added here for specific sources if needed
         verified.push(g)
         if (!includeAll && verified.length >= limit) break
       }

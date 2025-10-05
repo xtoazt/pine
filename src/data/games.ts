@@ -1,7 +1,6 @@
 import { Game } from '@/types/game'
-import hdunGamesCurated from './hdun-games-curated.json'
 
-// ALL games from lessons data + Fortnite games + HTML5 games + Curated HDUN games (1058+ total)
+// Sample games from lessons data (for individual game API)
 export const mockGames: Game[] = [
   {
     id: "lesson-1",
@@ -77,13 +76,7 @@ export const mockGames: Game[] = [
   // Add more games here - this is a simplified version for the individual game API
 ]
 
-// Combine all games
+// Get all games (just returns mock games - full games list is in API route)
 export const getAllGames = (): Game[] => {
-  const hdunGames = hdunGamesCurated.map(game => ({
-    ...game,
-    createdAt: new Date(game.createdAt),
-    updatedAt: new Date(game.updatedAt)
-  }))
-  
-  return [...mockGames, ...hdunGames]
+  return mockGames
 }

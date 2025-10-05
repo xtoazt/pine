@@ -76,7 +76,6 @@ export default function DeveloperPage() {
 
       // Mock proxy stats (in production, these would come from actual analytics)
       setProxyStats([
-        { endpoint: '/api/hdun/proxy', usage: 1250, avgResponseTime: '245ms' },
         { endpoint: '/api/ds/proxy', usage: 890, avgResponseTime: '312ms' },
         { endpoint: '/api/proxy/lessons', usage: 567, avgResponseTime: '189ms' },
       ])
@@ -113,7 +112,7 @@ export default function DeveloperPage() {
   const getSourceColor = (source: string) => {
     const colors: Record<string, string> = {
       lessons: 'bg-blue-500',
-      hdun: 'bg-green-500',
+      arcade: 'bg-green-500',
       fortnite: 'bg-purple-500',
       radon: 'bg-orange-500',
       gamesnacks: 'bg-pink-500',
@@ -281,11 +280,11 @@ export default function DeveloperPage() {
                       <Badge variant="outline">Static</Badge>
                     </div>
                     <div className="p-4 border rounded-lg">
-                      <h4 className="font-semibold mb-2">HDUN</h4>
+                      <h4 className="font-semibold mb-2">Arcade Games</h4>
                       <p className="text-sm text-muted-foreground mb-2">
-                        Curated HTML5 games from HDUN platform
+                        HTML5 arcade games from GameMonetize CMS
                       </p>
-                      <Badge variant="outline">Proxied</Badge>
+                      <Badge variant="outline">Static</Badge>
                     </div>
                     <div className="p-4 border rounded-lg">
                       <h4 className="font-semibold mb-2">Fortnite Games</h4>
@@ -366,15 +365,6 @@ export default function DeveloperPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-4 bg-muted rounded-lg">
-                    <h4 className="font-semibold mb-2">HDUN Proxy</h4>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Streams games directly from HDUN platform with URL rewriting
-                    </p>
-                    <code className="text-xs block bg-background p-2 rounded mt-2">
-                      /api/hdun/proxy?id=&#123;gameId&#125;
-                    </code>
-                  </div>
                   <div className="p-4 bg-muted rounded-lg">
                     <h4 className="font-semibold mb-2">DS Proxy</h4>
                     <p className="text-sm text-muted-foreground mb-2">
@@ -468,9 +458,9 @@ export default function DeveloperPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setPlaygroundUrl('/api/games?source=hdun&limit=5')}
+                      onClick={() => setPlaygroundUrl('/api/games?source=arcade&limit=5')}
                     >
-                      HDUN Games
+                      Arcade Games
                     </Button>
                     <Button
                       variant="outline"
@@ -520,7 +510,7 @@ export default function DeveloperPage() {
                           <li>offset - Pagination offset (default: 0)</li>
                           <li>category - Filter by category</li>
                           <li>search - Search query</li>
-                          <li>source - Filter by source (lessons, hdun, etc.)</li>
+                          <li>source - Filter by source (lessons, arcade, fortnite, radon, gamesnacks, gnmath, s16, classwork)</li>
                           <li>external - Include external sources (true/false)</li>
                         </ul>
                       </div>
