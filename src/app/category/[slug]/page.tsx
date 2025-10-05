@@ -33,14 +33,14 @@ export default function CategoryPage() {
         const currentCategory = categoriesArr.find((cat) => cat && cat.slug === slug) || null
         setCategory(currentCategory)
         
-        // Fetch games for this category (limited for performance)
-        let gamesUrl = `/api/games?limit=30`
+        // Fetch games for this category (limited for performance) - include all sources
+        let gamesUrl = `/api/games?limit=30&external=true`
         if (slug === 'popular') {
-          gamesUrl = `/api/games?category=popular&limit=30`
+          gamesUrl = `/api/games?category=popular&limit=30&external=true`
         } else if (slug === 'new') {
-          gamesUrl = `/api/games?category=new&limit=30`
+          gamesUrl = `/api/games?category=new&limit=30&external=true`
         } else if (slug && slug !== 'all') {
-          gamesUrl = `/api/games?category=${slug}&limit=30`
+          gamesUrl = `/api/games?category=${slug}&limit=30&external=true`
         }
         const gamesRes = await fetch(gamesUrl)
         const gamesData = await gamesRes.json()

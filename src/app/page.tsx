@@ -31,8 +31,8 @@ export default function HomePage() {
           setStats(statsData || null)
         }
 
-        // Then fetch games gradually (slower)
-        const gamesRes = await fetch('/api/games?limit=24&category=popular')
+        // Then fetch games gradually (slower) - include all sources
+        const gamesRes = await fetch('/api/games?limit=24&category=popular&external=true')
         if (gamesRes.ok) {
           const gamesData = await gamesRes.json()
           setGames(Array.isArray(gamesData.games) ? gamesData.games : [])

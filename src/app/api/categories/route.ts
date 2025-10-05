@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     // Fetch games from the main API to get actual counts
     const baseUrl = request.url.split('/api/')[0]
-    const gamesResponse = await fetch(`${baseUrl}/api/games?limit=2000`, { cache: 'no-store' })
+    const gamesResponse = await fetch(`${baseUrl}/api/games?limit=2000&external=true`, { cache: 'no-store' })
     const gamesData = await gamesResponse.json()
     const games = Array.isArray(gamesData.games) ? gamesData.games : []
     
