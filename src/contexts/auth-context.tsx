@@ -54,8 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const syncUserToDatabase = async (stackUser: any) => {
     try {
-      // Upsert user to Neon database
-      await fetch('/api/auth/sync-user', {
+      // Upsert user to Neon database and get API key
+      const response = await fetch('/api/auth/sync-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -65,6 +65,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           photoUrl: stackUser.profileImageUrl,
         }),
       })
+      
+      const data = await response.json()
+      if (data.apiKey) {
+        // Store API key in localStorage for client-side use
+        localStorage.setItem('pine-api-key', data.apiKey)
+      }
     } catch (error) {
       console.error('[auth] Error syncing user to database:', error)
     }

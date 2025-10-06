@@ -30,8 +30,16 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Get API key from localStorage
+    const apiKey = localStorage.getItem('pine-api-key')
+    
+    if (!apiKey) {
+      setLoading(false)
+      return
+    }
+
     // INSTANT: Show cached games
-    fetch('/api/games?limit=50&external=false', { cache: 'force-cache' })
+    fetch(`/api/games?limit=50&external=false&api_key=${apiKey}`, { cache: 'force-cache' })
       .then(r => r.json())
       .then(data => {
         setGames(Array.isArray(data.games) ? data.games : [])
@@ -40,7 +48,7 @@ export default function HomePage() {
       .catch(() => setLoading(false))
     
     // BACKGROUND: Load ALL sources for complete library
-    fetch('/api/games?limit=200')
+    fetch(`/api/games?limit=200&api_key=${apiKey}`)
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data.games)) setGames(data.games)

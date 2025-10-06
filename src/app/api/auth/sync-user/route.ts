@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sql } from '@/lib/neon'
+import { createApiKeyForUser, getApiKeyForUser } from '@/lib/api-key'
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,7 +40,13 @@ export async function POST(request: NextRequest) {
       ON CONFLICT (user_id) DO NOTHING
     `
 
-    return NextResponse.json({ success: true })
+    // Create API key for user if they don't have one
+    let apiKey = await getApiKeyForUser(id)
+    if (!apiKey) {
+      apiKey = await createApiKeyForUser(id)
+    }
+
+    return NextResponse.json({ success: true, apiKey })
   } catch (error) {
     console.error('[sync-user] Error:', error)
     return NextResponse.json(

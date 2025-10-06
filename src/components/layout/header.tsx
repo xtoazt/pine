@@ -160,6 +160,12 @@ export function Header() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
+                    <Link href="/api-key">
+                      <Zap className="mr-2 h-4 w-4" />
+                      API Key
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/stats">
                       <Trophy className="mr-2 h-4 w-4" />
                       Stats & Achievements

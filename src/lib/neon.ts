@@ -71,6 +71,18 @@ export async function initializeDatabase() {
       )
     `
 
+    // Create API keys table
+    await sql`
+      CREATE TABLE IF NOT EXISTS api_keys (
+        id SERIAL PRIMARY KEY,
+        user_id TEXT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+        api_key TEXT UNIQUE NOT NULL,
+        is_active BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `
+
     console.log('[neon] Database tables initialized successfully')
   } catch (error) {
     console.error('[neon] Error initializing database:', error)

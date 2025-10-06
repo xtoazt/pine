@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { verifyApiKey } from '@/lib/api-key'
+
 // Simple in-memory cache (best-effort; per-runtime)
 const memoryCache: Map<string, { expires: number; data: any; headers: Record<string, string> }> = new Map()
 function buildCacheKey(urlStr: string): string {
@@ -9044,15 +9046,40 @@ const mockGames: Game[] = [
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
+    
+    // Require API key for access
+    const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
+    
+    if (!apiKey) {
+      return NextResponse.json(
+        { 
+          error: 'API key required',
+          message: 'Please sign up to get your free API key',
+          code: 'MISSING_API_KEY'
+        },
+        { status: 401 }
+      )
+    }
+    
+    // Verify API key
+    const verification = await verifyApiKey(apiKey)
+    if (!verification.valid) {
+      return NextResponse.json(
+        { 
+          error: 'Invalid API key',
+          message: 'Please check your API key or sign up for a new one',
+          code: 'INVALID_API_KEY'
+        },
+        { status: 403 }
+      )
+    }
+    
     const cacheKey = buildCacheKey(request.url)
     // Canonical cache key ignores paging params so subsequent pages are instant
     const urlObj = new URL(request.url)
     const canon = new URLSearchParams(urlObj.search)
     canon.delete('offset'); canon.delete('page'); canon.delete('limit')
     const canonicalKey = `LIST:${urlObj.origin}${urlObj.pathname}?${canon.toString()}`
-    
-    // Check for API key (optional but recommended)
-    const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
     
     // Parse query parameters with reasonable defaults for fast loading
     const limit = parseInt(searchParams.get('limit') || '500')
@@ -9064,7 +9091,7 @@ export async function GET(request: NextRequest) {
     const source = searchParams.get('source') || '' // single source filter
     const sourcesCsv = (searchParams.get('sources') || '').trim() // multi-source filter: comma separated
     const gamedistMultiplier = parseFloat(searchParams.get('gamedistMultiplier') || '1') // multiplier for GameDist games
-    const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
+    const includeAll = searchParams.get('all') === 'true' // Include all games if requested
     const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
     const includeExternal = searchParams.get('external') !== 'false' // Fetch external sources by default; allow opt-out with external=false
     
