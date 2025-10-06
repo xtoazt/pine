@@ -133,15 +133,17 @@ export default function GamesPage() {
         const first = entries[0]
         if (first.isIntersecting && !isLoadingMore && !loading && loadedCount < totalGames) {
           setIsLoadingMore(true)
-          fetchGames(true).finally(() => setIsLoadingMore(false))
           setPage((p) => p + 1)
+          fetchGames(true).finally(() => {
+            setIsLoadingMore(false)
+          })
         }
       },
-      { root: null, rootMargin: '1200px 0px', threshold: 0 }
+      { root: null, rootMargin: '800px 0px', threshold: 0.1 }
     )
     observer.observe(el)
     return () => observer.disconnect()
-  }, [sentinelRef.current, isLoadingMore, loading, loadedCount, totalGames])
+  }, [isLoadingMore, loading, loadedCount, totalGames])
 
   // Memoize filtered and sorted games for better performance
   const filteredGames = useMemo(() => {
@@ -215,6 +217,25 @@ export default function GamesPage() {
                   Loading more games from external sources...
                 </Badge>
               )}
+              <Button
+                onClick={expandGamedistGames}
+                disabled={isExpandingGamedist}
+                variant="outline"
+                size="sm"
+                className="mt-2 glass-card hover-lift"
+              >
+                {isExpandingGamedist ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading More Games...
+                  </>
+                ) : (
+                  <>
+                    <Gamepad2 className="mr-2 h-4 w-4" />
+                    Load More GameDist Games ({gamedistMultiplier}x → {gamedistMultiplier + 1}x)
+                  </>
+                )}
+              </Button>
             </div>
       </div>
 
