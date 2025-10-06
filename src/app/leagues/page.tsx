@@ -8,17 +8,7 @@ import { Progress } from '@/components/ui/progress'
 import { useGameStats } from '@/hooks/useGameStats'
 import { useAuth } from '@/contexts/auth-context'
 import { Trophy, Crown, TrendingUp, Users, Zap, Award, Target, Flame } from 'lucide-react'
-import { db } from '@/lib/firebase'
-import {
-  collection,
-  query,
-  orderBy,
-  limit as firestoreLimit,
-  onSnapshot,
-  doc,
-  updateDoc,
-  serverTimestamp,
-} from 'firebase/firestore'
+// TODO: Implement leagues with Neon database
 
 interface LeagueEntry {
   username: string
@@ -97,55 +87,17 @@ export default function LeaguesPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!user || !db) return
+    if (!user) return
 
-    // Determine user's current league based on weekly XP
-    const userLeague = leagues.find(league => 
-      userWeeklyXP >= league.minXP && userWeeklyXP < league.maxXP
-    ) || leagues[0]
-    setCurrentLeague(userLeague)
-
-    // Listen to league entries
-    const leagueRef = collection(db, 'users')
-    const q = query(
-      leagueRef,
-      orderBy('weeklyXP', 'desc'),
-      firestoreLimit(50)
-    )
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const entries: LeagueEntry[] = []
-      
-      snapshot.docs.forEach((doc) => {
-        const data = doc.data()
-        entries.push({
-          username: data.username,
-          level: data.level || 1,
-          xp: data.xp || 0,
-          weeklyXP: data.weeklyXP || 0,
-          streak: data.streak || 0,
-          isCurrentUser: doc.id === user.uid,
-        })
-      })
-      
-      setLeagueEntries(entries)
-    })
-
-    return () => unsubscribe()
+    // TODO: Implement league leaderboard with Neon database
+    // For now, leagues feature is disabled during migration
   }, [user, userWeeklyXP])
 
   useEffect(() => {
-    if (!user || !db) return
+    if (!user) return
 
-    // Listen to user's weekly XP
-    const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (doc) => {
-      if (doc.exists()) {
-        const userData = doc.data()
-        setUserWeeklyXP(userData.weeklyXP || 0)
-      }
-    })
-
-    return () => unsubscribe()
+    // TODO: Implement user weekly XP tracking with Neon database
+    // For now, leagues feature is disabled during migration
   }, [user])
 
   const getLeagueProgress = () => {

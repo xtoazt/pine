@@ -8,20 +8,7 @@ import { Input } from '@/components/ui/input'
 import { useAuth } from '@/contexts/auth-context'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { MessageCircle, Send, Users, Flame, Trophy, Clock } from 'lucide-react'
-import { db } from '@/lib/firebase'
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-  updateDoc,
-  doc,
-  onSnapshot,
-  serverTimestamp,
-  orderBy,
-  limit as firestoreLimit,
-} from 'firebase/firestore'
+// TODO: Implement messages with Neon database
 
 interface Message {
   id: string

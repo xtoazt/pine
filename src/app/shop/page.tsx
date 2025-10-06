@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useGameStats } from '@/hooks/useGameStats'
 import { useAuth } from '@/contexts/auth-context'
 import { ShoppingCart, Zap, Shield, Flame, Crown, Star, Gift, LucideIcon } from 'lucide-react'
-import { db } from '@/lib/firebase'
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore'
+// TODO: Implement shop with Neon database
 
 interface ShopItem {
   id: string
@@ -70,15 +69,19 @@ export default function ShopPage() {
   const [loading, setLoading] = useState<string | null>(null)
 
   const purchaseItem = async (item: ShopItem) => {
-    if (!user || !db || !user.uid || stats.xp < item.price) return
+    if (!user || stats.xp < item.price) return
 
     setLoading(item.id)
     try {
+      // TODO: Implement purchase with Neon database
+      console.log('Shop purchases temporarily disabled during migration')
+      /*
       await updateDoc(doc(db, 'users', user.uid), {
         xp: stats.xp - item.price,
         [`ownedItems.${item.id}`]: true,
         updatedAt: serverTimestamp(),
       })
+      */
       
       // Update local state
       setItems(prev => prev.map(i => 
