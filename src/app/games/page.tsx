@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Game } from '@/types/game'
 import { Search, Filter, Gamepad2, Loader2, ListFilter } from 'lucide-react'
-import { Checkbox } from '@/components/ui/checkbox'
 import { buildUserSignalsHeaders } from '@/lib/user-signals'
 
 // Lazy load heavy components for better performance
@@ -211,15 +210,11 @@ export default function GamesPage() {
               <option value="most-played">Most Played</option>
               <option value="alphabetical">A-Z</option>
             </select>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <ListFilter className="h-4 w-4 text-muted-foreground" />
               {['s16','gamesnacks','gnmath','radon','classwork','arcade','lessons','fortnite'].map(src => (
                 <label key={src} className="flex items-center gap-1 text-xs">
-                  <input
-                    type="checkbox"
-                    checked={sourceFilters.includes(src)}
-                    onChange={(e) => setSourceFilters(prev => e.target.checked ? [...prev, src] : prev.filter(s => s !== src))}
-                  />
+                  <input type="checkbox" checked={sourceFilters.includes(src)} onChange={(e) => setSourceFilters(prev => e.target.checked ? [...prev, src] : prev.filter(s => s !== src))} />
                   <span className="capitalize">{src}</span>
                 </label>
               ))}
