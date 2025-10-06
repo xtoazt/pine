@@ -24,7 +24,7 @@ export default function GamesPage() {
   const [isLoadingExternal, setIsLoadingExternal] = useState(false)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  const LOAD_SIZE = 200 // Load 200 games at a time for better performance
+  const LOAD_SIZE = 400 // Larger page size to reach 20,000 faster while scrolling
   const [page, setPage] = useState(1)
 
   // Debounce search query for better performance
@@ -166,7 +166,7 @@ export default function GamesPage() {
             </p>
             <div className="flex flex-col items-center gap-2">
               <Badge variant="secondary" className="text-sm">
-                Showing {games.length.toLocaleString()} of {(totalGames || 22000).toLocaleString()} games
+                Showing {loadedCount.toLocaleString()} of {totalGames.toLocaleString()} games
               </Badge>
               {isLoadingExternal && (
                 <Badge variant="outline" className="text-xs animate-pulse">

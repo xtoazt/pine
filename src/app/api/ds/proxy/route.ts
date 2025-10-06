@@ -99,6 +99,7 @@ export async function GET(request: NextRequest) {
 
     if (!isHtml(ct)) {
       const ab = await res.arrayBuffer()
+      // Try CSS first
       if (isCss(ct)) {
         const text = Buffer.from(ab).toString('utf-8')
         const rewritten = rewriteCss(base, text)
@@ -109,6 +110,23 @@ export async function GET(request: NextRequest) {
           }
         })
       }
+
+      // Heuristic: Some CORS proxies return text/plain or application/octet-stream for HTML
+      const sniff = Buffer.from(ab).toString('utf-8')
+      const looksHtml = /<\s*(!doctype\s+html|html)[^>]*>/i.test(sniff)
+      if (looksHtml) {
+        const rewritten = rewriteHtml(base, sniff)
+        return new NextResponse(rewritten, {
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            'Cache-Control': 'public, max-age=120',
+            'X-Frame-Options': 'SAMEORIGIN',
+            'Cross-Origin-Embedder-Policy': 'unsafe-none',
+          }
+        })
+      }
+
+      // Binary/unknown: stream as-is
       return new NextResponse(Buffer.from(ab), {
         headers: {
           'Content-Type': ct || 'application/octet-stream',
