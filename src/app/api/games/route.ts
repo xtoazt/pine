@@ -14,6 +14,54 @@ function buildCacheKey(urlStr: string): string {
 }
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
 
+async function fetchPlayGamaGames(baseUrl: string): Promise<Game[]> {
+  try {
+    const url = new URL('/api/playgama/games', baseUrl).toString()
+    const res = await fetch(url, { cache: 'force-cache' })
+    if (!res.ok) return []
+    const data = await res.json()
+    if (!data.success || !Array.isArray(data.games)) return []
+    
+    return data.games.map((g: any) => {
+      // Map PlayGama genres to our categories
+      const genreToCategory: Record<string, string> = {
+        'girls': 'girls',
+        'boys': 'action',
+        'puzzle': 'puzzle',
+        'racing': 'racing',
+        'sports': 'sports',
+        'action': 'action',
+        'adventure': 'adventure',
+        'arcade': 'arcade',
+        'strategy': 'strategy',
+        'simulation': 'simulation'
+      }
+      
+      const firstGenre = Array.isArray(g.genres) && g.genres.length > 0 ? g.genres[0] : 'arcade'
+      const category = genreToCategory[firstGenre] || 'arcade'
+      
+      return {
+        id: `playgama-${g.id}`,
+        title: g.title,
+        description: g.description || '',
+        thumbnail: g.thumbnail || '/images/logo.png',
+        category,
+        tags: [...(g.genres || []), ...(g.tags || [])],
+        playUrl: g.gameURL,
+        upvotes: 0,
+        downvotes: 0,
+        playCount: 0,
+        source: 'playgama',
+        createdAt: new Date('2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      } as Game
+    })
+  } catch (error) {
+    console.error('[playgama] Error fetching games:', error)
+    return []
+  }
+}
+
 async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
   try {
     const url = new URL('/api/radon/games', baseUrl).toString()
@@ -9056,16 +9104,17 @@ export async function GET(request: NextRequest) {
       if (sourcesCsv) sourcesCsv.split(',').map(s => s.trim()).filter(Boolean).forEach(s => requested.add(s))
       const want = (name: string) => requested.size ? requested.has(name) : true
       
-      const [radonGames, gsGames, gnGames, gamedistGames, classworkGames, arcadeGames] = await Promise.all([
+      const [radonGames, gsGames, gnGames, gamedistGames, classworkGames, arcadeGames, playgamaGames] = await Promise.all([
         (want('radon') || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
         (want('gamesnacks') || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),
         (want('gnmath') || fetchAll) ? fetchGnMath(request.url, gnOpts) : Promise.resolve([]),
         (want('gamedist') || want('s16') || fetchAll) ? fetchGameDistribution(gamedistMultiplier) : Promise.resolve([]),
         (want('classwork') || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
-        (want('arcade') || fetchAll) ? fetchArcadeGames(request.url, arcadeOpts) : Promise.resolve([])
+        (want('arcade') || fetchAll) ? fetchArcadeGames(request.url, arcadeOpts) : Promise.resolve([]),
+        (want('playgama') || fetchAll) ? fetchPlayGamaGames(request.url) : Promise.resolve([])
       ])
 
-      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...gamedistGames, ...classworkGames, ...arcadeGames]
+      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...gamedistGames, ...classworkGames, ...arcadeGames, ...playgamaGames]
     }
 
     // Filter: remove entries with obviously invalid play URLs and dedupe by id and URL

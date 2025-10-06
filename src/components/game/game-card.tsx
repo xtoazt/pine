@@ -14,6 +14,7 @@ interface GameCardProps {
 
 // Map source to display name and color
 const sourceInfo: Record<string, { name: string; color: string }> = {
+  playgama: { name: 'PlayGama', color: '#06b6d4' },
   lessons: { name: 'Lessons', color: '#3b82f6' },
   arcade: { name: 'Arcade', color: '#10b981' },
   fortnite: { name: 'Fortnite', color: '#a855f7' },
