@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Game } from '@/types/game'
-import { Search, Filter, Gamepad2, Loader2 } from 'lucide-react'
+import { Search, Filter, Gamepad2, Loader2, ListFilter } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
 import { buildUserSignalsHeaders } from '@/lib/user-signals'
 
 // Lazy load heavy components for better performance
@@ -18,6 +19,7 @@ export default function GamesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('alphabetical')
+  const [sourceFilters, setSourceFilters] = useState<string[]>([])
   const [loadedCount, setLoadedCount] = useState(0)
   const [totalGames, setTotalGames] = useState(0)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -52,7 +54,8 @@ export default function GamesPage() {
       const sourceParam = sourceFilter ? `&source=${sourceFilter}` : ''
 
       // Load games in chunks
-      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}&external=true&sortBy=${sortBy}`, {
+      const sourcesParam = sourceFilters.length ? `&sources=${encodeURIComponent(sourceFilters.join(','))}` : ''
+      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}${sourcesParam}&external=true&sortBy=${sortBy}`, {
         headers: buildUserSignalsHeaders()
       })
       const data = await response.json()
@@ -192,16 +195,11 @@ export default function GamesPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search games... (Try @s16 or @gamesnacks)"
+                placeholder="Search games..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
               />
-              {searchQuery.startsWith('@') && (
-                <Badge variant="secondary" className="ml-2">
-                  Source: {searchQuery.split(' ')[0].substring(1)}
-                </Badge>
-              )}
             </div>
             <select
               value={sortBy}
@@ -213,6 +211,19 @@ export default function GamesPage() {
               <option value="most-played">Most Played</option>
               <option value="alphabetical">A-Z</option>
             </select>
+            <div className="flex items-center gap-3">
+              <ListFilter className="h-4 w-4 text-muted-foreground" />
+              {['s16','gamesnacks','gnmath','radon','classwork','arcade','lessons','fortnite'].map(src => (
+                <label key={src} className="flex items-center gap-1 text-xs">
+                  <input
+                    type="checkbox"
+                    checked={sourceFilters.includes(src)}
+                    onChange={(e) => setSourceFilters(prev => e.target.checked ? [...prev, src] : prev.filter(s => s !== src))}
+                  />
+                  <span className="capitalize">{src}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>

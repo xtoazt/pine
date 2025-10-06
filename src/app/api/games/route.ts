@@ -27,7 +27,7 @@ async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
       const slug = toSlug(g.slug || title)
       const rawUrl: string | undefined = g.url || g.playUrl || g.link
       const proxiedUrl = rawUrl && /^https?:\/\//i.test(rawUrl)
-        ? `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}`
+        ? `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}&embed=1&zoom=1`
         : undefined
       const thumb: string = g.thumbnail || g.thumb || g.image || '/images/logo.png'
       const category: string = g.category || 'arcade'
@@ -36,10 +36,10 @@ async function fetchRadonGames(baseUrl: string): Promise<Game[]> {
         id: `radon-${slug || idx}`,
         title,
         description: g.description || '',
-        thumbnail: thumb,
+        thumbnail: thumb ? `/api/ds/proxy?url=${encodeURIComponent(thumb)}` : '/images/logo.png',
         category,
         tags,
-        playUrl: proxiedUrl || '/proxy',
+        playUrl: proxiedUrl || '',
         upvotes: Number(g.upvotes || 0),
         downvotes: Number(g.downvotes || 0),
         playCount: Number(g.playCount || 0),
@@ -8787,7 +8787,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const category = searchParams.get('category') || ''
     const sortBy = searchParams.get('sortBy') || 'popular'
-    const source = searchParams.get('source') || '' // Filter by source: lessons, fortnite, arcade, radon, gamesnacks, gnmath, s16, classwork
+    const source = searchParams.get('source') || '' // single source filter
+    const sourcesCsv = (searchParams.get('sources') || '').trim() // multi-source filter: comma separated
     const includeAll = searchParams.get('all') === 'true' || apiKey // Include all games if API key provided
     const verify = searchParams.get('verify') === 'true' // Optional heavier validation (pings)
     const includeExternal = searchParams.get('external') !== 'false' // Fetch external sources by default; allow opt-out with external=false
@@ -8906,9 +8907,13 @@ export async function GET(request: NextRequest) {
       )
     }
     
-    // Apply source filter
+    // Apply source filter(s)
     if (source) {
       filteredGames = filteredGames.filter(game => game.source === source)
+    }
+    if (sourcesCsv) {
+      const set = new Set(sourcesCsv.split(',').map(s => s.trim()).filter(Boolean))
+      filteredGames = filteredGames.filter(game => set.has(game.source || ''))
     }
     
     // Apply category filter
