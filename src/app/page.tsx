@@ -139,7 +139,7 @@ export default function HomePage() {
             { name: 'Lessons', source: 'lessons', color: 'bg-blue-500/10 text-blue-600' },
             { name: 'Fortnite', source: 'fortnite', color: 'bg-purple-500/10 text-purple-600' },
           ].map((src) => (
-            <Link key={src.source} href={`/games?source=${src.source}`}>
+            <Link key={src.source} href={src.source === 's16' ? '/s16' : `/games?source=${src.source}`}>
               <Card className="hover:shadow-md transition-shadow cursor-pointer glass">
                 <CardContent className="p-4">
                   <Badge className={`${src.color} mb-2`}>{src.name}</Badge>
