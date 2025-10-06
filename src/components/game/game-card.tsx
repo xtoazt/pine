@@ -22,6 +22,7 @@ const sourceInfo: Record<string, { name: string; color: string }> = {
   gnmath: { name: 'gn-math', color: '#eab308' },
   s16: { name: 's16.lol', color: '#ef4444' },
   gamedist: { name: 'GameDistribution', color: '#a855f7' },
+  gamemonetize: { name: 'GameMonetize', color: '#8b5cf6' },
   classwork: { name: 'Classwork', color: '#6366f1' },
 }
 

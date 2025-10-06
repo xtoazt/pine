@@ -25,10 +25,74 @@ export default function GamesPage() {
   const [isLoadingExternal, setIsLoadingExternal] = useState(false)
   const [gamedistMultiplier, setGamedistMultiplier] = useState(1)
   const [isExpandingGamedist, setIsExpandingGamedist] = useState(false)
+  const [gamemonetizeGames, setGamemonetizeGames] = useState<Game[]>([])
+  const [gamemonetizeLoaded, setGamemonetizeLoaded] = useState(false)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   const LOAD_SIZE = 400 // Larger page size to reach 20,000 faster while scrolling
   const [page, setPage] = useState(1)
+
+  // Fetch GameMonetize games directly from client (real-time)
+  useEffect(() => {
+    if (gamemonetizeLoaded) return
+    
+    const fetchGameMonetize = async () => {
+      try {
+        console.log('[client] Fetching GameMonetize games...')
+        const response = await fetch('https://gamemonetize.com/feed.php?format=json', {
+          cache: 'force-cache'
+        })
+        
+        if (!response.ok) throw new Error('Failed to fetch')
+        
+        const data = await response.json()
+        
+        if (Array.isArray(data) && data.length > 0) {
+          const gmGames: Game[] = data.map((game: any) => {
+            let category = 'arcade'
+            if (game.category) {
+              const cats = game.category.split(',').map((c: string) => c.trim().toLowerCase())
+              category = cats[0] || 'arcade'
+            }
+            
+            let description = game.description || `Play ${game.title}`
+            description = description
+              .replace(/<[^>]*>/g, '')
+              .replace(/&[^;]+;/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+            if (description.length > 200) {
+              description = description.substring(0, 197) + '...'
+            }
+            
+            return {
+              id: `gamemonetize-${game.id}`,
+              title: game.title,
+              description,
+              thumbnail: game.thumb,
+              category,
+              tags: game.tags ? game.tags.split(',').map((t: string) => t.trim()) : [],
+              playUrl: game.url,
+              upvotes: 0,
+              downvotes: 0,
+              playCount: 0,
+              source: 'gamemonetize',
+              createdAt: new Date('2024-01-01T00:00:00.000Z'),
+              updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+            }
+          })
+          
+          console.log(`[client] Loaded ${gmGames.length} GameMonetize games`)
+          setGamemonetizeGames(gmGames)
+          setGamemonetizeLoaded(true)
+        }
+      } catch (error) {
+        console.error('[client] Failed to fetch GameMonetize:', error)
+      }
+    }
+    
+    fetchGameMonetize()
+  }, [gamemonetizeLoaded])
 
   // Debounce search query for better performance
   useEffect(() => {
@@ -146,8 +210,11 @@ export default function GamesPage() {
   }, [isLoadingMore, loading, loadedCount, totalGames])
 
   // Memoize filtered and sorted games for better performance
+  // Combine server games with client-side GameMonetize games
   const filteredGames = useMemo(() => {
-    return games.filter(game => {
+    const allGames = [...games, ...gamemonetizeGames]
+    
+    return allGames.filter(game => {
       let query = debouncedSearchQuery.toLowerCase()
       let sourceFilter = ''
 
@@ -176,7 +243,7 @@ export default function GamesPage() {
         game.tags.some(tag => tag.toLowerCase().includes(query))
       )
     })
-  }, [games, debouncedSearchQuery])
+  }, [games, gamemonetizeGames, debouncedSearchQuery])
 
   const sortedGames = useMemo(() => {
     return [...filteredGames].sort((a, b) => {
@@ -210,8 +277,13 @@ export default function GamesPage() {
             </p>
             <div className="flex flex-col items-center gap-2">
               <Badge variant="secondary" className="text-sm">
-                Showing {loadedCount.toLocaleString()} of {totalGames.toLocaleString()} games
+                Showing {(loadedCount + gamemonetizeGames.length).toLocaleString()} of {(totalGames + gamemonetizeGames.length).toLocaleString()} games
               </Badge>
+              {gamemonetizeLoaded && gamemonetizeGames.length > 0 && (
+                <Badge variant="outline" className="text-xs bg-purple-500/10 text-purple-600">
+                  ✨ {gamemonetizeGames.length.toLocaleString()} GameMonetize games loaded
+                </Badge>
+              )}
               {isLoadingExternal && (
                 <Badge variant="outline" className="text-xs animate-pulse">
                   Loading more games from external sources...
