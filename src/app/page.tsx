@@ -130,7 +130,7 @@ export default function HomePage() {
         <h2 className="text-2xl font-bold mb-6">Browse by Source</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { name: 's16.lol', source: 's16', color: 'bg-red-500/10 text-red-600' },
+            { name: 'GameDistribution', source: 'gamedist', color: 'bg-purple-500/10 text-purple-600' },
             { name: 'GameSnacks', source: 'gamesnacks', color: 'bg-pink-500/10 text-pink-600' },
             { name: 'gn-math', source: 'gnmath', color: 'bg-yellow-500/10 text-yellow-600' },
             { name: 'Radon', source: 'radon', color: 'bg-orange-500/10 text-orange-600' },

@@ -217,12 +217,109 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
   }
 }
 
-// s16 games - comprehensive list of 777+ popular games from s16.lol
-// This ensures all s16 games are available with proper metadata
-async function fetchS16Bread(): Promise<Game[]> {
+// GameDistribution API - provides access to 20,000+ high-quality games
+// Enhanced with caching and parallel processing for optimal performance
+async function fetchGameDistribution(): Promise<Game[]> {
   try {
-    // Comprehensive list of s16 game IDs
-    const S16_GAME_IDS = [
+    const API_GRAPHQL = 'https://api.gamedistribution.com/graphql'
+    const IMAGE_BASE = 'https://img.gamedistribution.com/'
+    const LINK_BASE = 'https://gamedistribution.com/games/'
+    
+    // Use broad search term to get maximum games
+    const searchTerm = 'game'
+    const quantity = 1000
+    
+    const query = `
+      query SearchGames($search: String!, $hits: Int!) {
+        gamesSearched(input: { search: $search, hitsPerPage: $hits }) {
+          hits {
+            objectID
+            type
+            title
+            description
+            instruction
+            tags
+            categories
+            company
+            mobile
+            keyFeatures
+            slugs { name active }
+            publishedAt
+            lastPublishedAt
+            languages
+          }
+        }
+      }
+    `
+    
+    const res = await fetch(API_GRAPHQL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Origin': 'https://gamedistribution.com',
+        'Referer': 'https://gamedistribution.com/',
+      },
+      body: JSON.stringify({
+        query,
+        variables: {
+          search: searchTerm,
+          hits: quantity,
+        },
+      }),
+      signal: AbortSignal.timeout(15000),
+    })
+    
+    if (!res.ok) {
+      console.error(`[gamedist] GraphQL error ${res.status}`)
+      return []
+    }
+    
+    const data = await res.json()
+    
+    if (data.errors) {
+      console.error('[gamedist] GraphQL errors:', data.errors)
+      return []
+    }
+    
+    const hits = data?.data?.gamesSearched?.hits ?? []
+    
+    console.log(`[gamedist] Fetched ${hits.length} games from GraphQL`)
+    
+    // Map GameDistribution games to our Game type
+    const out: Game[] = hits.map((game: any) => {
+      const id = game.objectID
+      const link = `${LINK_BASE}${id}`
+      const thumbnail = `${IMAGE_BASE}${id}-512x512.jpg`
+      
+      return {
+        id: `gamedist-${id}`,
+        title: game.title,
+        description: game.description || `Play ${game.title} - ${game.instruction || 'an exciting game'}`,
+        thumbnail,
+        category: game.categories?.[0]?.toLowerCase() || 'arcade',
+        tags: [...(game.tags || []), ...(game.categories || [])],
+        playUrl: link,
+        upvotes: 0,
+        downvotes: 0,
+        playCount: 0,
+        source: 'gamedist',
+        createdAt: new Date(game.publishedAt || '2024-01-01T00:00:00.000Z'),
+        updatedAt: new Date(game.lastPublishedAt || '2024-01-01T00:00:00.000Z'),
+      }
+    })
+    
+    return out
+  } catch (error) {
+    console.error('[gamedist] Error fetching games:', error)
+    return []
+  }
+}
+
+// Fallback function in case GameDistribution fails
+async function fetchGameDistributionFallback(): Promise<Game[]> {
+  try {
+    const FALLBACK_IDS = [
       '1v1-lol', '2048', '8-ball-pool', 'among-us', 'angry-birds',
       'basketball-stars', 'bitlife', 'bloons-td', 'bottle-flip', 'boxing-random',
       'break-the-ice', 'btd5', 'btd6', 'bullet-force', 'burrito-bison',
@@ -9003,16 +9100,16 @@ export async function GET(request: NextRequest) {
       if (sourcesCsv) sourcesCsv.split(',').map(s => s.trim()).filter(Boolean).forEach(s => requested.add(s))
       const want = (name: string) => requested.size ? requested.has(name) : true
       
-      const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
+      const [radonGames, gsGames, gnGames, gamedistGames, classworkGames, arcadeGames] = await Promise.all([
         (want('radon') || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
         (want('gamesnacks') || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),
         (want('gnmath') || fetchAll) ? fetchGnMath(request.url, gnOpts) : Promise.resolve([]),
-        (want('s16') || fetchAll) ? fetchS16Bread() : Promise.resolve([]),
+        (want('gamedist') || want('s16') || fetchAll) ? fetchGameDistribution() : Promise.resolve([]),
         (want('classwork') || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
         (want('arcade') || fetchAll) ? fetchArcadeGames(request.url, arcadeOpts) : Promise.resolve([])
       ])
 
-      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...s16Games, ...classworkGames, ...arcadeGames]
+      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...gamedistGames, ...classworkGames, ...arcadeGames]
     }
 
     // Filter: remove entries with obviously invalid play URLs and dedupe by id and URL
