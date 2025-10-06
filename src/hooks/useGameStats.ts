@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react'
 import { checkAchievements, ACHIEVEMENTS, type Achievement } from '@/lib/achievements'
 import { useAuth } from '@/contexts/auth-context'
-import { doc, updateDoc, onSnapshot } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+// TODO: Implement stats sync with Neon database
 
 interface GameStats {
   gamesPlayed: number
@@ -41,32 +40,11 @@ export function useGameStats() {
   const [achievements, setAchievements] = useState<Achievement[]>(ACHIEVEMENTS.map(a => ({ ...a })))
   const [newAchievement, setNewAchievement] = useState<Achievement | null>(null)
 
-  // Load from Firestore if logged in, otherwise localStorage
+  // Load from localStorage (Neon sync coming soon)
   useEffect(() => {
-    if (user && db && user.uid) {
-      // Real-time sync with Firestore
-      const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (doc) => {
-        if (doc.exists()) {
-          const userData = doc.data()
-          setStats({
-            gamesPlayed: userData.gamesPlayed || 0,
-            uniqueGames: userData.uniqueGames || 0,
-            streak: userData.streak || 0,
-            lastVisit: userData.lastPlayedDate,
-            sourcesPlayed: userData.sourcesPlayed || [],
-            categoriesPlayed: userData.categoriesPlayed || [],
-            playedAtNight: userData.playedAtNight || false,
-            favoritesCount: userData.likedGames?.length || 0,
-            level: userData.level || 1,
-            xp: userData.xp || 0
-          })
-        }
-        updateAchievements()
-      })
-
-      return () => unsubscribe()
-    } else {
-      // Initialize achievements for guest users once
+    if (user) {
+      // TODO: Sync with Neon database
+      // For now, use localStorage
       updateAchievements()
     }
       // Use localStorage for guest users
@@ -126,23 +104,10 @@ export function useGameStats() {
   }
 
   const saveStats = async (newStats: GameStats) => {
-    if (user && db) {
-      // Save to Firestore
-      try {
-        await updateDoc(doc(db, 'users', user.uid), {
-          gamesPlayed: newStats.gamesPlayed,
-          uniqueGames: newStats.uniqueGames,
-          streak: newStats.streak,
-          lastPlayedDate: newStats.lastVisit,
-          sourcesPlayed: newStats.sourcesPlayed,
-          categoriesPlayed: newStats.categoriesPlayed,
-          playedAtNight: newStats.playedAtNight,
-          level: newStats.level,
-          xp: newStats.xp
-        })
-      } catch (error) {
-        console.error('Error saving stats to Firestore:', error)
-      }
+    if (user) {
+      // TODO: Save to Neon database
+      // For now, use localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newStats))
     } else {
       // Save to localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newStats))

@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { doc, getDoc, setDoc, updateDoc, onSnapshot } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
 import { useAuth } from '@/contexts/auth-context'
+// TODO: Implement user profile with Neon database
 
 export interface UserProfile {
   username: string
@@ -30,31 +29,22 @@ export function useUserProfile() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user || !db) {
+    if (!user) {
       setProfile(null)
       setLoading(false)
       return
     }
 
-    // Real-time listener for user profile
-    const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (doc) => {
-      if (doc.exists()) {
-        setProfile(doc.data() as UserProfile)
-      }
-      setLoading(false)
-    })
-
-    return () => unsubscribe()
+    // TODO: Load user profile from Neon database
+    // For now, profile features are disabled during migration
+    setLoading(false)
   }, [user])
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
-    if (!user || !db) return
+    if (!user) return
 
-    try {
-      await updateDoc(doc(db, 'users', user.uid), updates)
-    } catch (error) {
-      console.error('Error updating profile:', error)
-    }
+    // TODO: Update profile in Neon database
+    console.log('Profile update temporarily disabled during migration')
   }
 
   const likeGame = async (gameId: string) => {
