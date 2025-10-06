@@ -215,25 +215,6 @@ export default function GamesPage() {
                   Loading more games from external sources...
                 </Badge>
               )}
-              <Button
-                onClick={expandGamedistGames}
-                disabled={isExpandingGamedist}
-                variant="outline"
-                size="sm"
-                className="mt-2 glass-card hover-lift"
-              >
-                {isExpandingGamedist ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating More Games...
-                  </>
-                ) : (
-                  <>
-                    <Gamepad2 className="mr-2 h-4 w-4" />
-                    Load More GameDist Games ({gamedistMultiplier}x → {gamedistMultiplier + 1}x)
-                  </>
-                )}
-              </Button>
             </div>
       </div>
 

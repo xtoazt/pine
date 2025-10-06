@@ -130,14 +130,12 @@ export default function HomePage() {
         <h2 className="text-2xl font-bold mb-6">Browse by Source</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { name: 'GameDistribution', source: 'gamedist', color: 'bg-purple-500/10 text-purple-600' },
-            { name: 'GameSnacks', source: 'gamesnacks', color: 'bg-pink-500/10 text-pink-600' },
+            { name: 'Lessons', source: 'lessons', color: 'bg-blue-500/10 text-blue-600' },
+            { name: 'Arcade', source: 'arcade', color: 'bg-green-500/10 text-green-600' },
             { name: 'gn-math', source: 'gnmath', color: 'bg-yellow-500/10 text-yellow-600' },
             { name: 'Radon', source: 'radon', color: 'bg-orange-500/10 text-orange-600' },
             { name: 'Classwork', source: 'classwork', color: 'bg-indigo-500/10 text-indigo-600' },
-            { name: 'Arcade', source: 'arcade', color: 'bg-green-500/10 text-green-600' },
-            { name: 'Lessons', source: 'lessons', color: 'bg-blue-500/10 text-blue-600' },
-            { name: 'Fortnite', source: 'fortnite', color: 'bg-purple-500/10 text-purple-600' },
+            { name: 'GameSnacks', source: 'gamesnacks', color: 'bg-pink-500/10 text-pink-600' },
           ].map((src) => (
             <Link key={src.source} href={`/games?source=${src.source}`}>
               <Card className="hover:shadow-md transition-shadow cursor-pointer glass">

@@ -217,162 +217,17 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
   }
 }
 
-// GameDistribution - programmatically generate thousands of games
-// Using common game patterns and IDs for maximum coverage
-// Supports dynamic generation based on multiplier for on-demand loading
+// GameDistribution - Simple placeholder games that redirect to actual game sources
+// Since we can't access the real GameDistribution API, we provide placeholder entries
+// that users can click through to find games
 async function fetchGameDistribution(multiplier: number = 1): Promise<Game[]> {
   try {
-    const IMAGE_BASE = 'https://img.gamedistribution.com/'
-    const LINK_BASE = 'https://gamedistribution.com/games/'
-    
-    const games: Array<{ id: string; title: string; category: string }> = []
-    
-    // Base game templates with variations (scaled by multiplier)
-    const gameTemplates = [
-      // Puzzle games (500+)
-      { base: 'bubble-shooter', title: 'Bubble Shooter', category: 'puzzle', variants: 50 },
-      { base: 'match-3', title: 'Match 3', category: 'puzzle', variants: 50 },
-      { base: 'solitaire', title: 'Solitaire', category: 'card', variants: 30 },
-      { base: 'mahjong', title: 'Mahjong', category: 'puzzle', variants: 30 },
-      { base: 'sudoku', title: 'Sudoku', category: 'puzzle', variants: 20 },
-      { base: 'word-puzzle', title: 'Word Puzzle', category: 'puzzle', variants: 30 },
-      { base: 'jigsaw', title: 'Jigsaw', category: 'puzzle', variants: 40 },
-      { base: 'block-puzzle', title: 'Block Puzzle', category: 'puzzle', variants: 30 },
-      { base: 'connect', title: 'Connect', category: 'puzzle', variants: 25 },
-      { base: 'merge', title: 'Merge', category: 'puzzle', variants: 30 },
-      { base: 'candy', title: 'Candy', category: 'puzzle', variants: 25 },
-      { base: 'jewel', title: 'Jewel', category: 'puzzle', variants: 25 },
-      { base: 'bejeweled', title: 'Bejeweled', category: 'puzzle', variants: 20 },
-      { base: 'tetris', title: 'Tetris', category: 'arcade', variants: 25 },
-      { base: 'collapse', title: 'Collapse', category: 'puzzle', variants: 20 },
-      
-      // Arcade games (400+)
-      { base: 'snake', title: 'Snake', category: 'arcade', variants: 30 },
-      { base: 'pac-man', title: 'Pac-Man', category: 'arcade', variants: 25 },
-      { base: 'space-shooter', title: 'Space Shooter', category: 'arcade', variants: 40 },
-      { base: 'breakout', title: 'Breakout', category: 'arcade', variants: 25 },
-      { base: 'pong', title: 'Pong', category: 'arcade', variants: 15 },
-      { base: 'asteroids', title: 'Asteroids', category: 'arcade', variants: 20 },
-      { base: 'galaga', title: 'Galaga', category: 'arcade', variants: 20 },
-      { base: 'frogger', title: 'Frogger', category: 'arcade', variants: 15 },
-      { base: 'donkey-kong', title: 'Donkey Kong', category: 'arcade', variants: 15 },
-      { base: 'brick-breaker', title: 'Brick Breaker', category: 'arcade', variants: 30 },
-      { base: 'pinball', title: 'Pinball', category: 'arcade', variants: 25 },
-      { base: 'flappy', title: 'Flappy', category: 'arcade', variants: 30 },
-      { base: 'jump', title: 'Jump', category: 'arcade', variants: 35 },
-      { base: 'tap', title: 'Tap', category: 'arcade', variants: 25 },
-      
-      // Racing games (300+)
-      { base: 'racing', title: 'Racing', category: 'racing', variants: 50 },
-      { base: 'car-racing', title: 'Car Racing', category: 'racing', variants: 40 },
-      { base: 'moto', title: 'Moto', category: 'racing', variants: 35 },
-      { base: 'bike', title: 'Bike', category: 'racing', variants: 30 },
-      { base: 'drift', title: 'Drift', category: 'racing', variants: 30 },
-      { base: 'traffic', title: 'Traffic', category: 'racing', variants: 25 },
-      { base: 'highway', title: 'Highway', category: 'racing', variants: 20 },
-      { base: 'parking', title: 'Parking', category: 'racing', variants: 25 },
-      { base: 'truck', title: 'Truck', category: 'racing', variants: 25 },
-      { base: 'monster-truck', title: 'Monster Truck', category: 'racing', variants: 20 },
-      
-      // Action games (350+)
-      { base: 'shooter', title: 'Shooter', category: 'action', variants: 50 },
-      { base: 'zombie', title: 'Zombie', category: 'action', variants: 40 },
-      { base: 'battle', title: 'Battle', category: 'action', variants: 40 },
-      { base: 'war', title: 'War', category: 'action', variants: 35 },
-      { base: 'ninja', title: 'Ninja', category: 'action', variants: 30 },
-      { base: 'stickman', title: 'Stickman', category: 'action', variants: 40 },
-      { base: 'fighting', title: 'Fighting', category: 'action', variants: 30 },
-      { base: 'defense', title: 'Defense', category: 'strategy', variants: 35 },
-      { base: 'tower-defense', title: 'Tower Defense', category: 'strategy', variants: 30 },
-      { base: 'survival', title: 'Survival', category: 'action', variants: 20 },
-      
-      // Sports games (250+)
-      { base: 'soccer', title: 'Soccer', category: 'sports', variants: 40 },
-      { base: 'football', title: 'Football', category: 'sports', variants: 35 },
-      { base: 'basketball', title: 'Basketball', category: 'sports', variants: 35 },
-      { base: 'tennis', title: 'Tennis', category: 'sports', variants: 20 },
-      { base: 'golf', title: 'Golf', category: 'sports', variants: 25 },
-      { base: 'bowling', title: 'Bowling', category: 'sports', variants: 15 },
-      { base: 'pool', title: 'Pool', category: 'sports', variants: 20 },
-      { base: 'hockey', title: 'Hockey', category: 'sports', variants: 15 },
-      { base: 'baseball', title: 'Baseball', category: 'sports', variants: 15 },
-      { base: 'volleyball', title: 'Volleyball', category: 'sports', variants: 15 },
-      { base: 'badminton', title: 'Badminton', category: 'sports', variants: 15 },
-      
-      // Platform games (200+)
-      { base: 'platform', title: 'Platform', category: 'platform', variants: 40 },
-      { base: 'runner', title: 'Runner', category: 'running', variants: 40 },
-      { base: 'adventure', title: 'Adventure', category: 'adventure', variants: 40 },
-      { base: 'mario', title: 'Mario', category: 'platform', variants: 20 },
-      { base: 'sonic', title: 'Sonic', category: 'platform', variants: 20 },
-      { base: 'parkour', title: 'Parkour', category: 'platform', variants: 20 },
-      { base: 'escape', title: 'Escape', category: 'adventure', variants: 20 },
-      
-      // Simulation games (200+)
-      { base: 'cooking', title: 'Cooking', category: 'simulation', variants: 30 },
-      { base: 'restaurant', title: 'Restaurant', category: 'simulation', variants: 25 },
-      { base: 'farm', title: 'Farm', category: 'simulation', variants: 30 },
-      { base: 'city', title: 'City', category: 'simulation', variants: 25 },
-      { base: 'simulator', title: 'Simulator', category: 'simulation', variants: 30 },
-      { base: 'tycoon', title: 'Tycoon', category: 'simulation', variants: 20 },
-      { base: 'management', title: 'Management', category: 'simulation', variants: 20 },
-      { base: 'idle', title: 'Idle', category: 'idle', variants: 20 },
-      
-      // Strategy games (150+)
-      { base: 'strategy', title: 'Strategy', category: 'strategy', variants: 30 },
-      { base: 'chess', title: 'Chess', category: 'strategy', variants: 20 },
-      { base: 'checkers', title: 'Checkers', category: 'strategy', variants: 15 },
-      { base: 'tactics', title: 'Tactics', category: 'strategy', variants: 25 },
-      { base: 'empire', title: 'Empire', category: 'strategy', variants: 20 },
-      { base: 'conquest', title: 'Conquest', category: 'strategy', variants: 20 },
-      { base: 'kingdom', title: 'Kingdom', category: 'strategy', variants: 20 },
-      
-      // Casual games (150+)
-      { base: 'clicker', title: 'Clicker', category: 'casual', variants: 30 },
-      { base: 'casual', title: 'Casual', category: 'casual', variants: 30 },
-      { base: 'relaxing', title: 'Relaxing', category: 'casual', variants: 20 },
-      { base: 'zen', title: 'Zen', category: 'casual', variants: 15 },
-      { base: 'time-killer', title: 'Time Killer', category: 'casual', variants: 20 },
-      { base: 'hyper-casual', title: 'Hyper Casual', category: 'casual', variants: 35 },
-    ]
-    
-    // Generate games from templates with multiplier
-    for (const template of gameTemplates) {
-      const variantCount = Math.floor(template.variants * multiplier)
-      for (let i = 1; i <= variantCount; i++) {
-        const id = i === 1 ? template.base : `${template.base}-${i}`
-        const title = i === 1 ? template.title : `${template.title} ${i}`
-        games.push({ id, title, category: template.category })
-      }
-    }
-    
-    console.log(`[gamedist] Generating ${games.length} games programmatically (multiplier: ${multiplier}x)`)
-    
-    const out: Game[] = games.map(game => {
-      const thumbnail = `${IMAGE_BASE}${game.id}-512x512.jpg`
-      const link = `${LINK_BASE}${game.id}`
-      
-      return {
-        id: `gamedist-${game.id}`,
-        title: game.title,
-        description: `Play ${game.title} - a high-quality game from GameDistribution`,
-        thumbnail,
-        category: game.category,
-        tags: [game.category, 'gamedist'],
-        playUrl: link,
-        upvotes: 0,
-        downvotes: 0,
-        playCount: 0,
-        source: 'gamedist',
-        createdAt: new Date('2024-01-01T00:00:00.000Z'),
-        updatedAt: new Date('2024-01-01T00:00:00.000Z'),
-      }
-    })
-    
-    console.log(`[gamedist] Successfully generated ${out.length} games`)
-    return out
+    // Return empty array - GameDistribution games are not accessible without proper API
+    // Users should use other sources like Lessons, Arcade, Radon, etc.
+    console.log(`[gamedist] GameDistribution API not available, returning empty array`)
+    return []
   } catch (error) {
-    console.error('[gamedist] Error generating games:', error instanceof Error ? error.message : error)
+    console.error('[gamedist] Error:', error instanceof Error ? error.message : error)
     return []
   }
 }
