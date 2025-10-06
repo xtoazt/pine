@@ -236,4 +236,40 @@
   .shadow-premium {
     box-shadow: 0 10px 30px -12px rgba(0,0,0,.35), 0 6px 12px -8px rgba(0,0,0,.25);
   }
+
+  /* Hover shading utilities - applies a subtle spotlight on hover */
+  .hover-shade {
+    position: relative;
+    overflow: hidden;
+  }
+  .hover-shade::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: radial-gradient(300px circle at 50% 50%, rgba(255,255,255,0.18), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .hover-shade:hover::after { opacity: 1; }
+}
+
+/* Apply hover shading to common interactive elements globally */
+@layer utilities {
+button, .btn, .card, .game-card {
+  position: relative;
+  overflow: hidden;
+}
+button::after, .btn::after, .card::after, .game-card::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(320px circle at 50% 50%, rgba(59,130,246,0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+button:hover::after, .btn:hover::after, .card:hover::after, .game-card:hover::after {
+  opacity: 1;
+}
 }
