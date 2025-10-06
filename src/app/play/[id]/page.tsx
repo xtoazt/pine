@@ -191,10 +191,8 @@ export default function GamePage() {
           <Card>
             <CardContent className="p-0">
               <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
-                    <iframe
-                      src={game.playUrl.startsWith('/play/') 
-                        ? `/api/proxy/lessons/${gameId}` 
-                        : game.playUrl}
+                <iframe
+                  src={game.source === 'lessons' ? `/api/proxy/lessons/${gameId}` : game.playUrl}
                       className="w-full h-full border-0"
                       allowFullScreen
                       title={game.title}

@@ -8867,15 +8867,15 @@ export async function GET(request: NextRequest) {
       // Progressive budgets for most sources; s16 runs at full budget to ensure all titles are included gradually
       const gsOpts = { maxCheck: Math.min(100 + (page - 1) * 100, 500) }
       const gnOpts = { maxItems: Math.min(100 + (page - 1) * 150, 800) }
-      // Fetch ALL s16 seeds every request to expose the full ~20k catalog immediately
-      const s16Opts = { seedOffset: 0, seedLimit: 36, maxResults: 50000 }
+      // s16.lol legacy fetch disabled per new embed integration; list will not be fetched here
+      const s16Opts = { seedOffset: 0, seedLimit: 0, maxResults: 0 }
       const arcadeOpts = { maxPing: Math.min(50 + (page - 1) * 50, 200) }
       
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
         (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),
         (source === 'gnmath' || fetchAll) ? fetchGnMath(request.url, gnOpts) : Promise.resolve([]),
-        (source === 's16' || fetchAll) ? fetchS16Games(request.url, s16Opts) : Promise.resolve([]),
+        Promise.resolve([]),
         (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
         (source === 'arcade' || fetchAll) ? fetchArcadeGames(request.url, arcadeOpts) : Promise.resolve([])
       ])
@@ -8883,8 +8883,14 @@ export async function GET(request: NextRequest) {
       filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...s16Games, ...classworkGames, ...arcadeGames]
     }
 
-    // Filter: remove entries with obviously invalid play URLs
+    // Filter: remove entries with obviously invalid play URLs and dedupe by id and URL
     filteredGames = filteredGames.filter(g => g && g.playUrl)
+    const dedup = new Map<string, Game>()
+    for (const g of filteredGames) {
+      const key = g.id || g.playUrl
+      if (!dedup.has(key)) dedup.set(key, g)
+    }
+    filteredGames = Array.from(dedup.values())
 
     // Optional heavy verification (off by default to avoid timeouts and truncation)
     if (verify) {
@@ -8949,7 +8955,8 @@ export async function GET(request: NextRequest) {
         filteredGames.sort((a, b) => a.title.localeCompare(b.title))
         break
       default: // popular
-        filteredGames.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
+        // Prefer alphabetical for a consistent, neutral default browsing experience
+        filteredGames.sort((a, b) => a.title.localeCompare(b.title))
     }
 
     // Personalized re-ranking using user signals with diversity guardrails

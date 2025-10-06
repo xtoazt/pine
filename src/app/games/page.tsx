@@ -17,7 +17,7 @@ export default function GamesPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState('popular')
+  const [sortBy, setSortBy] = useState('alphabetical')
   const [loadedCount, setLoadedCount] = useState(0)
   const [totalGames, setTotalGames] = useState(0)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -52,7 +52,7 @@ export default function GamesPage() {
       const sourceParam = sourceFilter ? `&source=${sourceFilter}` : ''
 
       // Load games in chunks
-      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}&external=true`, {
+      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}&external=true&sortBy=${sortBy}`, {
         headers: buildUserSignalsHeaders()
       })
       const data = await response.json()
@@ -80,7 +80,7 @@ export default function GamesPage() {
   useEffect(() => {
     fetchGames(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page])
+  }, [page, sortBy])
 
   // Infinite scroll via IntersectionObserver (smooth + efficient)
   useEffect(() => {
