@@ -8,6 +8,34 @@
     transition: all var(--animation-speed, 0.2s) ease;
   }
   
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+  
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
   }
@@ -243,11 +271,22 @@
 
 /* Premium UI utilities */
 @layer utilities {
+  /* Liquid Glass Effects - iOS 26 inspired */
   .glass {
     @apply bg-white/60 dark:bg-white/5 backdrop-blur-md border border-white/60 dark:border-white/10 shadow-sm;
   }
   .glass-muted {
     @apply bg-white/50 dark:bg-white/5 backdrop-blur-lg border border-white/40 dark:border-white/10;
+  }
+  .liquid-glass {
+    @apply bg-white/70 dark:bg-white/8 backdrop-blur-xl border border-white/70 dark:border-white/15 shadow-lg;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+  .liquid-glass-strong {
+    @apply bg-white/80 dark:bg-white/10 backdrop-blur-2xl border border-white/80 dark:border-white/20 shadow-xl;
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
   }
   .pill {
     @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium glass;
@@ -265,6 +304,22 @@
   .dark .hero-gradient {
     background: radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.22), transparent 60%),
                 radial-gradient(800px 400px at 80% 0%, rgba(168,85,247,0.18), transparent 60%);
+  }
+  .hero-gradient-strong {
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.25), transparent 60%),
+                radial-gradient(800px 400px at 80% 0%, rgba(168,85,247,0.25), transparent 60%),
+                radial-gradient(600px 300px at 20% 50%, rgba(236,72,153,0.15), transparent 60%);
+  }
+  .dark .hero-gradient-strong {
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(59,130,246,0.28), transparent 60%),
+                radial-gradient(800px 400px at 80% 0%, rgba(168,85,247,0.25), transparent 60%),
+                radial-gradient(600px 300px at 20% 50%, rgba(236,72,153,0.18), transparent 60%);
+  }
+  .section-gradient {
+    background: radial-gradient(800px 400px at 50% 0%, rgba(59,130,246,0.12), transparent 70%);
+  }
+  .dark .section-gradient {
+    background: radial-gradient(800px 400px at 50% 0%, rgba(59,130,246,0.15), transparent 70%);
   }
   .shadow-premium {
     box-shadow: 0 10px 30px -12px rgba(0,0,0,.35), 0 6px 12px -8px rgba(0,0,0,.25);

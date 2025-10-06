@@ -67,7 +67,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 hero-gradient" />
+        <div className="absolute inset-0 hero-gradient-strong" />
         <div className="container py-16 md:py-24 relative">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <div className="flex justify-center">
@@ -102,7 +102,8 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="container pb-12">
+      <section className="container pb-12 relative">
+        <div className="absolute inset-0 -z-10 section-gradient" />
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Browse by Category</h2>
           <Button variant="ghost" asChild>
@@ -126,7 +127,8 @@ export default function HomePage() {
       </section>
 
       {/* Game Sources Section */}
-      <section className="container pb-12">
+      <section className="container pb-12 relative">
+        <div className="absolute inset-0 -z-10 section-gradient" />
         <h2 className="text-2xl font-bold mb-6">Browse by Source</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
@@ -153,7 +155,8 @@ export default function HomePage() {
       </section>
 
       {/* Featured Games */}
-      <section className="container pb-16">
+      <section className="container pb-16 relative">
+        <div className="absolute inset-0 -z-10 section-gradient" />
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Popular Games</h2>
           <Button variant="ghost" asChild>

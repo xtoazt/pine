@@ -1,16 +1,15 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import {
-  User,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  updateProfile,
-} from 'firebase/auth'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
-import { auth, db, isConfigured } from '@/lib/firebase'
+import { useUser, useStackApp } from "@stackframe/stack"
+import { sql } from '@/lib/neon'
+
+interface User {
+  id: string
+  email: string | null
+  displayName: string | null
+  photoURL: string | null
+}
 
 interface AuthContextType {
   user: User | null
@@ -31,79 +30,68 @@ const AuthContext = createContext<AuthContextType>({
 export const useAuth = () => useContext(AuthContext)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const stackUser = useUser()
+  const stackApp = useStackApp()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!isConfigured || !auth) {
-      setLoading(false)
-      return
+    if (stackUser) {
+      setUser({
+        id: stackUser.id,
+        email: stackUser.primaryEmail || null,
+        displayName: stackUser.displayName || stackUser.primaryEmail || null,
+        photoURL: stackUser.profileImageUrl || null,
+      })
+      
+      // Sync user to Neon database
+      syncUserToDatabase(stackUser).catch(console.error)
+    } else {
+      setUser(null)
     }
+    setLoading(false)
+  }, [stackUser])
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
-      setLoading(false)
-    })
-
-    return unsubscribe
-  }, [])
+  const syncUserToDatabase = async (stackUser: any) => {
+    try {
+      // Upsert user to Neon database
+      await fetch('/api/auth/sync-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: stackUser.id,
+          email: stackUser.primaryEmail,
+          displayName: stackUser.displayName || stackUser.primaryEmail,
+          photoUrl: stackUser.profileImageUrl,
+        }),
+      })
+    } catch (error) {
+      console.error('[auth] Error syncing user to database:', error)
+    }
+  }
 
   const signUp = async (username: string, password: string) => {
-    if (!isConfigured || !auth) {
-      throw new Error('Firebase is not configured. Please set up your environment variables.')
-    }
-
     try {
-      // Use username as email (username@pine.local) to avoid requiring real email
-      const email = `${username.toLowerCase()}@pine.local`
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      
-      // Update display name to username
-      await updateProfile(userCredential.user, {
-        displayName: username,
-      })
-
-      // Create user profile in Firestore
-      // db may be null on SSR; this runs on client after signup; guard just in case
-      if (db) await setDoc(doc(db, 'users', userCredential.user.uid), {
-        username,
-        createdAt: new Date().toISOString(),
-        level: 1,
-        xp: 0,
-        streak: 0,
-        lastPlayedDate: null,
-        gamesPlayed: 0,
-        totalPlayTime: 0,
-        achievements: [],
-        likedGames: [],
-      })
+      // Stack Auth handles signup via their UI components
+      // This is a placeholder for compatibility
+      throw new Error('Please use the Stack Auth signup UI')
     } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        throw new Error('Username already taken')
-      }
       throw error
     }
   }
 
   const signIn = async (username: string, password: string) => {
-    if (!isConfigured || !auth) {
-      throw new Error('Firebase is not configured. Please set up your environment variables.')
-    }
-
     try {
-      const email = `${username.toLowerCase()}@pine.local`
-      await signInWithEmailAndPassword(auth, email, password)
+      // Stack Auth handles signin via their UI components
+      // This is a placeholder for compatibility
+      throw new Error('Please use the Stack Auth signin UI')
     } catch (error: any) {
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        throw new Error('Invalid username or password')
-      }
       throw error
     }
   }
 
   const signOut = async () => {
-    if (!isConfigured || !auth) return
-    await firebaseSignOut(auth)
+    await stackApp.signOut()
   }
 
   return (

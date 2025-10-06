@@ -14,6 +14,31 @@ function buildCacheKey(urlStr: string): string {
 }
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
 
+// Helper function to validate if a game is likely to work
+function isValidGame(game: Game): boolean {
+  // Must have required fields
+  if (!game.id || !game.title || !game.playUrl) return false
+  
+  // Filter out games with invalid URLs
+  try {
+    const url = new URL(game.playUrl, 'https://example.com')
+    if (!url.protocol.startsWith('http')) return false
+  } catch {
+    return false
+  }
+  
+  // Filter out games with placeholder/broken thumbnails
+  if (game.thumbnail && (
+    game.thumbnail.includes('placeholder') ||
+    game.thumbnail.includes('404') ||
+    game.thumbnail.includes('not-found')
+  )) {
+    return true // Still allow, just no thumbnail
+  }
+  
+  return true
+}
+
 async function fetchGameMonetizeGames(baseUrl: string): Promise<Game[]> {
   try {
     const url = new URL('/api/gamemonetize/games', baseUrl).toString()
@@ -200,8 +225,8 @@ async function fetchGnMath(baseUrl: string, options?: { maxItems?: number }): Pr
 // Arcade CMS (GameMonetize) source
 async function fetchArcadeGames(baseUrl: string, options?: { maxPing?: number }): Promise<Game[]> {
   try {
-    // Fetch ALL games from GameMonetize feed (JSON format) - up to 5000!
-    const feedUrl = 'https://gamemonetize.com/feed.php?format=0&num=5000'
+    // Fetch ALL games from GameMonetize feed (JSON format) - up to 20000!
+    const feedUrl = 'https://gamemonetize.com/feed.php?format=0&num=20000'
     const res = await fetch(feedUrl, { cache: 'no-store' })
     if (!res.ok) return []
     const list: any[] = await res.json()
@@ -9124,8 +9149,8 @@ export async function GET(request: NextRequest) {
       filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...gamedistGames, ...classworkGames, ...arcadeGames, ...playgamaGames, ...pokiGames, ...gamemonetizeGames]
     }
 
-    // Filter: remove entries with obviously invalid play URLs and dedupe by id and URL
-    filteredGames = filteredGames.filter(g => g && g.playUrl)
+    // Filter: remove entries with obviously invalid play URLs and validate games
+    filteredGames = filteredGames.filter(g => g && g.playUrl && isValidGame(g))
     // Prefer direct HTTPS links: avoid proxy if the URL is already absolute and same-origin/cross-origin allowed
     filteredGames = filteredGames.map(g => {
       try {

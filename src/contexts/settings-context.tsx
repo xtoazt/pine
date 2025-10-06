@@ -32,6 +32,7 @@ interface Settings {
   soundEnabled: boolean
   vibrationEnabled: boolean
   hapticFeedback: boolean
+  gameLimit: number // Max games to load per source
   
   // Privacy settings
   enableCloaking: boolean
@@ -63,6 +64,7 @@ const defaultSettings: Settings = {
   soundEnabled: true,
   vibrationEnabled: false,
   hapticFeedback: true,
+  gameLimit: 20000, // Default to 20,000 games per source
   enableCloaking: true,
   rememberPreferences: true,
   analytics: false,

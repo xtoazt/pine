@@ -15,7 +15,7 @@ async function loadGameMonetizeGames(): Promise<Game[]> {
 
   try {
     console.log('[gamemonetize-api] Fetching games from GameMonetize...')
-    const response = await fetch('https://gamemonetize.com/feed.php', {
+    const response = await fetch('https://gamemonetize.com/feed.php?num=20000', {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
       }
