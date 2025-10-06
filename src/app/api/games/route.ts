@@ -14,6 +14,34 @@ function buildCacheKey(urlStr: string): string {
 }
 import { Game, GameSearchParams, GameApiResponse } from '@/types/game'
 
+async function fetchGameMonetizeGames(baseUrl: string): Promise<Game[]> {
+  try {
+    const url = new URL('/api/gamemonetize/games', baseUrl).toString()
+    const res = await fetch(url, { cache: 'force-cache' })
+    if (!res.ok) return []
+    const data = await res.json()
+    if (!data.success || !Array.isArray(data.games)) return []
+    return data.games
+  } catch (error) {
+    console.error('[gamemonetize] Error fetching games:', error)
+    return []
+  }
+}
+
+async function fetchPokiGames(baseUrl: string): Promise<Game[]> {
+  try {
+    const url = new URL('/api/poki/games', baseUrl).toString()
+    const res = await fetch(url, { cache: 'force-cache' })
+    if (!res.ok) return []
+    const data = await res.json()
+    if (!data.success || !Array.isArray(data.games)) return []
+    return data.games
+  } catch (error) {
+    console.error('[poki] Error fetching games:', error)
+    return []
+  }
+}
+
 async function fetchPlayGamaGames(baseUrl: string): Promise<Game[]> {
   try {
     const url = new URL('/api/playgama/games', baseUrl).toString()
@@ -127,16 +155,8 @@ async function fetchGameSnacks(baseUrl: string, options?: { maxCheck?: number })
         updatedAt: new Date('2024-01-01T00:00:00.000Z'),
       }
     })
-    // Filter by pinging via DS proxy (limit checks to speed up)
-    const filtered: Game[] = []
-    const maxCheck = Math.max(50, Math.min(500, options?.maxCheck ?? 300))
-    for (const g of games.slice(0, maxCheck)) {
-      try {
-        const ping = await fetch(`${new URL('/api/ds/proxy', baseUrl)}?url=${encodeURIComponent(`https://gamesnacks.com/games/${g.id.replace(/^gs-/, '')}`)}&ping=1`, { cache: 'no-store' })
-        if (ping.ok) filtered.push(g)
-      } catch {}
-    }
-    return filtered
+    // Return ALL GameSnacks games without ping checks for speed
+    return games
   } catch {
     return []
   }
@@ -151,12 +171,10 @@ async function fetchGnMath(baseUrl: string, options?: { maxItems?: number }): Pr
     const data = await res.json()
     const ids: string[] = Array.isArray(data.ids) ? data.ids : []
     const games: Game[] = []
-    const maxItems = Math.max(100, Math.min(800, options?.maxItems ?? 400))
+    const maxItems = options?.maxItems ?? 99999 // No artificial limits
     for (const id of ids.slice(0, maxItems)) {
       const raw = `https://cdn.jsdelivr.net/gh/gn-math/html@main/${id}.html`
-      // ping via DS proxy
-      const ping = await fetch(new URL(`/api/ds/proxy?url=${encodeURIComponent(raw)}&ping=1`, baseUrl).toString(), { cache: 'no-store' })
-      if (!ping.ok) continue
+      // No ping checks - return ALL games for speed
       games.push({
         id: `gn-${id}`,
         title: id.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
@@ -182,8 +200,8 @@ async function fetchGnMath(baseUrl: string, options?: { maxItems?: number }): Pr
 // Arcade CMS (GameMonetize) source
 async function fetchArcadeGames(baseUrl: string, options?: { maxPing?: number }): Promise<Game[]> {
   try {
-    // Fetch up to 1000 games from GameMonetize feed (JSON format)
-    const feedUrl = 'https://gamemonetize.com/feed.php?format=0&num=1000'
+    // Fetch ALL games from GameMonetize feed (JSON format) - up to 5000!
+    const feedUrl = 'https://gamemonetize.com/feed.php?format=0&num=5000'
     const res = await fetch(feedUrl, { cache: 'no-store' })
     if (!res.ok) return []
     const list: any[] = await res.json()
@@ -216,20 +234,8 @@ async function fetchArcadeGames(baseUrl: string, options?: { maxPing?: number })
       }
     })
 
-    // Optional quick ping to remove obviously dead links (limit to first 200 to keep fast)
-    const maxPing = Math.max(40, Math.min(200, options?.maxPing ?? 200))
-    const filtered: Game[] = []
-    for (let i = 0; i < games.length; i++) {
-      const g = games[i]
-      if (i >= maxPing) { filtered.push(g); continue }
-      try {
-        const ping = await fetch(new URL(`/api/ds/proxy?url=${encodeURIComponent(g.playUrl.replace(/^\/api\/ds\/proxy\?url=/, ''))}&ping=1`, baseUrl).toString(), { cache: 'no-store' })
-        if (ping.ok) filtered.push(g)
-      } catch {
-        // skip
-      }
-    }
-    return filtered
+    // GameMonetize games are reliable - return ALL without ping checks for speed
+    return games
   } catch {
     return []
   }
@@ -9094,27 +9100,28 @@ export async function GET(request: NextRequest) {
       // Fetch ALL external sources in parallel for complete game library
       const fetchAll = !source && !sourcesCsv // Fetch all sources unless specific sources are requested
 
-      // Progressive budgets for most sources; s16 runs at full budget to ensure all titles are included gradually
-      const gsOpts = { maxCheck: Math.min(100 + (page - 1) * 100, 500) }
-      const gnOpts = { maxItems: Math.min(100 + (page - 1) * 150, 800) }
-      // s16 via Bread-org embed API
-      const arcadeOpts = { maxPing: Math.min(50 + (page - 1) * 50, 200) }
+      // MAXIMUM budgets for all sources - fetch EVERYTHING!
+      const gsOpts = { maxCheck: 99999 } // GameSnacks: fetch all games
+      const gnOpts = { maxItems: 99999 } // gn-math: fetch all games
+      const arcadeOpts = { maxPing: 99999 } // Arcade: fetch all games
       const requested = new Set<string>()
       if (source) requested.add(source)
       if (sourcesCsv) sourcesCsv.split(',').map(s => s.trim()).filter(Boolean).forEach(s => requested.add(s))
       const want = (name: string) => requested.size ? requested.has(name) : true
       
-      const [radonGames, gsGames, gnGames, gamedistGames, classworkGames, arcadeGames, playgamaGames] = await Promise.all([
+      const [radonGames, gsGames, gnGames, gamedistGames, classworkGames, arcadeGames, playgamaGames, pokiGames, gamemonetizeGames] = await Promise.all([
         (want('radon') || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
         (want('gamesnacks') || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),
         (want('gnmath') || fetchAll) ? fetchGnMath(request.url, gnOpts) : Promise.resolve([]),
         (want('gamedist') || want('s16') || fetchAll) ? fetchGameDistribution(gamedistMultiplier) : Promise.resolve([]),
         (want('classwork') || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
         (want('arcade') || fetchAll) ? fetchArcadeGames(request.url, arcadeOpts) : Promise.resolve([]),
-        (want('playgama') || fetchAll) ? fetchPlayGamaGames(request.url) : Promise.resolve([])
+        (want('playgama') || fetchAll) ? fetchPlayGamaGames(request.url) : Promise.resolve([]),
+        (want('poki') || fetchAll) ? fetchPokiGames(request.url) : Promise.resolve([]),
+        (want('gamemonetize') || fetchAll) ? fetchGameMonetizeGames(request.url) : Promise.resolve([])
       ])
 
-      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...gamedistGames, ...classworkGames, ...arcadeGames, ...playgamaGames]
+      filteredGames = [...filteredGames, ...radonGames, ...gsGames, ...gnGames, ...gamedistGames, ...classworkGames, ...arcadeGames, ...playgamaGames, ...pokiGames, ...gamemonetizeGames]
     }
 
     // Filter: remove entries with obviously invalid play URLs and dedupe by id and URL

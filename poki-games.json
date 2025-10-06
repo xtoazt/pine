@@ -1,0 +1,1907 @@
+{
+  "games": [
+    {
+      "id": 31151,
+      "developer": "Devortel",
+      "mobile": true,
+      "title": "Vortella's Dress Up",
+      "type": "game",
+      "image": {
+        "path": "cc8d72d8e322d70bfa8ccd3e1d13e58c/vortellas-dress-up.png"
+      },
+      "url": "/en/g/vortellas-dress-up",
+      "slug": "vortellas-dress-up",
+      "animatedThumbnail": "c8b58fa1-0481-42d0-bb7f-800241ecbbfc/thumbnail"
+    },
+    {
+      "id": 29724,
+      "developer": "New Star Games",
+      "mobile": true,
+      "title": "Retro Bowl",
+      "type": "game",
+      "image": {
+        "path": "ee9ca3764ef4289a48a1ebf457ef605441ed1f35a0f2eb12707a70d609e53686/retro-bowl.png"
+      },
+      "url": "/en/g/retro-bowl",
+      "slug": "retro-bowl",
+      "animatedThumbnail": "be86cc01-e4d5-4bcf-a44b-59b8086bb0f2/thumbnail"
+    },
+    {
+      "id": 29160,
+      "developer": "SYBO",
+      "mobile": true,
+      "title": "Subway Surfers",
+      "type": "game",
+      "image": {
+        "path": "919c9f04db0404cf69fddf9c01e31d91/subway-surfers.png"
+      },
+      "url": "/en/g/subway-surfers",
+      "slug": "subway-surfers",
+      "animatedThumbnail": "ece10206-058e-4146-9776-acd08a7f69ae/thumbnail"
+    },
+    {
+      "id": 31662,
+      "developer": "PocketHaven",
+      "mobile": true,
+      "title": "Rumble Rush",
+      "type": "game",
+      "image": {
+        "path": "dfb6f8fec052188e9af1285d63886603/rumble-rush.png"
+      },
+      "url": "/en/g/rumble-rush",
+      "slug": "rumble-rush",
+      "isNew": true,
+      "animatedThumbnail": "a536b8c7-e949-4284-b092-206dda6fbaf6/thumbnail"
+    },
+    {
+      "id": 30813,
+      "developer": "Ericetto",
+      "mobile": true,
+      "title": "Ragdoll Hit",
+      "type": "game",
+      "image": {
+        "path": "3c892779be9dabb3589586c83ad3eeed/ragdoll-hit.png"
+      },
+      "url": "/en/g/ragdoll-hit",
+      "slug": "ragdoll-hit",
+      "animatedThumbnail": "522f849f-b693-492a-aa5f-3325b8fe4c6b/thumbnail"
+    },
+    {
+      "id": 30370,
+      "developer": "Fancade",
+      "mobile": true,
+      "title": "Drive Mad",
+      "type": "game",
+      "image": {
+        "path": "a4de0b7936e98f0843e8ef40a428ee2e/drive-mad.png"
+      },
+      "url": "/en/g/drive-mad",
+      "slug": "drive-mad",
+      "animatedThumbnail": "4f583cc3-ab36-48af-af0e-5fb92943e6ac/thumbnail"
+    },
+    {
+      "id": 31113,
+      "developer": "Vectaria",
+      "mobile": true,
+      "title": "MineFun.io",
+      "type": "game",
+      "image": {
+        "path": "7103a8ff84b3c02b67472c49182353b5/minefun-io.jfif"
+      },
+      "url": "/en/g/minefun-io",
+      "slug": "minefun-io",
+      "animatedThumbnail": "9485c56d-2a11-4026-a0de-a58597de2e02/thumbnail"
+    },
+    {
+      "id": 29145,
+      "developer": "Madbox",
+      "mobile": true,
+      "title": "Stickman Hook",
+      "type": "game",
+      "image": {
+        "path": "99e090d154caf30f3625df7e456d5984/stickman-hook.png"
+      },
+      "url": "/en/g/stickman-hook",
+      "slug": "stickman-hook",
+      "animatedThumbnail": "c5bfe826-608c-4fa4-8ab2-82c07fe27c0d/thumbnail"
+    },
+    {
+      "id": 30755,
+      "developer": "OPlay Games",
+      "mobile": true,
+      "title": "Blocky Blast Puzzle",
+      "type": "game",
+      "image": {
+        "path": "291aaf2dcf5c1322558a9c038b3c5251/blocky-blast-puzzle.png"
+      },
+      "url": "/en/g/blocky-blast-puzzle",
+      "slug": "blocky-blast-puzzle",
+      "animatedThumbnail": "2d80a3e1-88f3-43f9-8929-59e697789a01/thumbnail"
+    },
+    {
+      "id": 31613,
+      "developer": "bedbed games",
+      "mobile": true,
+      "title": "SnapStyle Dress Up",
+      "type": "game",
+      "image": {
+        "path": "e5de879e1b8c80635496b498eceb18fa/snapstyle-dress-up.png"
+      },
+      "imageAlt": {
+        "path": "a176690cad2a4a1018a864f490cb7764.png"
+      },
+      "url": "/en/g/snapstyle-dress-up",
+      "slug": "snapstyle-dress-up",
+      "animatedThumbnail": "af5b3dbe-4833-4d25-acbb-2a9a5247f498/thumbnail"
+    },
+    {
+      "id": 30668,
+      "developer": "Unept",
+      "mobile": true,
+      "title": "Level Devil",
+      "type": "game",
+      "image": {
+        "path": "0c3d1446c6992c2b88a9498de054688b/level-devil.png"
+      },
+      "url": "/en/g/level-devil",
+      "slug": "level-devil",
+      "animatedThumbnail": "ce9a2560-460c-4716-847b-37255ffd05ce/thumbnail"
+    },
+    {
+      "id": 31560,
+      "developer": "Camu",
+      "mobile": true,
+      "title": "Harvest Simulator",
+      "type": "game",
+      "image": {
+        "path": "650c30540036f907df04798e2a13c4be/harvest-simulator.png"
+      },
+      "url": "/en/g/harvest-simulator",
+      "slug": "harvest-simulator",
+      "animatedThumbnail": "e6df1fda-f50e-4a5b-9aea-77b3f4a38295/thumbnail"
+    },
+    {
+      "id": 31626,
+      "developer": "Gametornado",
+      "mobile": true,
+      "title": "Plonky",
+      "type": "game",
+      "image": {
+        "path": "29b55519208e4f2e8476096721a2f9fa/plonky.jfif"
+      },
+      "url": "/en/g/plonky",
+      "slug": "plonky",
+      "animatedThumbnail": "e6163cb8-b5b6-4bff-895c-083b8b8534bb/thumbnail"
+    },
+    {
+      "id": 25273,
+      "developer": "Madpuffers",
+      "mobile": true,
+      "title": "Moto X3M",
+      "type": "game",
+      "image": {
+        "path": "2c6d5a46cdbceada277c870ce1c389ee/moto-x3m.jpg"
+      },
+      "url": "/en/g/moto-x3m",
+      "slug": "moto-x3m",
+      "animatedThumbnail": "f4fe71f2-e527-474f-a0d7-2ebbf910f128/thumbnail"
+    },
+    {
+      "id": 29704,
+      "developer": "Tall Team",
+      "mobile": false,
+      "title": "Smash Karts",
+      "type": "game",
+      "image": {
+        "path": "9c9e529b14731be871b07b89660bbc2a/smash-karts.png"
+      },
+      "url": "/en/g/smash-karts",
+      "slug": "smash-karts",
+      "animatedThumbnail": "955f0bb1-0222-485d-8fa9-88343588b0c3/thumbnail"
+    },
+    {
+      "id": 31069,
+      "developer": "Hyperkani",
+      "mobile": true,
+      "title": "Stunt Bike Extreme",
+      "type": "game",
+      "image": {
+        "path": "d115380307564d68096317ffd29cbcf9/stunt-bike-extreme.png"
+      },
+      "url": "/en/g/stunt-bike-extreme",
+      "slug": "stunt-bike-extreme",
+      "animatedThumbnail": "0174ab7b-aff3-454f-8b5b-798afd79e796/thumbnail"
+    },
+    {
+      "id": 29316,
+      "developer": "Madpuffers",
+      "mobile": true,
+      "title": "Basketball Stars",
+      "type": "game",
+      "image": {
+        "path": "bc02c9cdfc5b424ddf343b01edf791ce/basketball-stars.png"
+      },
+      "url": "/en/g/basketball-stars",
+      "slug": "basketball-stars",
+      "animatedThumbnail": "470d0dc8-446b-44f4-a946-6f2cc0d30f8c/thumbnail"
+    },
+    {
+      "id": 30779,
+      "developer": "ChennaiGames",
+      "mobile": true,
+      "title": "MR RACER - Car Racing",
+      "type": "game",
+      "image": {
+        "path": "972a0e3dabb998d2fb8fce785e2c1fa4/mr-racer-car-racing.jfif"
+      },
+      "url": "/en/g/mr-racer-car-racing",
+      "slug": "mr-racer-car-racing",
+      "animatedThumbnail": "47dc53d9-a460-406a-8864-a88ea4e2a27c/thumbnail"
+    },
+    {
+      "id": 30219,
+      "developer": "LAK Games",
+      "mobile": true,
+      "title": "Bubble Shooter",
+      "type": "game",
+      "image": {
+        "path": "2d5e417ea0fc1ef06d746b2cef691c07/bubble-shooter-lak.png"
+      },
+      "url": "/en/g/bubble-shooter-lak",
+      "slug": "bubble-shooter-lak",
+      "animatedThumbnail": "1dc67bde-42e1-4479-8b7e-b5cfefa0a04f/thumbnail"
+    },
+    {
+      "id": 30475,
+      "developer": "TinyDobbins",
+      "mobile": true,
+      "title": "Monkey Mart",
+      "type": "game",
+      "image": {
+        "path": "ce4a204b6d2cc99d1879da0b2282b0d8/monkey-mart.png"
+      },
+      "url": "/en/g/monkey-mart",
+      "slug": "monkey-mart",
+      "animatedThumbnail": "3b89c128-c39f-4c3f-86aa-4e6c26c08986/thumbnail"
+    },
+    {
+      "id": 30642,
+      "developer": "New Star Games",
+      "mobile": true,
+      "title": "Retro Bowl College",
+      "type": "game",
+      "image": {
+        "path": "d98547374c4129bf441b754d495e41aa/retro-bowl-college.png"
+      },
+      "url": "/en/g/retro-bowl-college",
+      "slug": "retro-bowl-college",
+      "animatedThumbnail": "63e4d4be-021b-4241-91a0-d33e6fe5bc74/thumbnail"
+    },
+    {
+      "id": 30590,
+      "developer": "Vectaria",
+      "mobile": true,
+      "title": "Vectaria.io",
+      "type": "game",
+      "image": {
+        "path": "260f3251a55c78a27fd15b9e4d675f88/vectaria-io.png"
+      },
+      "url": "/en/g/vectaria-io",
+      "slug": "vectaria-io",
+      "animatedThumbnail": "eda19fa5-c0ec-4a61-b325-2a927d715fac/thumbnail"
+    },
+    {
+      "id": 31470,
+      "developer": "Steelpan Interactive",
+      "mobile": true,
+      "title": "Blacktop: Police Chase",
+      "type": "game",
+      "image": {
+        "path": "5c613c3572ec23612e351745bc986579/blacktop-police-chase.png"
+      },
+      "url": "/en/g/blacktop-police-chase",
+      "slug": "blacktop-police-chase",
+      "animatedThumbnail": "ae665feb-f2a8-45e8-9d36-56d18393649d/thumbnail"
+    },
+    {
+      "id": 30942,
+      "developer": "SayGames",
+      "mobile": true,
+      "title": "My Perfect Hotel",
+      "type": "game",
+      "image": {
+        "path": "f39e22538799cae88cf1a630492c2e7b/my-perfect-hotel.png"
+      },
+      "url": "/en/g/my-perfect-hotel",
+      "slug": "my-perfect-hotel",
+      "animatedThumbnail": "9233b66a-7c0d-4bb0-a714-26474faa7899/thumbnail"
+    },
+    {
+      "id": 31654,
+      "developer": "WeLoPlay",
+      "mobile": true,
+      "title": "Beauty Salon",
+      "type": "game",
+      "image": {
+        "path": "9ed4bc217ce6575d89ff7592fe0d1d1f/beauty-salon.png"
+      },
+      "url": "/en/g/beauty-salon",
+      "slug": "beauty-salon",
+      "animatedThumbnail": "728594af-4e9e-44ae-841f-a9e93aa1bf2d/thumbnail"
+    },
+    {
+      "id": 31690,
+      "developer": "Happylander Ltd",
+      "mobile": true,
+      "title": "Diva Hair Salon",
+      "type": "game",
+      "image": {
+        "path": "907bfca6f81f5cd78cddeed3eb2da6e6/diva-hair-salon.png"
+      },
+      "url": "/en/g/diva-hair-salon",
+      "slug": "diva-hair-salon",
+      "animatedThumbnail": "d74a7772-3327-473b-a53e-91f94878510c/thumbnail"
+    },
+    {
+      "id": 30677,
+      "developer": "yeqwep",
+      "mobile": true,
+      "title": "Watermelon Drop",
+      "type": "game",
+      "image": {
+        "path": "02018885c1521dd2830683a0ecc86440/watermelon-drop.png"
+      },
+      "url": "/en/g/watermelon-drop",
+      "slug": "watermelon-drop",
+      "animatedThumbnail": "c5ec3309-255a-480c-bfe0-f7762d9ec496/thumbnail"
+    },
+    {
+      "id": 31694,
+      "developer": "Bun Muen",
+      "mobile": true,
+      "title": "Beach Boxing Simulator",
+      "type": "game",
+      "image": {
+        "path": "1f078f05628627b5f931c76a37c5ea0b/beach-boxing-simulator.png"
+      },
+      "url": "/en/g/beach-boxing-simulator",
+      "slug": "beach-boxing-simulator",
+      "isNew": true,
+      "animatedThumbnail": "631f9d3b-3856-4ba1-865c-280758e91afb/thumbnail"
+    },
+    {
+      "id": 31551,
+      "developer": "Seal Unicorn Games",
+      "mobile": true,
+      "title": "Hexellent",
+      "type": "game",
+      "image": {
+        "path": "62533211110f778fe551b19ef1739b13/hexellent.png"
+      },
+      "url": "/en/g/hexellent",
+      "slug": "hexellent",
+      "animatedThumbnail": "16c1f488-c9ed-48f4-9f72-c8692d378360/thumbnail"
+    },
+    {
+      "id": 31597,
+      "developer": "Lion Studios",
+      "mobile": true,
+      "title": "The Superhero League",
+      "type": "game",
+      "image": {
+        "path": "12e6734dd1a38ff6f99f17615234bb0d/the-superhero-league.jfif"
+      },
+      "url": "/en/g/the-superhero-league",
+      "slug": "the-superhero-league",
+      "animatedThumbnail": "225c1381-ce23-42fd-9545-3ddb3ca9e065/thumbnail"
+    },
+    {
+      "id": 30067,
+      "developer": "ninjamuffin99",
+      "mobile": false,
+      "title": "Friday Night Funkin'",
+      "type": "game",
+      "image": {
+        "path": "0cd0c8bc4dc15c069dba7ccfb6809f6d/friday-night-funkin.png"
+      },
+      "url": "/en/g/friday-night-funkin",
+      "slug": "friday-night-funkin",
+      "animatedThumbnail": "a792a470-3ee5-48f9-86be-7c9364a0f21b/thumbnail"
+    },
+    {
+      "id": 29100,
+      "developer": "Pixel Voices",
+      "mobile": true,
+      "title": "EvoWorld io (FlyOrDie io)",
+      "type": "game",
+      "image": {
+        "path": "4617d96c-ae80-40a7-91d8-b5670a994084/flyordie-io.png"
+      },
+      "url": "/en/g/flyordie-io",
+      "slug": "flyordie-io",
+      "animatedThumbnail": "9cb72126-3790-4c43-8412-63a20acad889/thumbnail"
+    },
+    {
+      "id": 30613,
+      "developer": "igamebank",
+      "mobile": true,
+      "title": "2 Minute Football Classic",
+      "type": "game",
+      "image": {
+        "path": "0055cb54204490d1d9a65764f99a3884/2-minute-football-classic.png"
+      },
+      "url": "/en/g/2-minute-football-classic",
+      "slug": "2-minute-football-classic",
+      "animatedThumbnail": "968b17e3-1d3d-4e66-a046-c9dc032d29e9/thumbnail"
+    },
+    {
+      "id": 30133,
+      "developer": "Nicky Case",
+      "mobile": true,
+      "title": "We Become What We Behold",
+      "type": "game",
+      "image": {
+        "path": "a0929e5428c5af2666c9eeb3a0441d4c/we-become-what-we-behold.png"
+      },
+      "url": "/en/g/we-become-what-we-behold",
+      "slug": "we-become-what-we-behold",
+      "animatedThumbnail": "899cd46e-90ca-4709-b542-86bd82c631cf/thumbnail"
+    },
+    {
+      "id": 31723,
+      "developer": "Camu",
+      "mobile": true,
+      "title": "Snow Plow",
+      "type": "game",
+      "image": {
+        "path": "dd587d4c90be6c77374679bdc1ddd04b/snow-plow.png"
+      },
+      "url": "/en/g/snow-plow",
+      "slug": "snow-plow",
+      "animatedThumbnail": "cfe6f5fe-28cc-4338-b34e-58229806c8e1/thumbnail"
+    },
+    {
+      "id": 31652,
+      "developer": "TapMen",
+      "mobile": true,
+      "title": "Merge Rot",
+      "type": "game",
+      "image": {
+        "path": "3e92543f8da9377e8a084c22ab89fcd5/merge-rot.png"
+      },
+      "url": "/en/g/merge-rot",
+      "slug": "merge-rot",
+      "animatedThumbnail": "e2f2c5ec-509b-49dc-987c-2b0149b668e8/thumbnail"
+    },
+    {
+      "id": 31510,
+      "developer": "graebor",
+      "mobile": false,
+      "title": "Sort the Court!",
+      "type": "game",
+      "image": {
+        "path": "4db98e10c6b684ae745734866bbe0800/sort-the-court.png"
+      },
+      "url": "/en/g/sort-the-court",
+      "slug": "sort-the-court",
+      "animatedThumbnail": "26b04a3a-a513-4204-ac2e-5b75577a610b/thumbnail"
+    },
+    {
+      "id": 31660,
+      "developer": "Slurpcanon",
+      "mobile": true,
+      "title": "Buck Bounce",
+      "type": "game",
+      "image": {
+        "path": "e324e339f0597d79434efceb82cc0766/buck-bounce.png"
+      },
+      "url": "/en/g/buck-bounce",
+      "slug": "buck-bounce",
+      "isNew": true,
+      "animatedThumbnail": "caebeb23-24b0-43b2-a00c-910536b77e03/thumbnail"
+    },
+    {
+      "id": 23233,
+      "developer": "Studio Seufz",
+      "mobile": true,
+      "title": "Murder",
+      "type": "game",
+      "image": {
+        "path": "baccf9660bfb476fe2c8ae9f5a2ec4d2/murder.png"
+      },
+      "url": "/en/g/murder",
+      "slug": "murder",
+      "animatedThumbnail": "38868ac2-e824-48a5-94d5-8430c881ad54/thumbnail"
+    },
+    {
+      "id": 29703,
+      "developer": "Potato Jam",
+      "mobile": true,
+      "title": "Solitaire Klondike 2.0",
+      "type": "game",
+      "image": {
+        "path": "c110f8d8e6636aeef627d8ab226f3366/solitaire-klondike-2.png"
+      },
+      "url": "/en/g/solitaire-klondike-2",
+      "slug": "solitaire-klondike-2",
+      "animatedThumbnail": "82e1303f-1924-4756-bf86-bd07c93c1bce/thumbnail"
+    },
+    {
+      "id": 29767,
+      "developer": "Unico Studio",
+      "mobile": true,
+      "title": "Brain Test: Tricky Puzzles",
+      "type": "game",
+      "image": {
+        "path": "f262d83ee394fcf98b378674e1430bfd/brain-test-tricky-puzzles.png"
+      },
+      "url": "/en/g/brain-test-tricky-puzzles",
+      "slug": "brain-test-tricky-puzzles",
+      "animatedThumbnail": "6e58374e-d9d5-4bf5-a3f8-9bf656f5cf13/thumbnail"
+    },
+    {
+      "id": 31402,
+      "developer": "Cosmonautic Games",
+      "mobile": true,
+      "title": "Cat Pizza",
+      "type": "game",
+      "image": {
+        "path": "e7100e0152b92189973e15764b50395a/cat-pizza.jfif"
+      },
+      "url": "/en/g/cat-pizza",
+      "slug": "cat-pizza",
+      "animatedThumbnail": "870301bf-b1a7-4b17-9370-9cc4fcbb07c6/thumbnail"
+    },
+    {
+      "id": 29538,
+      "developer": "Terminarch Games",
+      "mobile": true,
+      "title": "Sushi Party",
+      "type": "game",
+      "image": {
+        "path": "e327f46027899af3e9573ef51450bb54/sushi-party-io.png"
+      },
+      "url": "/en/g/sushi-party-io",
+      "slug": "sushi-party-io",
+      "animatedThumbnail": "ff8cf01c-b2b7-43ef-ac7c-2e8f355db89f/thumbnail"
+    },
+    {
+      "id": 31438,
+      "developer": "ZnK Games",
+      "mobile": true,
+      "title": "Scary Teacher 3D",
+      "type": "game",
+      "image": {
+        "path": "ef999c8420c11a5243237168e8128d5d/scary-teacher-3d.png"
+      },
+      "url": "/en/g/scary-teacher-3d",
+      "slug": "scary-teacher-3d",
+      "animatedThumbnail": "5445cbb6-b1fc-4877-bad3-a60d82658f6d/thumbnail"
+    },
+    {
+      "id": 30038,
+      "developer": "Unico Studio",
+      "mobile": true,
+      "title": "Who Is?",
+      "type": "game",
+      "image": {
+        "path": "373740bfb89dd3e6c1fb96674148e806/who-is.png"
+      },
+      "url": "/en/g/who-is",
+      "slug": "who-is",
+      "animatedThumbnail": "6f34788b-b4a3-4d8f-8791-642989c39c40/thumbnail"
+    },
+    {
+      "id": 31372,
+      "developer": "The Good Guys",
+      "mobile": true,
+      "title": "Color Artist",
+      "type": "game",
+      "image": {
+        "path": "15cad63f90b06a0b72c47913d7fcd6b9/color-artist.png"
+      },
+      "url": "/en/g/color-artist",
+      "slug": "color-artist",
+      "animatedThumbnail": "ad9e7a96-42d9-4504-85b2-7fe1984cd7b1/thumbnail"
+    },
+    {
+      "id": 31488,
+      "developer": "PEGASUS",
+      "mobile": true,
+      "title": "Screw Jam Puzzle",
+      "type": "game",
+      "image": {
+        "path": "e4e7332876866b3b54f7130db9aa8380/screw-jam-puzzle.png"
+      },
+      "url": "/en/g/screw-jam-puzzle",
+      "slug": "screw-jam-puzzle",
+      "animatedThumbnail": "a023e11a-502b-4968-a4cb-0c4904cea939/thumbnail"
+    },
+    {
+      "id": 30313,
+      "developer": "Flipline Studios",
+      "mobile": true,
+      "title": "Papa's Freezeria",
+      "type": "game",
+      "image": {
+        "path": "fe7c19da32800855dfb8f039adfe353b/papas-freezeria.png"
+      },
+      "url": "/en/g/papas-freezeria",
+      "slug": "papas-freezeria",
+      "animatedThumbnail": "638985d4-9061-4183-94b9-9d3b3f08eac0/thumbnail"
+    },
+    {
+      "id": 29664,
+      "developer": "Colin Lane Games AB",
+      "mobile": true,
+      "title": "Big Shot Boxing",
+      "type": "game",
+      "image": {
+        "path": "cd1782b250f70b01d6c054fc6e6ae258683dfc3eb657604d9986495403e4d671/big-shot-boxing.png"
+      },
+      "url": "/en/g/big-shot-boxing",
+      "slug": "big-shot-boxing",
+      "animatedThumbnail": "0ba6a48b-c2ba-4c15-8e83-c8b524874911/thumbnail"
+    },
+    {
+      "id": 30336,
+      "developer": "Aniway",
+      "mobile": true,
+      "title": "Anycolor",
+      "type": "game",
+      "image": {
+        "path": "9534101c96cd395b3c4ffcf4e3bcd8d9/anycolor.png"
+      },
+      "url": "/en/g/anycolor",
+      "slug": "anycolor",
+      "animatedThumbnail": "fc86bb01-62b9-498d-96b6-85c7f59f1a5f/thumbnail"
+    },
+    {
+      "id": 31736,
+      "developer": "Critters Studio",
+      "mobile": true,
+      "title": "Critters Quest",
+      "type": "game",
+      "image": {
+        "path": "c3812f2d2764328292e1db0d2bb52b9e/critters-quest.png"
+      },
+      "url": "/en/g/critters-quest",
+      "slug": "critters-quest",
+      "isNew": true,
+      "animatedThumbnail": "c56627e2-f0ba-470d-84b6-55702f2a1660/thumbnail"
+    },
+    {
+      "id": 31278,
+      "developer": "OnRush Studio",
+      "mobile": true,
+      "title": "Sprint League",
+      "type": "game",
+      "image": {
+        "path": "48d51ea428b462128371e49475c37ebb/sprint-league.png"
+      },
+      "imageAlt": {
+        "path": "9df343da08cc586b132383a6d37244bd.png"
+      },
+      "url": "/en/g/sprint-league",
+      "slug": "sprint-league",
+      "animatedThumbnail": "d0b1f6dd-8c13-4ee5-baff-143d52f2dab7/thumbnail"
+    },
+    {
+      "id": 30620,
+      "developer": "emolingo games",
+      "mobile": true,
+      "title": "Rainbow Obby",
+      "type": "game",
+      "image": {
+        "path": "2a41c7682561f1ca5dd7a73e0e5ae7a9/rainbow-obby.jfif"
+      },
+      "url": "/en/g/rainbow-obby",
+      "slug": "rainbow-obby",
+      "animatedThumbnail": "5fdc83f7-46b3-4a68-8778-7d00afa282c5/thumbnail"
+    },
+    {
+      "id": 30935,
+      "developer": "Vectaria",
+      "mobile": true,
+      "title": "Cryzen.io",
+      "type": "game",
+      "image": {
+        "path": "89faa8fcb2d56a8195c041a7cfb7a6a4/cryzen-io.jfif"
+      },
+      "url": "/en/g/cryzen-io",
+      "slug": "cryzen-io",
+      "animatedThumbnail": "2440d74f-0997-4705-bbcf-865ab73c61fe/thumbnail"
+    },
+    {
+      "id": 31783,
+      "developer": "Lion Studios",
+      "mobile": true,
+      "title": "The Real Juggle",
+      "type": "game",
+      "image": {
+        "path": "8cc780b475eca6d92fc0462111d9037d/the-real-juggle.jfif"
+      },
+      "url": "/en/g/the-real-juggle",
+      "slug": "the-real-juggle",
+      "isNew": true,
+      "animatedThumbnail": "61d7a056-50bd-4994-a246-e2e363caa8e0/thumbnail"
+    },
+    {
+      "id": 29915,
+      "developer": "Docski",
+      "mobile": false,
+      "title": "Repuls.io",
+      "type": "game",
+      "image": {
+        "path": "56f0657bcef7138a7b273eadce130c1f/repuls-io.jfif"
+      },
+      "url": "/en/g/repuls-io",
+      "slug": "repuls-io",
+      "animatedThumbnail": "ff889304-4eb2-446c-a41b-0b73697e16e1/thumbnail"
+    },
+    {
+      "id": 31677,
+      "developer": "Nadgames",
+      "mobile": true,
+      "title": "Combat Online 2",
+      "type": "game",
+      "image": {
+        "path": "8173955448d8681bbebb8908a503de88/combat-online-2.jfif"
+      },
+      "url": "/en/g/combat-online-2",
+      "slug": "combat-online-2",
+      "animatedThumbnail": "c08c9633-e1ad-48b8-811c-bfdbfb1635d8/thumbnail"
+    },
+    {
+      "id": 31121,
+      "developer": "emolingo games",
+      "mobile": true,
+      "title": "Disaster Arena",
+      "type": "game",
+      "image": {
+        "path": "45652f66ae21ecf958ab652cd9b0f70d/disaster-arena.jfif"
+      },
+      "url": "/en/g/disaster-arena",
+      "slug": "disaster-arena",
+      "animatedThumbnail": "8ba5c97b-2800-48f0-b9eb-56b6ade1a4db/thumbnail"
+    },
+    {
+      "id": 30508,
+      "developer": "Shoom Games",
+      "mobile": true,
+      "title": "War of Sticks",
+      "type": "game",
+      "image": {
+        "path": "3b580a021580bf9266fba837a8837039/war-of-sticks.png"
+      },
+      "url": "/en/g/war-of-sticks",
+      "slug": "war-of-sticks",
+      "animatedThumbnail": "1485e9e9-ab6b-414a-a3e5-2be07b2457f5/thumbnail"
+    },
+    {
+      "id": 30564,
+      "developer": "WeLoPlay",
+      "mobile": false,
+      "title": "Tag",
+      "type": "game",
+      "image": {
+        "path": "32d2b1401c7a86c61fae5afeed977b37/tag.png"
+      },
+      "url": "/en/g/tag",
+      "slug": "tag",
+      "animatedThumbnail": "6c430da8-91f5-4fb3-9b40-77d349535dd9/thumbnail"
+    },
+    {
+      "id": 31784,
+      "developer": "OnRush Studio",
+      "mobile": true,
+      "title": "Build League",
+      "type": "game",
+      "image": {
+        "path": "eba38d80ceba6abe03cc973a0e20077f/build-league.jfif"
+      },
+      "url": "/en/g/build-league",
+      "slug": "build-league",
+      "isNew": true,
+      "animatedThumbnail": "099c8b71-0e9f-4254-9f41-e58b47a49c6d/thumbnail"
+    },
+    {
+      "id": 30413,
+      "developer": "No Pressure Studios",
+      "mobile": true,
+      "title": "Crazy Cars",
+      "type": "game",
+      "image": {
+        "path": "2bc8004fcbb4387908a636e2a9d9ab4a/crazy-cars.png"
+      },
+      "url": "/en/g/crazy-cars",
+      "slug": "crazy-cars",
+      "animatedThumbnail": "d21f42ba-2871-430d-b7d1-0bf1cd727d64/thumbnail"
+    },
+    {
+      "id": 31547,
+      "developer": "emolingo games",
+      "mobile": true,
+      "title": "Escape From Spider",
+      "type": "game",
+      "image": {
+        "path": "a2882118a2ff12f22803dcc324af704c/escape-from-spider.jfif"
+      },
+      "url": "/en/g/escape-from-spider",
+      "slug": "escape-from-spider",
+      "animatedThumbnail": "eeb2988a-5dce-43bf-8971-2fc155fa498b/thumbnail"
+    },
+    {
+      "id": 30020,
+      "developer": "BoneCracker Games",
+      "mobile": false,
+      "title": "City Car Driving: Stunt Master",
+      "type": "game",
+      "image": {
+        "path": "030bec0d229cfea9036a83695b8bd9b4/city-car-driving-stunt-master.png"
+      },
+      "url": "/en/g/city-car-driving-stunt-master",
+      "slug": "city-car-driving-stunt-master",
+      "animatedThumbnail": "c533fad8-3a58-4afa-9ebf-41e3067e1094/thumbnail"
+    },
+    {
+      "id": 31396,
+      "developer": "Finz Games",
+      "mobile": true,
+      "title": "Karate Fighter",
+      "type": "game",
+      "image": {
+        "path": "bc1a52163e8721b39385eaf9f889e293/karate-fighter.jfif"
+      },
+      "url": "/en/g/karate-fighter",
+      "slug": "karate-fighter",
+      "animatedThumbnail": "561c359e-3060-45f6-96f6-cbe45288fa62/thumbnail"
+    },
+    {
+      "id": 30409,
+      "developer": "Radical Play",
+      "mobile": true,
+      "title": "Soccer Skills World Cup",
+      "type": "game",
+      "image": {
+        "path": "1a9642e779cab413962255ea953d1155/soccer-skills-world-cup.png"
+      },
+      "url": "/en/g/soccer-skills-world-cup",
+      "slug": "soccer-skills-world-cup",
+      "animatedThumbnail": "95d7ce97-35ca-4421-b759-79fb88510ea4/thumbnail"
+    },
+    {
+      "id": 31691,
+      "developer": "Zupga",
+      "mobile": true,
+      "title": "Build My Brainrot",
+      "type": "game",
+      "image": {
+        "path": "f72c0d0c38f96a0a8f486fe1315302e6/build-my-brainrot.png"
+      },
+      "url": "/en/g/build-my-brainrot",
+      "slug": "build-my-brainrot",
+      "isNew": true,
+      "animatedThumbnail": "d7a1fbe0-0044-4230-95fd-d6b027b024a6/thumbnail"
+    },
+    {
+      "id": 31720,
+      "developer": "GeniGames",
+      "mobile": true,
+      "title": "I Am Hall Security",
+      "type": "game",
+      "image": {
+        "path": "05f5dc64fe2c2118b0a0a25f44a54ec9/i-am-hall-security.png"
+      },
+      "url": "/en/g/i-am-hall-security",
+      "slug": "i-am-hall-security",
+      "isNew": true,
+      "animatedThumbnail": "22b9e794-6c64-4bf5-8add-29f8ed9c5eec/thumbnail"
+    },
+    {
+      "id": 31351,
+      "developer": "Kimchi Soup Studios",
+      "mobile": true,
+      "title": "Animal Obby",
+      "type": "game",
+      "image": {
+        "path": "2e5e5a08c2f63fd98fc8834b4e048851/animal-obby.png"
+      },
+      "url": "/en/g/animal-obby",
+      "slug": "animal-obby",
+      "animatedThumbnail": "8994323a-7763-4cf1-ac43-5492a9454cfd/thumbnail"
+    },
+    {
+      "id": 30830,
+      "developer": "Dedra Games \u00d7 Federico",
+      "mobile": true,
+      "title": "Under the Red Sky",
+      "type": "game",
+      "image": {
+        "path": "6520853de09433cadcf18ed968deef5b/under-the-red-sky.png"
+      },
+      "url": "/en/g/under-the-red-sky",
+      "slug": "under-the-red-sky",
+      "animatedThumbnail": "bec65d04-99a1-4544-860f-9b9f58677129/thumbnail"
+    },
+    {
+      "id": 29584,
+      "developer": "CrioDev",
+      "mobile": false,
+      "title": "Snake.is MLG Edition",
+      "type": "game",
+      "image": {
+        "path": "30ed4c9b54023bb0d62d89a374d7ac8e/snake-is-mlg-edition.png"
+      },
+      "url": "/en/g/snake-is-mlg-edition",
+      "slug": "snake-is-mlg-edition",
+      "animatedThumbnail": "096aef65-af07-4d58-8571-b5714dc99a98/thumbnail"
+    },
+    {
+      "id": 30036,
+      "developer": "Pelican Party Studios",
+      "mobile": true,
+      "title": "Narrow.One",
+      "type": "game",
+      "image": {
+        "path": "e9f87aed2de11520ecac587ffa98627d/narrow-one.png"
+      },
+      "url": "/en/g/narrow-one",
+      "slug": "narrow-one",
+      "animatedThumbnail": "88a3cdef-b050-4d09-9573-d9c930433a26/thumbnail"
+    },
+    {
+      "id": 31539,
+      "developer": "Dinobros",
+      "mobile": true,
+      "title": "Porki Poke",
+      "type": "game",
+      "image": {
+        "path": "f84d0a53d170c93c740af249b2325944/porki-poke.png"
+      },
+      "url": "/en/g/porki-poke",
+      "slug": "porki-poke",
+      "isNew": true,
+      "animatedThumbnail": "39a3967a-ad22-4064-9954-ef553c104c02/thumbnail"
+    },
+    {
+      "id": 31666,
+      "developer": "Endless Pixels",
+      "mobile": true,
+      "title": "Brainrot Craft",
+      "type": "game",
+      "image": {
+        "path": "9fb9ad46395862618ec66858ff745927/brainrot-craft.png"
+      },
+      "url": "/en/g/brainrot-craft",
+      "slug": "brainrot-craft",
+      "animatedThumbnail": "e9abb65b-b68a-4e4b-92ba-8ace28b2c76b/thumbnail"
+    },
+    {
+      "id": 30249,
+      "developer": "MarketJS",
+      "mobile": true,
+      "title": "Idle Mining Empire",
+      "type": "game",
+      "image": {
+        "path": "5c4239ad22ce9b302ca8158adbcd9c02/idle-mining-empire.png"
+      },
+      "url": "/en/g/idle-mining-empire",
+      "slug": "idle-mining-empire",
+      "animatedThumbnail": "0ab465df-320d-4900-825b-e763aa3936bd/thumbnail"
+    },
+    {
+      "id": 30665,
+      "developer": "PEGASUS",
+      "mobile": true,
+      "title": "Stickman Dragon Fight",
+      "type": "game",
+      "image": {
+        "path": "c7d21e8c3962488f12ef86e2521b6697/stickman-dragon-fight.png"
+      },
+      "url": "/en/g/stickman-dragon-fight",
+      "slug": "stickman-dragon-fight",
+      "animatedThumbnail": "30db7ef1-cff5-4ebf-98bc-5afee99b6f7b/thumbnail"
+    },
+    {
+      "id": 30182,
+      "developer": "TapLabGames",
+      "mobile": true,
+      "title": "Jigsaw Surprise",
+      "type": "game",
+      "image": {
+        "path": "b2068cacadb0c98595210cc250477682/jigsaw-surprise.png"
+      },
+      "url": "/en/g/jigsaw-surprise",
+      "slug": "jigsaw-surprise",
+      "animatedThumbnail": "9b20f406-97b0-468c-bad6-973c89914389/thumbnail"
+    },
+    {
+      "id": 31557,
+      "developer": "Adgard",
+      "mobile": true,
+      "title": "Shenzhen Mahjong",
+      "type": "game",
+      "image": {
+        "path": "18f82f55aea046b3659f3c83f488badc/shenzhen-mahjong.jfif"
+      },
+      "url": "/en/g/shenzhen-mahjong",
+      "slug": "shenzhen-mahjong",
+      "animatedThumbnail": "e003b7ad-e86f-463c-a4bd-15fc6d2a0cad/thumbnail"
+    },
+    {
+      "id": 31704,
+      "developer": "Redox Interactive",
+      "mobile": true,
+      "title": "Squid Dash",
+      "type": "game",
+      "image": {
+        "path": "a348783504d8a5ea8cd02a7eb8d5f33d/squid-dash.png"
+      },
+      "url": "/en/g/squid-dash",
+      "slug": "squid-dash",
+      "isNew": true,
+      "animatedThumbnail": "44b7488f-6211-44f7-8318-42cd19143eb9/thumbnail"
+    },
+    {
+      "id": 27908,
+      "developer": "Colin Lane Games AB",
+      "mobile": true,
+      "title": "Temple of Boom",
+      "type": "game",
+      "image": {
+        "path": "d710fe8830d731072485a582881605ea/temple-of-boom.png"
+      },
+      "url": "/en/g/temple-of-boom",
+      "slug": "temple-of-boom",
+      "animatedThumbnail": "f184a9c2-4b10-4d6b-a00c-2fb9abc675ec/thumbnail"
+    },
+    {
+      "id": 30646,
+      "developer": "Art Industries",
+      "mobile": true,
+      "title": "Stickman Crazy Box",
+      "type": "game",
+      "image": {
+        "path": "7d0eef3020f2cc401d3861fd8d45f2d3/stickman-crazy-box.png"
+      },
+      "url": "/en/g/stickman-crazy-box",
+      "slug": "stickman-crazy-box",
+      "animatedThumbnail": "f4c329fb-cfed-44d8-91fd-25068d0d08e7/thumbnail"
+    },
+    {
+      "id": 31280,
+      "developer": "No Pressure Studios",
+      "mobile": true,
+      "title": "Fear Response",
+      "type": "game",
+      "image": {
+        "path": "d7eedec0d1b531da6ffb81b0b215e857/fear-response.png"
+      },
+      "url": "/en/g/fear-response",
+      "slug": "fear-response",
+      "animatedThumbnail": "04626f46-68c7-4f05-a453-836c55915936/thumbnail"
+    },
+    {
+      "id": 31171,
+      "developer": "EasyCats",
+      "mobile": true,
+      "title": "Stick Rush",
+      "type": "game",
+      "image": {
+        "path": "4b2e9b6b7a843a2a911581bd3fec2bb6/stick-rush.png"
+      },
+      "url": "/en/g/stick-rush",
+      "slug": "stick-rush",
+      "animatedThumbnail": "15bcd7e3-5841-40af-9d1b-3c8829b1144f/thumbnail"
+    },
+    {
+      "id": 30916,
+      "developer": "WeLoPlay",
+      "mobile": true,
+      "title": "Glam Girl: Dress Up and Makeover",
+      "type": "game",
+      "image": {
+        "path": "3f78cba5dd6b708135e60b1d7355b4e7/glam-girl-dress-up-and-makeover.png"
+      },
+      "url": "/en/g/glam-girl-dress-up-and-makeover",
+      "slug": "glam-girl-dress-up-and-makeover",
+      "animatedThumbnail": "aa76c38b-8917-4f85-ad0f-fa815255a809/thumbnail"
+    },
+    {
+      "id": 30628,
+      "developer": "Supercharge Mobile Corp",
+      "mobile": true,
+      "title": "Hills of Steel",
+      "type": "game",
+      "image": {
+        "path": "e8a5f2eda2e5340e8ded263692835caa/hills-of-steel.png"
+      },
+      "url": "/en/g/hills-of-steel",
+      "slug": "hills-of-steel",
+      "animatedThumbnail": "a2ba371f-4a57-48d2-85f8-2dfa34af1b57/thumbnail"
+    },
+    {
+      "id": 29651,
+      "developer": "CyberGoldFinch",
+      "mobile": false,
+      "title": "Dragon Simulator 3D",
+      "type": "game",
+      "image": {
+        "path": "5d65cf33c17b54197c2a4055a3a7dbf006e015b59c63daef0f2c90577e4720ef/dragon-simulator-3d.png"
+      },
+      "url": "/en/g/dragon-simulator-3d",
+      "slug": "dragon-simulator-3d",
+      "animatedThumbnail": "b0521b5c-4da2-46b8-bda3-18d17fde0879/thumbnail"
+    },
+    {
+      "id": 29797,
+      "developer": "Coolgames B.V.",
+      "mobile": true,
+      "title": "Bubbles",
+      "type": "game",
+      "image": {
+        "path": "73ae6cb12ac1417951e1fc4453582e33/bubbles-cool.png"
+      },
+      "url": "/en/g/bubbles-cool",
+      "slug": "bubbles-cool",
+      "animatedThumbnail": "03a54886-32ec-4f89-b492-84a917635bef/thumbnail"
+    },
+    {
+      "id": 30692,
+      "developer": "ARF Games",
+      "mobile": true,
+      "title": "Cozy Room Design",
+      "type": "game",
+      "image": {
+        "path": "9676d55b0b42d673fe128894ec68e259/cozy-room-design.png"
+      },
+      "url": "/en/g/cozy-room-design",
+      "slug": "cozy-room-design",
+      "animatedThumbnail": "d2e290a1-2d6c-499d-8e9b-9d01e07930eb/thumbnail"
+    },
+    {
+      "id": 30809,
+      "developer": "emolingo games",
+      "mobile": true,
+      "title": "Escape From School",
+      "type": "game",
+      "image": {
+        "path": "a59703c960494998f380844a00468c67/escape-from-school.png"
+      },
+      "url": "/en/g/escape-from-school",
+      "slug": "escape-from-school",
+      "animatedThumbnail": "fabd5cd6-69fc-4058-a996-1400354b1001/thumbnail"
+    },
+    {
+      "id": 31683,
+      "developer": "Seal Unicorn Games",
+      "mobile": true,
+      "title": "Blocky Out",
+      "type": "game",
+      "image": {
+        "path": "e3691faa3dfb7efdc480da735fb48886/blocky-out.png"
+      },
+      "url": "/en/g/blocky-out",
+      "slug": "blocky-out",
+      "isNew": true,
+      "animatedThumbnail": "3e45d519-b30c-4afd-a542-d84da010e390/thumbnail"
+    },
+    {
+      "id": 28381,
+      "developer": "Faramel games",
+      "mobile": false,
+      "title": "3D Moto Simulator 2",
+      "type": "game",
+      "image": {
+        "path": "00adfbbd-b6ea-40ac-8c88-2be9ce0e5551/3d-moto-simulator-2.png"
+      },
+      "url": "/en/g/3d-moto-simulator-2",
+      "slug": "3d-moto-simulator-2",
+      "animatedThumbnail": "f8b32491-44ae-4daa-a483-24756f409d8b/thumbnail"
+    },
+    {
+      "id": 30838,
+      "developer": "OSA Studio",
+      "mobile": true,
+      "title": "Marble Run 3D",
+      "type": "game",
+      "image": {
+        "path": "65ef45bbe9b3f9cc673321883b8f8332/marble-run-3d.png"
+      },
+      "url": "/en/g/marble-run-3d",
+      "slug": "marble-run-3d",
+      "animatedThumbnail": "ba6b616c-e437-4365-adf4-4b6d4f198e8e/thumbnail"
+    },
+    {
+      "id": 31594,
+      "developer": "GeniGames",
+      "mobile": true,
+      "title": "Perfect Landing, Plane Pilot",
+      "type": "game",
+      "image": {
+        "path": "6c699ddf455a5c29c97814c625bb2286/perfect-landing-plane-pilot.png"
+      },
+      "url": "/en/g/perfect-landing-plane-pilot",
+      "slug": "perfect-landing-plane-pilot",
+      "animatedThumbnail": "46904b04-7da5-471b-b915-c9736d40dad6/thumbnail"
+    },
+    {
+      "id": 29286,
+      "developer": "EXODRAGON",
+      "mobile": true,
+      "title": "YoHoHo.io",
+      "type": "game",
+      "image": {
+        "path": "9b373b5219cd66a82389d81d7cda8e23/yohoho-io.jpeg"
+      },
+      "url": "/en/g/yohoho-io",
+      "slug": "yohoho-io",
+      "animatedThumbnail": "e89995ba-0b2e-4dde-b1e0-e10f4897a168/thumbnail"
+    },
+    {
+      "id": 30168,
+      "developer": "TapLabGames",
+      "mobile": true,
+      "title": "Sweet World",
+      "type": "game",
+      "image": {
+        "path": "9f92075d9b3287fc20559277effeb719/sweet-world.jpeg"
+      },
+      "url": "/en/g/sweet-world",
+      "slug": "sweet-world",
+      "animatedThumbnail": "61b29e88-c6ff-40df-a21e-e642e6ae3bb2/thumbnail"
+    },
+    {
+      "id": 29067,
+      "developer": "CyberGoldFinch",
+      "mobile": false,
+      "title": "Tiger Simulator 3D",
+      "type": "game",
+      "image": {
+        "path": "2fd201bc-3c50-4480-8378-e563ab7679c4/tiger-simulator-3d.png"
+      },
+      "url": "/en/g/tiger-simulator-3d",
+      "slug": "tiger-simulator-3d",
+      "animatedThumbnail": "524ae462-85f9-4ce6-b8b3-e34748897cbe/thumbnail"
+    },
+    {
+      "id": 27053,
+      "developer": "PuffballsUnited",
+      "mobile": true,
+      "title": "Fleeing the Complex",
+      "type": "game",
+      "image": {
+        "path": "4e0cead7fe859cc9ce2a80ea46dd16c8c9be25f574ed2d0b82f27cb911d81b36/fleeing-the-complex.png"
+      },
+      "url": "/en/g/fleeing-the-complex",
+      "slug": "fleeing-the-complex",
+      "animatedThumbnail": "04dd2f6f-fd28-48ca-9a0d-10471eeedeaf/thumbnail"
+    },
+    {
+      "id": 29794,
+      "developer": "No Pressure Studios",
+      "mobile": false,
+      "title": "School Bus Demolition Derby",
+      "type": "game",
+      "image": {
+        "path": "a8af33c8a3960f2f1baa70a5677fb8f2/school-bus-demolition-derby.png"
+      },
+      "url": "/en/g/school-bus-demolition-derby",
+      "slug": "school-bus-demolition-derby",
+      "animatedThumbnail": "187b9ca8-9b65-41e6-9bcc-77b2b8ce8fdf/thumbnail"
+    },
+    {
+      "id": 30129,
+      "developer": "Unico Studio",
+      "mobile": true,
+      "title": "Brain Test 2: Tricky Stories",
+      "type": "game",
+      "image": {
+        "path": "9a06b8572ca88b3da665d191d8b0df12/brain-test-2-tricky-stories.png"
+      },
+      "url": "/en/g/brain-test-2-tricky-stories",
+      "slug": "brain-test-2-tricky-stories",
+      "animatedThumbnail": "b9c2085b-a426-4b36-a389-d550048555f9/thumbnail"
+    },
+    {
+      "id": 31550,
+      "developer": "WeLoPlay",
+      "mobile": true,
+      "title": "My Cozy Home",
+      "type": "game",
+      "image": {
+        "path": "c29ad3efff94a85b4a790d09e510ee6f/my-cozy-home.png"
+      },
+      "url": "/en/g/my-cozy-home",
+      "slug": "my-cozy-home",
+      "animatedThumbnail": "f8451b90-86f9-4c35-817f-b235e38b49ca/thumbnail"
+    },
+    {
+      "id": 31701,
+      "developer": "Buldogo Games",
+      "mobile": true,
+      "title": "Find the Nibbys!",
+      "type": "game",
+      "image": {
+        "path": "9af8160fce6887ed089eda9b7ce65aae/find-the-nibbys.png"
+      },
+      "url": "/en/g/find-the-nibbys",
+      "slug": "find-the-nibbys",
+      "isNew": true,
+      "animatedThumbnail": "3f47b6d2-21b9-4e6d-bfa9-3f5e7a2ff11b/thumbnail"
+    },
+    {
+      "id": 31415,
+      "developer": "mtsai",
+      "mobile": true,
+      "title": "Exhibit of Sorrows",
+      "type": "game",
+      "image": {
+        "path": "8bec8ec51354bb729782d8984ec17cc5/exhibit-of-sorrows.png"
+      },
+      "url": "/en/g/exhibit-of-sorrows",
+      "slug": "exhibit-of-sorrows",
+      "animatedThumbnail": "c60539b2-2235-4786-8d65-a761706487c9/thumbnail"
+    },
+    {
+      "id": 30282,
+      "developer": "Tobspr",
+      "mobile": true,
+      "title": "Kiwi Clicker",
+      "type": "game",
+      "image": {
+        "path": "71a5cb85e5a0664a3841d216caf12949/kiwi-clicker.jpeg"
+      },
+      "url": "/en/g/kiwi-clicker",
+      "slug": "kiwi-clicker",
+      "animatedThumbnail": "7937e065-7de9-4263-b6ee-028862d6c0e6/thumbnail"
+    },
+    {
+      "id": 30863,
+      "developer": "Refold",
+      "mobile": true,
+      "title": "Magic Coloring Book",
+      "type": "game",
+      "image": {
+        "path": "c9ae80035cbb258ca2cac74bcff7dff5/magic-coloring-book.png"
+      },
+      "url": "/en/g/magic-coloring-book",
+      "slug": "magic-coloring-book",
+      "animatedThumbnail": "5f2524df-f90f-4e00-b3d5-08b06b21ac28/thumbnail"
+    },
+    {
+      "id": 30929,
+      "developer": "Devoting",
+      "mobile": true,
+      "title": "Tiger Tank",
+      "type": "game",
+      "image": {
+        "path": "25ec03e3ac217d51d1dd0d843d86f6cb/tiger-tank.png"
+      },
+      "url": "/en/g/tiger-tank",
+      "slug": "tiger-tank",
+      "animatedThumbnail": "46b3f450-d6d0-4f02-937b-1f1cda616b09/thumbnail"
+    },
+    {
+      "id": 29871,
+      "developer": "Idea Studios",
+      "mobile": true,
+      "title": "Superhero Look Alike Contest",
+      "type": "game",
+      "image": {
+        "path": "4a1c9d719506e637737148ea101851ac/superhero-look-alike-contest.png"
+      },
+      "url": "/en/g/superhero-look-alike-contest",
+      "slug": "superhero-look-alike-contest",
+      "animatedThumbnail": "51f9b3d5-0d64-4775-8168-63584a3feea6/thumbnail"
+    },
+    {
+      "id": 30618,
+      "developer": "Devortel",
+      "mobile": true,
+      "title": "Vortelli's Pizza Delivery",
+      "type": "game",
+      "image": {
+        "path": "df8a21c437d18f2aca99790135790c9e/vortellis-pizza-delivery.png"
+      },
+      "url": "/en/g/vortellis-pizza-delivery",
+      "slug": "vortellis-pizza-delivery",
+      "animatedThumbnail": "4647529e-b92e-4ae7-b433-29e14f3e6fbc/thumbnail"
+    },
+    {
+      "id": 31267,
+      "developer": "ZnK Games",
+      "mobile": true,
+      "title": "Prankster 3D",
+      "type": "game",
+      "image": {
+        "path": "fff3f853e4852b047d97cc3217ef44af/prankster-3d.png"
+      },
+      "url": "/en/g/prankster-3d",
+      "slug": "prankster-3d",
+      "animatedThumbnail": "3077c699-8a80-42bd-986b-217cd595b3ba/thumbnail"
+    },
+    {
+      "id": 30206,
+      "developer": "Madbox",
+      "mobile": true,
+      "title": "Idle Ants",
+      "type": "game",
+      "image": {
+        "path": "d769fe608502e4f17192cf496d1a4b16/idle-ants.jpeg"
+      },
+      "url": "/en/g/idle-ants",
+      "slug": "idle-ants",
+      "animatedThumbnail": "c5f17cdb-d88c-4820-a5dc-769dfce51c1b/thumbnail"
+    },
+    {
+      "id": 30396,
+      "developer": "OnRush Studio",
+      "mobile": true,
+      "title": "Tribals.io",
+      "type": "game",
+      "image": {
+        "path": "a70806db5d8812ac66118f99dc8e590c/tribals-io.png"
+      },
+      "url": "/en/g/tribals-io",
+      "slug": "tribals-io",
+      "animatedThumbnail": "2836d557-a8ce-416a-88bd-4e8f020030fe/thumbnail"
+    },
+    {
+      "id": 29174,
+      "developer": "Codethislab",
+      "mobile": true,
+      "title": "Master Chess",
+      "type": "game",
+      "image": {
+        "path": "505695b9-1b21-47fd-a8e1-93345afb57de/master-chess.png"
+      },
+      "url": "/en/g/master-chess",
+      "slug": "master-chess",
+      "animatedThumbnail": "0a9f852d-bdeb-436c-9d28-3fdf8c835e88/thumbnail"
+    },
+    {
+      "id": 29692,
+      "developer": "MarketJS",
+      "mobile": true,
+      "title": "Ludo Hero",
+      "type": "game",
+      "image": {
+        "path": "aa1108c9f1d4e6d6b564824e6c4a2ca8460e48ae9d3f0b98bdbb8b816ff8c352/ludo-hero.png"
+      },
+      "url": "/en/g/ludo-hero",
+      "slug": "ludo-hero",
+      "animatedThumbnail": "ff0cb705-f24c-40f2-bfe8-f5fc0fb61310/thumbnail"
+    },
+    {
+      "id": 29490,
+      "developer": "Freeze Nova",
+      "mobile": false,
+      "title": "Puppet Master",
+      "type": "game",
+      "image": {
+        "path": "62716b17955d5a00474bb1c4a49a5c70/puppet-master.png"
+      },
+      "url": "/en/g/puppet-master",
+      "slug": "puppet-master",
+      "animatedThumbnail": "bc1d8e59-ccc3-4bb5-b7cb-b650382297fa/thumbnail"
+    },
+    {
+      "id": 31138,
+      "developer": "Potato Jam",
+      "mobile": true,
+      "title": "Merge Summer",
+      "type": "game",
+      "image": {
+        "path": "1cbf90f6bd12c50538dd7c79b775346f/merge-summer.png"
+      },
+      "url": "/en/g/merge-summer",
+      "slug": "merge-summer",
+      "animatedThumbnail": "0c2f3d75-87e0-424f-a6f7-901e0aed63ea/thumbnail"
+    },
+    {
+      "id": 29759,
+      "developer": "Code This Lab",
+      "mobile": true,
+      "title": "Spider Solitaire",
+      "type": "game",
+      "image": {
+        "path": "cb77f2ff2b8d301391606f883f1552cda6a0fe93a1cd47f9ef7125a19fde954c/spider-solitaire-ctl.png"
+      },
+      "url": "/en/g/spider-solitaire-ctl",
+      "slug": "spider-solitaire-ctl",
+      "animatedThumbnail": "405b2424-e379-432b-a04d-cc3ca41c3a26/thumbnail"
+    },
+    {
+      "id": 31203,
+      "developer": "Indiesoft",
+      "mobile": true,
+      "title": "Fantasy Sandbox",
+      "type": "game",
+      "image": {
+        "path": "bfad7bea98358eedda5aea45ee447e39/fantasy-sandbox.png"
+      },
+      "url": "/en/g/fantasy-sandbox",
+      "slug": "fantasy-sandbox",
+      "animatedThumbnail": "d14cf91c-7e9e-4a91-bb15-de9c2b7f1a80/thumbnail"
+    },
+    {
+      "id": 28684,
+      "developer": "NadGames",
+      "mobile": true,
+      "title": "Combat Reloaded",
+      "type": "game",
+      "image": {
+        "path": "1c8089f7-7254-4cbf-b8bc-7581cd5412e4/combat-reloaded.png"
+      },
+      "url": "/en/g/combat-reloaded",
+      "slug": "combat-reloaded",
+      "animatedThumbnail": "51b6cbf9-3cc8-4e13-8cff-85ca73e3f64b/thumbnail"
+    },
+    {
+      "id": 29926,
+      "developer": "Madbox",
+      "mobile": true,
+      "title": "Parkour Race",
+      "type": "game",
+      "image": {
+        "path": "a151c8ec0e7758c6fa0ef06ff540e911/parkour-race.jpeg"
+      },
+      "url": "/en/g/parkour-race",
+      "slug": "parkour-race",
+      "animatedThumbnail": "477951a3-5b2a-414a-8239-ebdafd717af5/thumbnail"
+    },
+    {
+      "id": 30019,
+      "developer": "NoPowerup",
+      "mobile": false,
+      "title": "Horse Shoeing",
+      "type": "game",
+      "image": {
+        "path": "e0e7a4585b557d74708f6e8dced9b91e/horse-shoeing.png"
+      },
+      "url": "/en/g/horse-shoeing",
+      "slug": "horse-shoeing",
+      "animatedThumbnail": "441aa249-833c-4992-a9d1-2d46b4b301ba/thumbnail"
+    },
+    {
+      "id": 29851,
+      "developer": "Go Panda Games Studio",
+      "mobile": true,
+      "title": "Funny Haircut",
+      "type": "game",
+      "image": {
+        "path": "05594391d018e94c37744742c566e225/funny-haircut.png"
+      },
+      "url": "/en/g/funny-haircut",
+      "slug": "funny-haircut",
+      "animatedThumbnail": "2f2869e8-1d77-48d0-ac5b-4d7e690cce46/thumbnail"
+    },
+    {
+      "id": 29520,
+      "developer": "Rabbit Mountain",
+      "mobile": false,
+      "title": "Roller Coaster Builder 2",
+      "type": "game",
+      "image": {
+        "path": "aba49be70b0b734a3400067503e8c65d/roller-coaster-builder-2.png"
+      },
+      "url": "/en/g/roller-coaster-builder-2",
+      "slug": "roller-coaster-builder-2",
+      "animatedThumbnail": "3fe0c7af-8548-4625-96b2-d817f7a0cace/thumbnail"
+    },
+    {
+      "id": 31499,
+      "developer": "WeLoPlay",
+      "mobile": true,
+      "title": "Star Blogger: Left or Right",
+      "type": "game",
+      "image": {
+        "path": "3f239cf31af54c85029765d2332a3190/star-blogger-left-or-right.png"
+      },
+      "url": "/en/g/star-blogger-left-or-right",
+      "slug": "star-blogger-left-or-right",
+      "animatedThumbnail": "cfc8edb4-b1bc-4c98-801a-e7f2703f3ef4/thumbnail"
+    },
+    {
+      "id": 30955,
+      "developer": "Flipline Studios",
+      "mobile": true,
+      "title": "Papa's Scooperia",
+      "type": "game",
+      "image": {
+        "path": "7da94623f93b04e8cf801e6a0803fb76/papas-scooperia.png"
+      },
+      "url": "/en/g/papas-scooperia",
+      "slug": "papas-scooperia",
+      "animatedThumbnail": "135867e6-bdb8-48b5-8f6c-d0729a51de55/thumbnail"
+    },
+    {
+      "id": 30735,
+      "developer": "emolingo games",
+      "mobile": true,
+      "title": "Sword Masters",
+      "type": "game",
+      "image": {
+        "path": "66706b43d22df753297ae6db7f2a14d7/sword-masters.jfif"
+      },
+      "url": "/en/g/sword-masters",
+      "slug": "sword-masters",
+      "animatedThumbnail": "7cbd78d4-bbf1-4176-b31c-cb670b4f6fad/thumbnail"
+    },
+    {
+      "id": 30771,
+      "developer": "Flipline Studios",
+      "mobile": true,
+      "title": "Papa's Sushiria",
+      "type": "game",
+      "image": {
+        "path": "cfd5ae6652950cfeb5b4cc0ffe41ed81/papas-sushiria.png"
+      },
+      "url": "/en/g/papas-sushiria",
+      "slug": "papas-sushiria",
+      "animatedThumbnail": "fc797b57-23ce-4638-ba58-eb45b39f2833/thumbnail"
+    },
+    {
+      "id": 30858,
+      "developer": "OSA Studio",
+      "mobile": true,
+      "title": "Smash It",
+      "type": "game",
+      "image": {
+        "path": "f4206f3b44bc80b9763bc190dcf9eecc/smash-it.png"
+      },
+      "url": "/en/g/smash-it",
+      "slug": "smash-it",
+      "animatedThumbnail": "35c36f0d-0381-4d47-9313-b9730fef9e73/thumbnail"
+    },
+    {
+      "id": 30652,
+      "developer": "Flipline Studios",
+      "mobile": true,
+      "title": "Papa's Wingeria",
+      "type": "game",
+      "image": {
+        "path": "0ef4d3c4bd35cc2e9b65f3da07448fc2/papas-wingeria.jfif"
+      },
+      "url": "/en/g/papas-wingeria",
+      "slug": "papas-wingeria",
+      "animatedThumbnail": "6f152f91-7cac-4692-b005-41ff4ee7bfe0/thumbnail"
+    },
+    {
+      "id": 28931,
+      "developer": "Recloak",
+      "mobile": true,
+      "title": "Little Alchemy 2",
+      "type": "game",
+      "image": {
+        "path": "89025597b6c25bc9a444459fa0b3eb9a/little-alchemy-2.jpg"
+      },
+      "url": "/en/g/little-alchemy-2",
+      "slug": "little-alchemy-2",
+      "animatedThumbnail": "9d829b71-a80e-49e0-b341-1444f0b65e37/thumbnail"
+    },
+    {
+      "id": 31546,
+      "developer": "Blumgi",
+      "mobile": true,
+      "title": "Blumgi Merge",
+      "type": "game",
+      "image": {
+        "path": "855c583418b04a11f8cfe8d8212b958b/blumgi-merge.png"
+      },
+      "url": "/en/g/blumgi-merge",
+      "slug": "blumgi-merge",
+      "animatedThumbnail": "a3ad73e0-89b4-4087-8a4a-459f10b55918/thumbnail"
+    },
+    {
+      "id": 30394,
+      "developer": "Devortel",
+      "mobile": true,
+      "title": "Vortelli's Pizza",
+      "type": "game",
+      "image": {
+        "path": "0654ee12cde475bc427e46fdf22f1c5d/vortellis-pizza.png"
+      },
+      "url": "/en/g/vortellis-pizza",
+      "slug": "vortellis-pizza",
+      "animatedThumbnail": "f0d8a509-af4f-412e-9197-4873f33e7090/thumbnail"
+    },
+    {
+      "id": 29516,
+      "developer": "Madpuffers",
+      "mobile": true,
+      "title": "Moto X3M Spooky Land",
+      "type": "game",
+      "image": {
+        "path": "3f8a297822df891a1c158576b6461014/moto-x3m-spooky-land.png"
+      },
+      "url": "/en/g/moto-x3m-spooky-land",
+      "slug": "moto-x3m-spooky-land",
+      "animatedThumbnail": "599e1224-3fa0-4249-be1f-873ebfe7e08c/thumbnail"
+    },
+    {
+      "id": 30758,
+      "developer": "Unico Studio",
+      "mobile": true,
+      "title": "Life Choices: Life Simulator",
+      "type": "game",
+      "image": {
+        "path": "c002866b2420490a45d14cafd7924f03/life-choices-life-simulator.png"
+      },
+      "url": "/en/g/life-choices-life-simulator",
+      "slug": "life-choices-life-simulator",
+      "animatedThumbnail": "dbaabd92-a71e-43fc-99f9-5608cd00a4c0/thumbnail"
+    },
+    {
+      "id": 30155,
+      "developer": "MarketJS",
+      "mobile": true,
+      "title": "Spades",
+      "type": "game",
+      "image": {
+        "path": "f6364494eb03c0f702ea93fc52d9b09d/spades.jpeg"
+      },
+      "url": "/en/g/spades",
+      "slug": "spades",
+      "animatedThumbnail": "0dfcbc9c-b414-4889-ba0d-92eddecd4ffc/thumbnail"
+    },
+    {
+      "id": 29762,
+      "developer": "Terminarch Games",
+      "mobile": true,
+      "title": "Mechabots",
+      "type": "game",
+      "image": {
+        "path": "f0942eeee2b368d4eab5c9ff4e41042f/mechabots.png"
+      },
+      "url": "/en/g/mechabots",
+      "slug": "mechabots",
+      "animatedThumbnail": "dbed8398-196f-45c3-9ad0-9aaff239c934/thumbnail"
+    },
+    {
+      "id": 29131,
+      "developer": "CyberGoldFinch",
+      "mobile": false,
+      "title": "Horse Simulator 3D",
+      "type": "game",
+      "image": {
+        "path": "2d7294b2-f542-4fc1-a9e5-f0310779d87a/horse-simulator-3d.png"
+      },
+      "url": "/en/g/horse-simulator-3d",
+      "slug": "horse-simulator-3d",
+      "animatedThumbnail": "dded8e43-469f-4bdc-96ae-adea9641d7ed/thumbnail"
+    },
+    {
+      "id": 29202,
+      "developer": "PecPoc Games",
+      "mobile": true,
+      "title": "Match Arena",
+      "type": "game",
+      "image": {
+        "path": "128be1b22e48ca511601be58ab856c76/match-arena.png"
+      },
+      "url": "/en/g/match-arena",
+      "slug": "match-arena",
+      "animatedThumbnail": "d94e9f89-6f41-436b-8559-74602e08511c/thumbnail"
+    },
+    {
+      "id": 30641,
+      "developer": "play.works",
+      "mobile": true,
+      "title": "Trivia Crack",
+      "type": "game",
+      "image": {
+        "path": "8fe1b52b0dce26510d0ebf4cbb484aaf/trivia-crack.png"
+      },
+      "url": "/en/g/trivia-crack",
+      "slug": "trivia-crack",
+      "animatedThumbnail": "a25d70a8-9730-46be-b856-f46379013364/thumbnail"
+    },
+    {
+      "id": 30405,
+      "developer": "Go Panda Games Studio",
+      "mobile": true,
+      "title": "Summer Fashion Makeover",
+      "type": "game",
+      "image": {
+        "path": "f9d8cb2c53343113a638a9567322392e/summer-fashion-makeover.png"
+      },
+      "url": "/en/g/summer-fashion-makeover",
+      "slug": "summer-fashion-makeover",
+      "animatedThumbnail": "e26f9e51-9e15-4c86-9848-5f5c2b5e4bb1/thumbnail"
+    },
+    {
+      "id": 29999,
+      "developer": "Ravalmatic",
+      "mobile": true,
+      "title": "Merge Cakes",
+      "type": "game",
+      "image": {
+        "path": "e07f42e340447222129467619dc0e7e4/merge-cakes.jpeg"
+      },
+      "url": "/en/g/merge-cakes",
+      "slug": "merge-cakes",
+      "animatedThumbnail": "a4df66a0-e9f5-4e01-adff-c8533394c159/thumbnail"
+    },
+    {
+      "id": 30383,
+      "developer": "Neutronized",
+      "mobile": true,
+      "title": "Slime Laboratory",
+      "type": "game",
+      "image": {
+        "path": "e0111935147c98886ee71a2af9858461/slime-laboratory.png"
+      },
+      "url": "/en/g/slime-laboratory",
+      "slug": "slime-laboratory",
+      "animatedThumbnail": "b3d7483b-d2f3-4c8c-9b4d-d99118724a86/thumbnail"
+    },
+    {
+      "id": 31657,
+      "developer": "WeLoPlay",
+      "mobile": true,
+      "title": "Brainrot Clicker",
+      "type": "game",
+      "image": {
+        "path": "0c7ba6e33df990e207b8f9b90fe8b08a/brainrot-clicker.png"
+      },
+      "url": "/en/g/brainrot-clicker",
+      "slug": "brainrot-clicker",
+      "animatedThumbnail": "ebebba9a-8616-4837-a732-15f339635611/thumbnail"
+    },
+    {
+      "id": 31580,
+      "developer": "SayGames",
+      "mobile": true,
+      "title": "Johnny Trigger - Sniper Game",
+      "type": "game",
+      "image": {
+        "path": "95ddc214eeb71fa69760c93c20284f59/johnny-trigger-sniper-game.png"
+      },
+      "url": "/en/g/johnny-trigger-sniper-game",
+      "slug": "johnny-trigger-sniper-game",
+      "animatedThumbnail": "04ad67ff-6df8-4173-9820-d76888d25e9e/thumbnail"
+    },
+    {
+      "id": 31573,
+      "developer": "Finz Games",
+      "mobile": true,
+      "title": "Indoor Soccer",
+      "type": "game",
+      "image": {
+        "path": "ae6ab77fd7ec809a1e71aba2ec8f49ef/indoor-soccer.jfif"
+      },
+      "url": "/en/g/indoor-soccer",
+      "slug": "indoor-soccer",
+      "animatedThumbnail": "17d850f7-3c1b-461a-b928-7d5d53d7c1e8/thumbnail"
+    },
+    {
+      "id": 29935,
+      "developer": "Potato Jam",
+      "mobile": true,
+      "title": "Onet Master",
+      "type": "game",
+      "image": {
+        "path": "26ddc17fd06b43c1f64a41772eef3791/onet-master.png"
+      },
+      "url": "/en/g/onet-master",
+      "slug": "onet-master",
+      "animatedThumbnail": "7646d306-ca0a-40f4-a71c-e080d871597b/thumbnail"
+    },
+    {
+      "id": 29789,
+      "developer": "Coolgames B.V.",
+      "mobile": true,
+      "title": "Classic Mahjong",
+      "type": "game",
+      "image": {
+        "path": "d6f3799df71a9369becd9b78c328b2d0/classic-mahjong.png"
+      },
+      "url": "/en/g/classic-mahjong",
+      "slug": "classic-mahjong",
+      "animatedThumbnail": "6f2c1989-5d73-4c47-a84a-59fc0fb43b27/thumbnail"
+    }
+  ]
+}

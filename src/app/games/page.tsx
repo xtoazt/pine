@@ -345,10 +345,21 @@ export default function GamesPage() {
             </select>
             <div className="flex items-center gap-3 flex-wrap">
               <ListFilter className="h-4 w-4 text-muted-foreground" />
-              {['s16','gamesnacks','gnmath','radon','classwork','arcade','lessons','fortnite'].map(src => (
-                <label key={src} className="flex items-center gap-1 text-xs">
-                  <input type="checkbox" checked={sourceFilters.includes(src)} onChange={(e) => setSourceFilters(prev => e.target.checked ? [...prev, src] : prev.filter(s => s !== src))} />
-                  <span className="capitalize">{src}</span>
+              {['poki', 'playgama', 'gamemonetize', 'lessons', 'arcade', 'gnmath', 'radon', 'classwork', 'gamesnacks', 'fortnite'].map(src => (
+                <label key={src} className="flex items-center gap-1.5 text-xs cursor-pointer hover:text-primary transition-colors">
+                  <input 
+                    type="checkbox" 
+                    checked={sourceFilters.includes(src)} 
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSourceFilters(prev => [...prev, src])
+                      } else {
+                        setSourceFilters(prev => prev.filter(s => s !== src))
+                      }
+                    }}
+                    className="cursor-pointer"
+                  />
+                  <span className="capitalize">{src === 'gnmath' ? 'gn-math' : src}</span>
                 </label>
               ))}
             </div>

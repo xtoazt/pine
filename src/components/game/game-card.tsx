@@ -13,19 +13,20 @@ interface GameCardProps {
 }
 
 // Map source to display name and color
-const sourceInfo: Record<string, { name: string; color: string }> = {
-  playgama: { name: 'PlayGama', color: '#06b6d4' },
-  lessons: { name: 'Lessons', color: '#3b82f6' },
-  arcade: { name: 'Arcade', color: '#10b981' },
-  fortnite: { name: 'Fortnite', color: '#a855f7' },
-  radon: { name: 'Radon', color: '#f97316' },
-  gamesnacks: { name: 'GameSnacks', color: '#ec4899' },
-  gnmath: { name: 'gn-math', color: '#eab308' },
-  s16: { name: 's16.lol', color: '#ef4444' },
-  gamedist: { name: 'GameDistribution', color: '#a855f7' },
-  gamemonetize: { name: 'GameMonetize', color: '#8b5cf6' },
-  classwork: { name: 'Classwork', color: '#6366f1' },
-}
+  const sourceInfo: Record<string, { name: string; color: string }> = {
+    poki: { name: 'Poki', color: '#2563eb' },
+    playgama: { name: 'PlayGama', color: '#06b6d4' },
+    lessons: { name: 'Lessons', color: '#3b82f6' },
+    arcade: { name: 'Arcade', color: '#10b981' },
+    fortnite: { name: 'Fortnite', color: '#a855f7' },
+    radon: { name: 'Radon', color: '#f97316' },
+    gamesnacks: { name: 'GameSnacks', color: '#ec4899' },
+    gnmath: { name: 'gn-math', color: '#eab308' },
+    s16: { name: 's16.lol', color: '#ef4444' },
+    gamedist: { name: 'GameDistribution', color: '#a855f7' },
+    gamemonetize: { name: 'GameMonetize', color: '#8b5cf6' },
+    classwork: { name: 'Classwork', color: '#6366f1' },
+  }
 
 export function GameCard({ game }: GameCardProps) {
   const { settings } = useSettings()
@@ -41,6 +42,8 @@ export function GameCard({ game }: GameCardProps) {
     recordGameInteraction(game)
   }
 
+  // Check if game has thumbnail for compact layout
+  const hasThumbnail = Boolean(game.thumbnail)
   const cardBase = `group hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ${settings.showThumbnails ? 'game-card' : 'bg-card border border-border rounded-lg'}`
 
   return (
@@ -54,14 +57,14 @@ export function GameCard({ game }: GameCardProps) {
     >
         <Card className={cardBase}>
           {settings.showThumbnails && (
-            <div className="relative overflow-hidden">
+            <div className={`relative overflow-hidden ${hasThumbnail ? 'aspect-video' : 'h-24'}`}>
               {game.thumbnail ? (
                 <Image
                   src={game.thumbnail}
                   alt={game.title}
                   width={200}
                   height={120}
-                  className="game-thumbnail object-cover transition-transform duration-200 group-hover:scale-105"
+                  className="game-thumbnail object-cover transition-transform duration-200 group-hover:scale-105 w-full h-full"
                   onError={(e) => {
                     try { (e.currentTarget as HTMLImageElement).style.display = 'none' } catch {}
                     const fallback = (e.currentTarget.parentElement?.querySelector('[data-fallback]') as HTMLElement | null)
@@ -72,9 +75,9 @@ export function GameCard({ game }: GameCardProps) {
               <div
                 data-fallback
                 style={{ display: game.thumbnail ? 'none' : 'flex' }}
-                className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted to-muted-foreground/10"
+                className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5"
               >
-                <span className="px-2 text-center font-semibold text-sm line-clamp-3">
+                <span className="px-3 text-center font-semibold text-xs line-clamp-2">
                   {game.title}
                 </span>
               </div>
@@ -119,9 +122,9 @@ export function GameCard({ game }: GameCardProps) {
             </div>
           )}
         
-        <CardContent className="p-4">
+        <CardContent className={hasThumbnail ? "p-4" : "p-3"}>
           <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className="game-title font-semibold text-lg line-clamp-2 flex-1">
+            <h3 className={`game-title font-semibold ${hasThumbnail ? 'text-lg' : 'text-base'} line-clamp-2 flex-1`}>
               {game.title}
             </h3>
           {!settings.showThumbnails && (
