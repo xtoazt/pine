@@ -82,7 +82,15 @@ export default function GamesPage() {
   useEffect(() => {
     fetchGames(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, sortBy])
+  }, [page, sortBy, sourceFilters])
+
+  // When source filters change, reset pagination and list
+  useEffect(() => {
+    setGames([])
+    setLoadedCount(0)
+    setTotalGames(0)
+    setPage(1)
+  }, [sourceFilters])
 
   // Infinite scroll via IntersectionObserver (smooth + efficient)
   useEffect(() => {

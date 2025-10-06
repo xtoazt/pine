@@ -221,21 +221,21 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
 async function fetchS16Bread(): Promise<Game[]> {
   const API1 = process.env.S16_API || 'https://bread-org.github.io/s16.games'
   const API2 = process.env.S16_API2 || 'https://bread-org.github.io/s16.chunk2'
-  const tryPaths = ['index.json', 'list.json', 'games.json']
+  const INDEXES = [
+    `${API1.replace(/\/$/, '')}/index.json`,
+    `${API1.replace(/\/$/, '')}/list.json`,
+    `${API2.replace(/\/$/, '')}/index.json`,
+    `${API2.replace(/\/$/, '')}/list.json`
+  ]
   const collect: any[] = []
-  const fetchOne = async (base: string) => {
-    for (const p of tryPaths) {
-      try {
-        const url = `${base.replace(/\/$/, '')}/${p}`
-        const res = await fetch(url, { cache: 'no-store' })
-        if (res.ok) {
-          const j = await res.json().catch(() => null)
-          if (Array.isArray(j) && j.length) collect.push(...j)
-        }
-      } catch {}
-    }
-  }
-  await Promise.all([fetchOne(API1), fetchOne(API2)])
+  await Promise.all(INDEXES.map(async (url) => {
+    try {
+      const res = await fetch(url, { cache: 'no-store' })
+      if (!res.ok) return
+      const j = await res.json().catch(() => null)
+      if (Array.isArray(j) && j.length) collect.push(...j)
+    } catch {}
+  }))
   const toTitle = (s: string) => (s || '').replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
   const out: Game[] = []
   const seen = new Set<string>()
