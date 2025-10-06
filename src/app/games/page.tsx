@@ -23,6 +23,8 @@ export default function GamesPage() {
   const [totalGames, setTotalGames] = useState(0)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isLoadingExternal, setIsLoadingExternal] = useState(false)
+  const [gamedistMultiplier, setGamedistMultiplier] = useState(1)
+  const [isExpandingGamedist, setIsExpandingGamedist] = useState(false)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   const LOAD_SIZE = 400 // Larger page size to reach 20,000 faster while scrolling
@@ -54,7 +56,8 @@ export default function GamesPage() {
 
       // Load games in chunks
       const sourcesParam = sourceFilters.length ? `&sources=${encodeURIComponent(sourceFilters.join(','))}` : ''
-      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}${sourcesParam}&external=true&sortBy=${sortBy}`, {
+      const multiplierParam = gamedistMultiplier > 1 ? `&gamedistMultiplier=${gamedistMultiplier}` : ''
+      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}&page=${page}${sourceParam}${sourcesParam}${multiplierParam}&external=true&sortBy=${sortBy}`, {
         headers: buildUserSignalsHeaders()
       })
       const data = await response.json()
@@ -76,6 +79,35 @@ export default function GamesPage() {
       console.error('Error fetching games:', e)
       setLoading(false)
       setIsLoadingMore(false)
+    }
+  }
+
+  // Function to expand GameDistribution games
+  const expandGamedistGames = async () => {
+    setIsExpandingGamedist(true)
+    const newMultiplier = gamedistMultiplier + 1
+    setGamedistMultiplier(newMultiplier)
+    
+    // Reset and refetch with new multiplier
+    setGames([])
+    setLoadedCount(0)
+    setPage(1)
+    
+    try {
+      const sourcesParam = sourceFilters.length ? `&sources=${encodeURIComponent(sourceFilters.join(','))}` : ''
+      const response = await fetch(`/api/games?limit=${LOAD_SIZE}&page=1${sourcesParam}&gamedistMultiplier=${newMultiplier}&external=true&sortBy=${sortBy}`, {
+        headers: buildUserSignalsHeaders()
+      })
+      const data = await response.json()
+      const newGames: Game[] = Array.isArray(data.games) ? data.games : []
+      
+      setGames(newGames)
+      setLoadedCount(newGames.length)
+      setTotalGames(data.total || 0)
+    } catch (e) {
+      console.error('Error expanding GameDist games:', e)
+    } finally {
+      setIsExpandingGamedist(false)
     }
   }
 
@@ -183,6 +215,25 @@ export default function GamesPage() {
                   Loading more games from external sources...
                 </Badge>
               )}
+              <Button
+                onClick={expandGamedistGames}
+                disabled={isExpandingGamedist}
+                variant="outline"
+                size="sm"
+                className="mt-2 glass-card hover-lift"
+              >
+                {isExpandingGamedist ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating More Games...
+                  </>
+                ) : (
+                  <>
+                    <Gamepad2 className="mr-2 h-4 w-4" />
+                    Load More GameDist Games ({gamedistMultiplier}x → {gamedistMultiplier + 1}x)
+                  </>
+                )}
+              </Button>
             </div>
       </div>
 
