@@ -9,16 +9,6 @@ import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Send, MessageCircle, Lock } from 'lucide-react'
-import { db } from '@/lib/firebase'
-import {
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
-  serverTimestamp,
-} from 'firebase/firestore'
 
 interface Message {
   id: string
@@ -36,24 +26,8 @@ export default function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!db) return
-
-    // Real-time listener for messages
-    const q = query(
-      collection(db, 'messages'),
-      orderBy('timestamp', 'desc'),
-      limit(100)
-    )
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs: Message[] = []
-      snapshot.forEach((doc) => {
-        msgs.push({ id: doc.id, ...doc.data() } as Message)
-      })
-      setMessages(msgs.reverse())
-    })
-
-    return () => unsubscribe()
+    // TODO: Implement real-time chat with Neon + WebSockets
+    // For now, chat is disabled during migration
   }, [])
 
   useEffect(() => {
@@ -73,20 +47,8 @@ export default function ChatPage() {
 
     if (!newMessage.trim()) return
 
-    if (!db) return
-
-    try {
-      await addDoc(collection(db, 'messages'), {
-        username: user.displayName || 'Anonymous',
-        userId: user.uid,
-        message: newMessage.trim(),
-        timestamp: serverTimestamp(),
-      })
-
-      setNewMessage('')
-    } catch (error) {
-      console.error('Error sending message:', error)
-    }
+    // TODO: Implement message sending with Neon + WebSockets
+    console.log('Chat feature temporarily disabled during migration')
   }
 
   return (

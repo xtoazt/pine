@@ -8,13 +8,6 @@ import { Progress } from '@/components/ui/progress'
 import { useGameStats } from '@/hooks/useGameStats'
 import { useAuth } from '@/contexts/auth-context'
 import { Target, Flame, Trophy, Calendar, CheckCircle, Zap, Award } from 'lucide-react'
-import { db } from '@/lib/firebase'
-import {
-  doc,
-  updateDoc,
-  onSnapshot,
-  serverTimestamp,
-} from 'firebase/firestore'
 
 interface DailyGoal {
   targetXP: number
@@ -37,34 +30,19 @@ export default function GoalsPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!user || !db) return
+    if (!user) return
 
-    // Listen to user's daily goal data
-    const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (doc) => {
-      if (doc.exists()) {
-        const userData = doc.data()
-        setDailyGoal({
-          targetXP: userData.dailyGoalTarget || 50,
-          currentXP: userData.dailyXP || 0,
-          completed: userData.dailyGoalCompleted || false,
-          streak: userData.dailyGoalStreak || 0,
-          lastCompleted: userData.lastDailyGoalCompleted,
-        })
-      }
-    })
-
-    return () => unsubscribe()
+    // TODO: Implement goals with Neon database
+    // For now, goals feature is disabled during migration
   }, [user])
 
   const updateGoal = async (newTarget: number) => {
-    if (!user || !db) return
+    if (!user) return
 
     setLoading(true)
     try {
-      await updateDoc(doc(db, 'users', user.uid), {
-        dailyGoalTarget: newTarget,
-        updatedAt: serverTimestamp(),
-      })
+      // TODO: Implement goal update with Neon database
+      console.log('Goal update temporarily disabled during migration')
     } catch (error) {
       console.error('Error updating goal:', error)
     } finally {
@@ -73,14 +51,11 @@ export default function GoalsPage() {
   }
 
   const resetDailyProgress = async () => {
-    if (!user || !db) return
+    if (!user) return
 
     try {
-      await updateDoc(doc(db, 'users', user.uid), {
-        dailyXP: 0,
-        dailyGoalCompleted: false,
-        updatedAt: serverTimestamp(),
-      })
+      // TODO: Implement daily progress reset with Neon database
+      console.log('Daily progress reset temporarily disabled during migration')
     } catch (error) {
       console.error('Error resetting daily progress:', error)
     }

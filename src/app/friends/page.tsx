@@ -8,20 +8,6 @@ import { Input } from '@/components/ui/input'
 import { useAuth } from '@/contexts/auth-context'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { Users, UserPlus, MessageCircle, Flame, Trophy } from 'lucide-react'
-import { db } from '@/lib/firebase'
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-  updateDoc,
-  doc,
-  onSnapshot,
-  serverTimestamp,
-  orderBy,
-  limit as firestoreLimit,
-} from 'firebase/firestore'
 
 interface Friend {
   id: string
@@ -42,64 +28,19 @@ export default function FriendsPage() {
   const [acceptingRequest, setAcceptingRequest] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!user || !db) return
+    if (!user) return
 
-    // Listen to friend requests and friends
-    const friendsRef = collection(db as any, 'friendships')
-    const q = query(
-      friendsRef,
-      where('users', 'array-contains', user.uid)
-    )
-
-    const unsubscribe = onSnapshot(q, async (snapshot) => {
-      const friendsList: Friend[] = []
-      
-      for (const friendDoc of snapshot.docs) {
-        const data = friendDoc.data()
-        const friendId = data.users?.find((id: string) => id !== user.uid)
-        
-        if (friendId) {
-          // Fetch friend's profile
-          const userDoc = await getDocs(query(collection(db as any, 'users'), where('__name__', '==', friendId)))
-          if (!userDoc.empty) {
-            const friendData = userDoc.docs[0].data()
-            friendsList.push({
-              id: friendDoc.id,
-              username: friendData.username,
-              level: friendData.level || 1,
-              streak: friendData.streak || 0,
-              xp: friendData.xp || 0,
-              status: data.status,
-            })
-          }
-        }
-      }
-      
-      setFriends(friendsList)
-    })
-
-    return () => unsubscribe()
+    // TODO: Implement friends with Neon database
+    // For now, friends feature is disabled during migration
   }, [user])
 
   const searchUser = async () => {
-    if (!searchUsername.trim() || !db) return
+    if (!searchUsername.trim()) return
 
     setLoading(true)
     try {
-      const usersRef = collection(db, 'users')
-      const q = query(usersRef, where('username', '==', searchUsername.trim()))
-      const snapshot = await getDocs(q)
-
-      if (!snapshot.empty) {
-        const userData = snapshot.docs[0]
-        setSearchResult({
-          uid: userData.id,
-          ...userData.data(),
-        })
-      } else {
-        setSearchResult(null)
-        alert('User not found')
-      }
+      // TODO: Implement user search with Neon database
+      console.log('User search temporarily disabled during migration')
     } catch (error) {
       console.error('Error searching user:', error)
     } finally {
@@ -108,18 +49,11 @@ export default function FriendsPage() {
   }
 
   const sendFriendRequest = async (friendId: string) => {
-    if (!user || !db) return
+    if (!user) return
 
     try {
-      await addDoc(collection(db, 'friendships'), {
-        users: [user.uid, friendId],
-        status: 'pending',
-        requestedBy: user.uid,
-        createdAt: serverTimestamp(),
-      })
-      alert('Friend request sent!')
-      setSearchResult(null)
-      setSearchUsername('')
+      // TODO: Implement friend request with Neon database
+      console.log('Friend requests temporarily disabled during migration')
     } catch (error) {
       console.error('Error sending friend request:', error)
       alert('Failed to send friend request')
@@ -127,13 +61,12 @@ export default function FriendsPage() {
   }
 
   const acceptFriendRequest = async (friendshipId: string) => {
-    if (!db || acceptingRequest) return
+    if (acceptingRequest) return
 
     setAcceptingRequest(friendshipId)
     try {
-      await updateDoc(doc(db, 'friendships', friendshipId), {
-        status: 'accepted',
-      })
+      // TODO: Implement friend request acceptance with Neon database
+      console.log('Friend request acceptance temporarily disabled during migration')
     } catch (error) {
       console.error('Error accepting friend request:', error)
       alert('Failed to accept friend request. Please try again.')
