@@ -194,11 +194,11 @@ export default function MessagesPage() {
                       messages.map((message) => (
                         <div
                           key={message.id}
-                          className={`flex ${message.from === user.uid ? 'justify-end' : 'justify-start'}`}
+                          className={`flex ${message.from === user.id ? 'justify-end' : 'justify-start'}`}
                         >
                           <div
                             className={`max-w-[70%] p-3 rounded-lg ${
-                              message.from === user.uid
+                              message.from === user.id
                                 ? 'bg-primary text-primary-foreground'
                                 : 'bg-muted'
                             }`}
