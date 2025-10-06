@@ -97,7 +97,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
-    await stackApp.signOut()
+    // Clear API key from localStorage
+    localStorage.removeItem('pine-api-key')
+    
+    // Stack Auth sign out - redirect to home
+    if (typeof window !== 'undefined') {
+      window.location.href = '/api/auth/signout'
+    }
   }
 
   return (
