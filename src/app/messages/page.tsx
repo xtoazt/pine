@@ -39,96 +39,38 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!user || !db || !user.uid) return
+    if (!user) return
 
-    // Load friends
+    // TODO: Implement with Neon database
+    // Load friends from Neon friendships table
     const loadFriends = async () => {
-      const friendsRef = collection(db as any, 'friendships')
-      const q = query(
-        friendsRef,
-        where('users', 'array-contains', user.uid),
-        where('status', '==', 'accepted')
-      )
-
-      const snapshot = await getDocs(q)
-      const friendsList: Friend[] = []
-      
-      for (const friendDoc of snapshot.docs) {
-        const data = friendDoc.data()
-        const friendId = data.users?.find((id: string) => id !== user.uid)
-        
-        if (friendId) {
-          const userDoc = await getDocs(query(collection(db as any, 'users'), where('__name__', '==', friendId)))
-          if (!userDoc.empty) {
-            const friendData = userDoc.docs[0].data()
-            friendsList.push({
-              id: friendDoc.id,
-              username: friendData.username,
-              level: friendData.level || 1,
-              streak: friendData.streak || 0,
-              xp: friendData.xp || 0,
-              uid: friendId,
-            })
-          }
-        }
-      }
-      
-      setFriends(friendsList)
+      // Placeholder: Will be implemented with Neon
+      setFriends([])
     }
 
     loadFriends()
   }, [user])
 
   useEffect(() => {
-    if (!selectedFriend || !user || !db || !user.uid) return
+    if (!selectedFriend || !user) return
 
+    // TODO: Implement with Neon database + WebSockets
     // Listen to messages with selected friend
-    const messagesRef = collection(db as any, 'directMessages')
-    const q = query(
-      messagesRef,
-      where('participants', 'array-contains', user.uid),
-      orderBy('timestamp', 'desc'),
-      firestoreLimit(50)
-    )
+    const loadMessages = async () => {
+      // Placeholder: Will be implemented with Neon + WebSockets
+      setMessages([])
+    }
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messagesList: Message[] = []
-      
-      snapshot.docs.forEach((doc) => {
-        const data = doc.data()
-        // Check if message is between current user and selected friend
-        if (data.participants.includes(user.uid) && data.participants.includes(selectedFriend.uid)) {
-          messagesList.push({
-            id: doc.id,
-            from: data.from,
-            to: data.to,
-            message: data.message,
-            read: data.read,
-            timestamp: data.timestamp,
-            fromUsername: data.from === user.uid ? (user.displayName || user.email || 'You') : selectedFriend.username,
-          })
-        }
-      })
-      
-      setMessages(messagesList.reverse()) // Show oldest first
-    })
-
-    return () => unsubscribe()
+    loadMessages()
   }, [selectedFriend, user])
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedFriend || !user || !db || !user.uid) return
+    if (!newMessage.trim() || !selectedFriend || !user) return
 
     setLoading(true)
     try {
-      await addDoc(collection(db, 'directMessages'), {
-        from: user.uid,
-        to: selectedFriend.uid,
-        message: newMessage.trim(),
-        participants: [user.uid, selectedFriend.uid],
-        read: false,
-        timestamp: serverTimestamp(),
-      })
+      // TODO: Implement with Neon database + WebSockets
+      console.log('Message sending temporarily disabled during migration')
       setNewMessage('')
     } catch (error) {
       console.error('Error sending message:', error)
@@ -138,15 +80,8 @@ export default function MessagesPage() {
   }
 
   const markAsRead = async (messageId: string) => {
-    if (!db) return
-
-    try {
-      await updateDoc(doc(db, 'directMessages', messageId), {
-        read: true,
-      })
-    } catch (error) {
-      console.error('Error marking message as read:', error)
-    }
+    // TODO: Implement with Neon database
+    console.log('Mark as read temporarily disabled during migration')
   }
 
   if (!user) {
