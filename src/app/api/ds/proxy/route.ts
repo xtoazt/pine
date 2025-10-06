@@ -56,7 +56,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid url' }, { status: 400 })
     }
 
+    const origin = new URL(request.url).origin
     const buildCodetabsUrl = (u: URL) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u.toString())}`
+    const buildMirrorUrl = (u: URL) => {
+      const base = process.env.MIRROR_URL || `${origin}/api/mirror`
+      if (!base) return null
+      try {
+        const out = new URL(base)
+        // Use common query param name
+        out.searchParams.set('url', u.toString())
+        return out.toString()
+      } catch { return null }
+    }
 
     const fetchWithFallback = async (u: URL): Promise<Response> => {
       try {
@@ -74,7 +85,15 @@ export async function GET(request: NextRequest) {
       } catch {
         // fall through to codetabs
       }
-      // Try Codetabs public proxy as a fallback for CORS/restrictions
+      // Try user-provided Mirror proxy first (e.g., embr-dev/Mirror)
+      const mirrorUrl = buildMirrorUrl(u)
+      if (mirrorUrl) {
+        try {
+          const m = await fetch(mirrorUrl, { redirect: 'follow' })
+          if (m.ok) return m
+        } catch {}
+      }
+      // Then try Codetabs public proxy as a fallback for CORS/restrictions
       try {
         const fallback = await fetch(buildCodetabsUrl(u), { redirect: 'follow' })
         return fallback

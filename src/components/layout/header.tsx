@@ -56,9 +56,6 @@ export function Header() {
             <Link href="/games" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Games
             </Link>
-            <Link href="/s16" className="transition-colors hover:text-foreground/80 text-foreground/60">
-              s16
-            </Link>
             <Link href="/streak" className="transition-colors hover:text-foreground/80 text-foreground/60">
               Streak
             </Link>

@@ -217,70 +217,55 @@ async function fetchClassworkGames(baseUrl: string): Promise<Game[]> {
   }
 }
 
-// s16.lol source (20k+). Paged seed scanning to avoid duplicates across pages.
-async function fetchS16Games(baseUrl: string, options?: { seedOffset?: number, seedLimit?: number, maxResults?: number }): Promise<Game[]> {
-  const seeds = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('')
-  const start = Math.max(0, Math.min(seeds.length, options?.seedOffset ?? 0))
-  const count = Math.max(1, Math.min(seeds.length - start, options?.seedLimit ?? 4))
-  const seedList = seeds.slice(start, start + count)
-  const endpoint = (q: string) => `https://api.s16.lol/v0/api/games/q=${encodeURIComponent(q)}`
-  const fallbackEndpoint = (q: string) => `https://raw.githubusercontent.com/s16data/index/main/q/${encodeURIComponent(q)}.json`
+// s16 via Bread-org embed API. We query static indices and map to our Game type.
+async function fetchS16Bread(): Promise<Game[]> {
+  const API1 = process.env.S16_API || 'https://bread-org.github.io/s16.games'
+  const API2 = process.env.S16_API2 || 'https://bread-org.github.io/s16.chunk2'
+  const tryPaths = ['index.json', 'list.json', 'games.json']
+  const collect: any[] = []
+  const fetchOne = async (base: string) => {
+    for (const p of tryPaths) {
+      try {
+        const url = `${base.replace(/\/$/, '')}/${p}`
+        const res = await fetch(url, { cache: 'no-store' })
+        if (res.ok) {
+          const j = await res.json().catch(() => null)
+          if (Array.isArray(j) && j.length) collect.push(...j)
+        }
+      } catch {}
+    }
+  }
+  await Promise.all([fetchOne(API1), fetchOne(API2)])
+  const toTitle = (s: string) => (s || '').replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
   const out: Game[] = []
   const seen = new Set<string>()
-  const toSlug = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-  const mapOne = (g: any, idx: number): Game | null => {
-    const title = g?.title || g?.name || `S16 Game ${idx+1}`
-    const slug = toSlug(g?.slug || title)
-    const rawUrl: string | undefined = g?.url || g?.playUrl || g?.link
-    if (!rawUrl) return null
-    const id = `s16-${g?.id || slug || idx}`
-    if (seen.has(id)) return null
-    seen.add(id)
-    return {
-      id,
+  for (let i = 0; i < collect.length; i++) {
+    const e = collect[i]
+    const id = String(e?.id || e?.slug || e?.name || e).trim()
+    if (!id) continue
+    const key = `s16-${id}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    const title = String(e?.title || toTitle(id))
+    const rawUrl = String(e?.url || e?.link || `${API1}?id=${encodeURIComponent(id)}`)
+    const thumb = e?.thumb || e?.thumbnail || `${API1.replace(/\/$/, '')}/thumbs/${id}.jpg`
+    out.push({
+      id: key,
       title,
-      description: g?.description || '',
-      thumbnail: g?.thumbnail || g?.thumb || g?.image || `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}`,
-      category: (g?.category || 'arcade').toLowerCase(),
-      tags: Array.isArray(g?.tags) ? g.tags : [],
-      playUrl: `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}`,
-      upvotes: Number(g?.upvotes || 0),
-      downvotes: Number(g?.downvotes || 0),
-      playCount: Number(g?.plays || g?.playCount || 0),
+      description: e?.description || '',
+      thumbnail: `/api/ds/proxy?url=${encodeURIComponent(thumb)}`,
+      category: String(e?.category || 'arcade').toLowerCase(),
+      tags: Array.isArray(e?.tags) ? e.tags : ['s16'],
+      playUrl: `/api/ds/proxy?url=${encodeURIComponent(rawUrl)}&embed=1&zoom=1`,
+      upvotes: 0,
+      downvotes: 0,
+      playCount: 0,
       source: 's16',
       createdAt: new Date('2024-01-01T00:00:00.000Z'),
       updatedAt: new Date('2024-01-01T00:00:00.000Z'),
-    }
+    })
   }
-  try {
-    // Limit concurrency to avoid serverless timeouts
-    const batchSize = 4
-    for (let i = 0; i < seedList.length; i += batchSize) {
-      const batch = seedList.slice(i, i + batchSize)
-      const results = await Promise.all(batch.map(async (q) => {
-        try {
-          let res = await fetch(endpoint(q), { cache: 'no-store' })
-          if (!res.ok) {
-            // Fallback static index mirror
-            res = await fetch(fallbackEndpoint(q), { cache: 'no-store' })
-            if (!res.ok) return [] as Game[]
-          }
-          const json = await res.json()
-          const arr = Array.isArray(json) ? json : (Array.isArray(json?.games) ? json.games : [])
-          return arr.map(mapOne).filter(Boolean) as Game[]
-        } catch {
-          return [] as Game[]
-        }
-      }))
-      for (const list of results) out.push(...list)
-      // Early cap per-page; full catalog is covered by increasing seedOffset on subsequent pages
-      const maxResults = Math.max(100, Math.min(5000, options?.maxResults ?? 1500))
-      if (out.length > maxResults) break
-    }
-    return out
-  } catch {
-    return []
-  }
+  return out
 }
 
 // ALL games from lessons data + Fortnite games + HTML5 games + Classwork games
@@ -8867,15 +8852,14 @@ export async function GET(request: NextRequest) {
       // Progressive budgets for most sources; s16 runs at full budget to ensure all titles are included gradually
       const gsOpts = { maxCheck: Math.min(100 + (page - 1) * 100, 500) }
       const gnOpts = { maxItems: Math.min(100 + (page - 1) * 150, 800) }
-      // s16.lol legacy fetch disabled per new embed integration; list will not be fetched here
-      const s16Opts = { seedOffset: 0, seedLimit: 0, maxResults: 0 }
+      // s16 via Bread-org embed API
       const arcadeOpts = { maxPing: Math.min(50 + (page - 1) * 50, 200) }
       
       const [radonGames, gsGames, gnGames, s16Games, classworkGames, arcadeGames] = await Promise.all([
         (source === 'radon' || fetchAll) ? fetchRadonGames(request.url) : Promise.resolve([]),
         (source === 'gamesnacks' || fetchAll) ? fetchGameSnacks(request.url, gsOpts) : Promise.resolve([]),
         (source === 'gnmath' || fetchAll) ? fetchGnMath(request.url, gnOpts) : Promise.resolve([]),
-        Promise.resolve([]),
+        (source === 's16' || fetchAll) ? fetchS16Bread() : Promise.resolve([]),
         (source === 'classwork' || fetchAll) ? fetchClassworkGames(request.url) : Promise.resolve([]),
         (source === 'arcade' || fetchAll) ? fetchArcadeGames(request.url, arcadeOpts) : Promise.resolve([])
       ])
@@ -8885,6 +8869,15 @@ export async function GET(request: NextRequest) {
 
     // Filter: remove entries with obviously invalid play URLs and dedupe by id and URL
     filteredGames = filteredGames.filter(g => g && g.playUrl)
+    // Prefer direct HTTPS links: avoid proxy if the URL is already absolute and same-origin/cross-origin allowed
+    filteredGames = filteredGames.map(g => {
+      try {
+        const u = new URL(g.playUrl, request.url)
+        const isApiProxy = /\/api\/(ds|proxy)\//.test(u.pathname) || /\b(url|quest)=/.test(u.search)
+        if (!isApiProxy && /^https?:/i.test(u.toString())) return { ...g, playUrl: u.toString() }
+      } catch {}
+      return g
+    })
     const dedup = new Map<string, Game>()
     for (const g of filteredGames) {
       const key = g.id || g.playUrl
