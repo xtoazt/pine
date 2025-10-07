@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stackServerApp } from '@/lib/stack'
+
+// Force dynamic rendering to avoid build-time initialization
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
+    // Dynamically import Stack Auth to avoid build-time errors
+    const { stackServerApp } = await import('@/lib/stack')
+    
     // Get the user from Stack Auth
     const user = await stackServerApp.getUser()
     
