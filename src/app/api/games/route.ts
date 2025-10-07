@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyApiKey } from '@/lib/api-key'
 
 // Simple in-memory cache (best-effort; per-runtime)
 const memoryCache: Map<string, { expires: number; data: any; headers: Record<string, string> }> = new Map()
