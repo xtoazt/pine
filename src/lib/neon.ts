@@ -5,7 +5,7 @@ const isDatabaseConfigured = !!process.env.DATABASE_URL
 
 // Only initialize if DATABASE_URL is present
 export const sql = isDatabaseConfigured 
-  ? neon(process.env.DATABASE_URL) 
+  ? neon(process.env.DATABASE_URL!) 
   : null as any
 
 export { isDatabaseConfigured }
