@@ -2,10 +2,15 @@
 
 export function getUVProxyUrl(url: string): string {
   if (typeof window === 'undefined') return url
-  
-  // Encode the URL for UV proxy
-  const encodedUrl = encodeURIComponent(url)
-  return `/uv/service/${encodedUrl}`
+  const w: any = window as any
+  try {
+    if (w.__uv$config && typeof w.__uv$config.encodeUrl === 'function') {
+      const prefix: string = w.__uv$config.prefix || '/uv/service/'
+      return `${prefix}${w.__uv$config.encodeUrl(url)}`
+    }
+  } catch {}
+  // Fallback (will likely not work without client): keep original URL
+  return url
 }
 
 export async function registerUVServiceWorker(): Promise<boolean> {
@@ -29,4 +34,28 @@ export async function registerUVServiceWorker(): Promise<boolean> {
 export function isUVReady(): boolean {
   if (typeof window === 'undefined') return false
   return navigator.serviceWorker.controller !== null
+}
+
+export async function ensureUVClientReady(): Promise<boolean> {
+  if (typeof window === 'undefined') return false
+  const w: any = window as any
+  const have = () => !!(w.__uv$config && w.Ultraviolet)
+  if (have()) return true
+  const load = (src: string) => new Promise<void>((resolve, reject) => {
+    const s = document.createElement('script')
+    s.src = src
+    s.onload = () => resolve()
+    s.onerror = () => reject(new Error(`Failed to load ${src}`))
+    document.head.appendChild(s)
+  })
+  try {
+    // Load bundle, config, then client in sequence
+    await load('/uv/uv/uv.bundle.js')
+    await load('/uv/uv/uv.config.js')
+    await load('/uv/uv/uv.client.js')
+  } catch (e) {
+    console.error('[UV] Failed to load client scripts:', e)
+    return false
+  }
+  return have()
 }

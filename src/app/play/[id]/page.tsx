@@ -14,7 +14,7 @@ import { useCustomGames } from '@/hooks/useCustomGames'
 import { useGameStats } from '@/hooks/useGameStats'
 import { AchievementToast } from '@/components/gamification/achievement-toast'
 import { LikeButton } from '@/components/game/like-button'
-import { registerUVServiceWorker, getUVProxyUrl } from '@/lib/uv-proxy'
+import { registerUVServiceWorker, getUVProxyUrl, ensureUVClientReady } from '@/lib/uv-proxy'
 
 export default function GamePage() {
   const params = useParams() as { id?: string } | null
@@ -28,14 +28,15 @@ export default function GamePage() {
   const { customGames } = useCustomGames()
   const { recordGamePlayed, newAchievement } = useGameStats()
 
-  // Register UV Service Worker on mount
+  // Register UV Service Worker on mount and ensure client available
   useEffect(() => {
-    registerUVServiceWorker().then((success) => {
-      setUvReady(success)
-      if (success) {
-        console.log('[UV] Proxy ready for games')
-      }
-    })
+    (async () => {
+      const sw = await registerUVServiceWorker()
+      const client = await ensureUVClientReady()
+      const ok = sw && client
+      setUvReady(ok)
+      if (ok) console.log('[UV] Proxy ready for games')
+    })()
   }, [])
 
   useEffect(() => {
@@ -213,7 +214,16 @@ export default function GamePage() {
                   </div>
                 ) : (
                   <iframe
-                    src={getUVProxyUrl(game.playUrl || '')}
+                    src={(() => {
+                      try {
+                        const url = new URL(game.playUrl || '', window.location.origin)
+                        // Avoid proxying our own domain to prevent recursive iframe
+                        if (url.origin === window.location.origin) return game.playUrl || ''
+                        return getUVProxyUrl(url.toString())
+                      } catch {
+                        return game.playUrl || ''
+                      }
+                    })()}
                     className="w-full h-full border-0"
                     allowFullScreen
                     title={game.title}
