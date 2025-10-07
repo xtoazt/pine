@@ -175,39 +175,85 @@ export default function GamesPage() {
     }
   }
 
+  // Initial load only
   useEffect(() => {
     fetchGames(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, sortBy, sourceFilters])
+  }, [])
 
-  // When source filters change, reset pagination and list
+  // When filters change, smoothly refetch without resetting scroll
   useEffect(() => {
-    setGames([])
-    setLoadedCount(0)
-    setTotalGames(0)
-    setPage(1)
-  }, [sourceFilters])
+    if (games.length === 0) return // Skip if initial load
+    
+    const refetchWithFilters = async () => {
+      setLoading(true)
+      try {
+        const sourcesParam = sourceFilters.length ? `&sources=${encodeURIComponent(sourceFilters.join(','))}` : ''
+        const multiplierParam = gamedistMultiplier > 1 ? `&gamedistMultiplier=${gamedistMultiplier}` : ''
+        const response = await fetch(`/api/games?limit=${LOAD_SIZE}&offset=0&page=1${sourcesParam}${multiplierParam}&external=true&sortBy=${sortBy}`, {
+          headers: buildUserSignalsHeaders()
+        })
+        const data = await response.json()
+        const newGames: Game[] = Array.isArray(data.games) ? data.games : []
+        
+        setGames(newGames)
+        setLoadedCount(newGames.length)
+        setTotalGames(data.total || 0)
+        setPage(1)
+      } catch (e) {
+        console.error('Error refetching games:', e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    refetchWithFilters()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, sourceFilters])
 
   // Infinite scroll via IntersectionObserver (smooth + efficient)
   useEffect(() => {
     if (!sentinelRef.current) return
     const el = sentinelRef.current
+    
     const observer = new IntersectionObserver(
       (entries) => {
         const first = entries[0]
-        if (first.isIntersecting && !isLoadingMore && !loading && loadedCount < totalGames) {
+        // Only load more if:
+        // 1. Sentinel is visible
+        // 2. Not already loading
+        // 3. There are more games to load
+        // 4. We have games already loaded (prevents double initial load)
+        if (first.isIntersecting && !isLoadingMore && !loading && loadedCount < totalGames && games.length > 0) {
           setIsLoadingMore(true)
-          setPage((p) => p + 1)
-          fetchGames(true).finally(() => {
-            setIsLoadingMore(false)
+          
+          // Fetch next batch without changing page state (to avoid resets)
+          const nextOffset = loadedCount
+          const sourcesParam = sourceFilters.length ? `&sources=${encodeURIComponent(sourceFilters.join(','))}` : ''
+          const multiplierParam = gamedistMultiplier > 1 ? `&gamedistMultiplier=${gamedistMultiplier}` : ''
+          
+          fetch(`/api/games?limit=${LOAD_SIZE}&offset=${nextOffset}${sourcesParam}${multiplierParam}&external=true&sortBy=${sortBy}`, {
+            headers: buildUserSignalsHeaders()
           })
+            .then(r => r.json())
+            .then(data => {
+              const newGames: Game[] = Array.isArray(data.games) ? data.games : []
+              if (newGames.length > 0) {
+                setGames(prev => [...prev, ...newGames])
+                setLoadedCount(prev => prev + newGames.length)
+                if ((data.total || 0) > totalGames) setTotalGames(data.total)
+              }
+            })
+            .catch(e => console.error('Error loading more games:', e))
+            .finally(() => setIsLoadingMore(false))
         }
       },
-      { root: null, rootMargin: '800px 0px', threshold: 0.1 }
+      { root: null, rootMargin: '1000px 0px', threshold: 0.1 }
     )
+    
     observer.observe(el)
     return () => observer.disconnect()
-  }, [isLoadingMore, loading, loadedCount, totalGames])
+  }, [isLoadingMore, loading, loadedCount, totalGames, games.length, sourceFilters, gamedistMultiplier, sortBy])
 
   // Memoize filtered and sorted games for better performance
   // Combine server games with client-side GameMonetize games
