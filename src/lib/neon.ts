@@ -13,6 +13,11 @@ export { isDatabaseConfigured }
 // Helper function to create tables if they don't exist
 export async function initializeDatabase() {
   try {
+    // Ensure needed extension for UUID generation exists
+    try {
+      await sql`CREATE EXTENSION IF NOT EXISTS pgcrypto` // for gen_random_uuid()
+    } catch {}
+
     // Create users table
     await sql`
       CREATE TABLE IF NOT EXISTS users (
@@ -25,6 +30,17 @@ export async function initializeDatabase() {
         updated_at TIMESTAMP DEFAULT NOW()
       )
     `
+
+    // Backfill: add password_hash if table pre-exists without it
+    await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash TEXT`
+    // Ensure id has a default; try both UUID and TEXT variants
+    try {
+      await sql`ALTER TABLE users ALTER COLUMN id SET DEFAULT gen_random_uuid()`
+    } catch {
+      try {
+        await sql`ALTER TABLE users ALTER COLUMN id SET DEFAULT gen_random_uuid()::text`
+      } catch {}
+    }
 
     // Create user_stats table
     await sql`
