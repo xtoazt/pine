@@ -5,10 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useGameStats } from '@/hooks/useGameStats'
-import { useAuth } from '@/contexts/auth-context'
 import { Trophy, Flame, Star, Target, Award, Users, TrendingUp, Crown, User, Gamepad2, Map, Zap, Shuffle, Moon, Heart } from 'lucide-react'
 import { StatsPanel } from '@/components/gamification/stats-panel'
-import { AuthModal } from '@/components/auth/auth-modal'
 
 interface LeaderboardEntry {
   username: string
@@ -44,8 +42,6 @@ const iconMap = {
 
 export default function StatsPage() {
   const { stats, achievements } = useGameStats()
-  const { user } = useAuth()
-  const [showAuthModal, setShowAuthModal] = useState(false)
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null)
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
@@ -77,23 +73,6 @@ export default function StatsPage() {
       .catch(err => console.error('Failed to load global stats:', err))
       .finally(() => setLoadingGlobal(false))
   }, [])
-
-  if (!user) {
-    return (
-      <div className="container py-8 relative">
-        <div className="absolute inset-0 -z-10 hero-gradient opacity-50" />
-        <Card className="max-w-2xl mx-auto">
-          <CardContent className="p-12 text-center space-y-4">
-            <Trophy className="h-16 w-16 mx-auto text-muted-foreground" />
-            <h2 className="text-2xl font-bold">Stats & Leaderboard</h2>
-            <p className="text-muted-foreground">Sign in to view your achievements, levels, and leaderboards.</p>
-            <button className="btn-soft px-4 py-2 rounded" onClick={() => setShowAuthModal(true)}>Sign In to Continue</button>
-          </CardContent>
-        </Card>
-        <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} />
-      </div>
-    )
-  }
 
   return (
     <div className="container py-8 space-y-8 relative">
