@@ -14,6 +14,7 @@ import { useCustomGames } from '@/hooks/useCustomGames'
 import { useGameStats } from '@/hooks/useGameStats'
 import { AchievementToast } from '@/components/gamification/achievement-toast'
 import { LikeButton } from '@/components/game/like-button'
+import { registerUVServiceWorker, getUVProxyUrl } from '@/lib/uv-proxy'
 
 export default function GamePage() {
   const params = useParams() as { id?: string } | null
@@ -22,9 +23,20 @@ export default function GamePage() {
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [uvReady, setUvReady] = useState(false)
   const virtualController = useVirtualController()
   const { customGames } = useCustomGames()
   const { recordGamePlayed, newAchievement } = useGameStats()
+
+  // Register UV Service Worker on mount
+  useEffect(() => {
+    registerUVServiceWorker().then((success) => {
+      setUvReady(success)
+      if (success) {
+        console.log('[UV] Proxy ready for games')
+      }
+    })
+  }, [])
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -191,31 +203,40 @@ export default function GamePage() {
           <Card>
             <CardContent className="p-0">
               <div id="game-container" className="aspect-video bg-muted rounded-t-lg overflow-hidden relative">
-                <iframe
-                  src={game.source === 'lessons' ? `/api/proxy/lessons/${gameId}` : (game.playUrl || '')}
-                      className="w-full h-full border-0"
-                      allowFullScreen
-                      title={game.title}
-                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-orientation-lock allow-top-navigation-by-user-activation"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  onError={(e) => {
-                    console.error('Game failed to load:', gameId, 'URL:', e.currentTarget.src)
-                    // Fallback to a simple error message
-                    e.currentTarget.style.display = 'none'
-                    const errorDiv = document.createElement('div')
-                    errorDiv.className = 'flex items-center justify-center h-full bg-muted text-muted-foreground'
-                    errorDiv.innerHTML = `
-                      <div class="text-center">
-                        <h3 class="text-lg font-semibold mb-2">Game Not Available</h3>
-                        <p class="text-sm">This game is currently unavailable.</p>
-                        <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">
-                          Try Again
-                        </button>
-                      </div>
-                    `
-                    e.currentTarget.parentNode?.appendChild(errorDiv)
-                  }}
-                />
+                {!uvReady ? (
+                  <div className="flex items-center justify-center h-full bg-muted text-muted-foreground">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                      <h3 className="text-lg font-semibold mb-2">Loading UV Proxy...</h3>
+                      <p className="text-sm">Preparing secure game environment</p>
+                    </div>
+                  </div>
+                ) : (
+                  <iframe
+                    src={getUVProxyUrl(game.playUrl || '')}
+                    className="w-full h-full border-0"
+                    allowFullScreen
+                    title={game.title}
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-orientation-lock allow-top-navigation-by-user-activation"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    onError={(e) => {
+                      console.error('Game failed to load:', gameId, 'URL:', e.currentTarget.src)
+                      e.currentTarget.style.display = 'none'
+                      const errorDiv = document.createElement('div')
+                      errorDiv.className = 'flex items-center justify-center h-full bg-muted text-muted-foreground'
+                      errorDiv.innerHTML = `
+                        <div class="text-center">
+                          <h3 class="text-lg font-semibold mb-2">Game Not Available</h3>
+                          <p class="text-sm">This game is currently unavailable.</p>
+                          <button onclick="window.location.reload()" class="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">
+                            Try Again
+                          </button>
+                        </div>
+                      `
+                      e.currentTarget.parentNode?.appendChild(errorDiv)
+                    }}
+                  />
+                )}
                 
                 {/* Fullscreen overlay controls */}
                 {isFullscreen && (
