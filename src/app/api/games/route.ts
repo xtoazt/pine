@@ -43,13 +43,33 @@ function isValidGame(game: Game): boolean {
 // Cache of quick verification results to avoid rechecking within TTL
 const brokenGameCache: Map<string, { ok: boolean; expires: number }> = new Map()
 
+function isClearlyInvalid(game: Game): boolean {
+  if (!game.playUrl) return true
+  const src = (game.source || '').toLowerCase()
+  try {
+    const url = new URL(game.playUrl, 'https://example.com')
+    const host = url.hostname.toLowerCase()
+    // GameDistribution: expect MD5 folder name (32 hex chars) directly under host
+    if (src === 'gamedist' || host.includes('gamedistribution')) {
+      const parts = url.pathname.split('/').filter(Boolean)
+      // common pattern: /{md5}/ or /html5games/{md5}/...
+      const md5 = parts.find(p => /^[a-f0-9]{32}$/i.test(p))
+      if (!md5) return true
+    }
+  } catch {
+    return true
+  }
+  return false
+}
+
 function shouldQuickCheck(game: Game): boolean {
   const src = (game.source || '').toLowerCase()
-  if (src === 'gamedist' || src === 'arcade' || src === 'classwork' || src === 'radon') return true
+  if (src === 'gamedist' || src === 's16' || src === 'arcade' || src === 'classwork' || src === 'radon') return true
   try {
     const host = new URL(game.playUrl).hostname.toLowerCase()
     if (host.includes('gamedistribution')) return true
     if (host.includes('classroom') || host.includes('googleusercontent')) return true
+    if (host.includes('unblocked') || host.includes('sites.google')) return true
   } catch {}
   return false
 }
@@ -67,14 +87,30 @@ async function fetchWithTimeout(url: string, opts: RequestInit = {}, timeoutMs =
 
 async function quickVerify(url: string): Promise<boolean> {
   try {
-    const res = await fetchWithTimeout(url, { headers: { 'user-agent': 'Mozilla/5.0 PineBot' } }, 5000)
+    const res = await fetchWithTimeout(
+      url,
+      { 
+        headers: { 
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) PineBot/1.0',
+          'accept': 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
+          'range': 'bytes=0-8191'
+        }
+      },
+      6000
+    )
     if (!res.ok || res.status >= 400) return false
     // Only inspect small HTML/text responses
     const ct = res.headers.get('content-type') || ''
     if (ct.includes('text/html') || ct.includes('application/xhtml')) {
       const text = await res.text()
       const snippet = text.slice(0, 4096).toLowerCase()
-      if (snippet.includes('game not found') || snippet.includes('404') || snippet.includes('not found')) return false
+      if (
+        snippet.includes('game not found') ||
+        snippet.includes('404 not found') ||
+        snippet.includes('page not found') ||
+        snippet.includes('sorry, we cannot find') ||
+        snippet.includes('cannot find the page')
+      ) return false
     }
     return true
   } catch {
@@ -9243,6 +9279,9 @@ export async function GET(request: NextRequest) {
       } catch {}
       return g
     })
+    // Drop obvious invalid entries quickly (e.g., malformed GameDistribution IDs)
+    filteredGames = filteredGames.filter(g => !isClearlyInvalid(g))
+
     const dedup = new Map<string, Game>()
     for (const g of filteredGames) {
       const key = g.id || g.playUrl
@@ -9252,7 +9291,7 @@ export async function GET(request: NextRequest) {
 
     // Quick server-side availability filter to drop obvious "Game not found" entries
     // Keeps API fast by checking only a capped subset per request
-    filteredGames = await quickFilterGames(request.url, filteredGames, 80)
+    filteredGames = await quickFilterGames(request.url, filteredGames, Math.min(200, filteredGames.length))
 
     // Optional heavy verification (off by default to avoid timeouts and truncation)
     if (verify) {
