@@ -25,8 +25,8 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const [signInData, setSignInData] = useState({ username: '', password: '' })
-  const [signUpData, setSignUpData] = useState({ username: '', password: '', confirmPassword: '' })
+  const [signInData, setSignInData] = useState({ email: '', password: '' })
+  const [signUpData, setSignUpData] = useState({ email: '', displayName: '', password: '', confirmPassword: '' })
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,7 +34,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
     setLoading(true)
 
     try {
-      await signIn(signInData.username, signInData.password)
+      await signIn(signInData.email, signInData.password)
       onClose()
     } catch (err: any) {
       setError(err.message || 'Failed to sign in')
@@ -57,15 +57,15 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
       return
     }
 
-    if (signUpData.username.length < 3) {
-      setError('Username must be at least 3 characters')
+    if (signUpData.displayName.length < 3) {
+      setError('Display name must be at least 3 characters')
       return
     }
 
     setLoading(true)
 
     try {
-      await signUp(signUpData.username, signUpData.password)
+      await signUp(signUpData.email, signUpData.password, signUpData.displayName)
       onClose()
     } catch (err: any) {
       setError(err.message || 'Failed to create account')
@@ -93,12 +93,13 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
           <TabsContent value="signin">
             <form onSubmit={handleSignIn} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="signin-username">Username</Label>
+                <Label htmlFor="signin-email">Email</Label>
                 <Input
-                  id="signin-username"
-                  placeholder="Enter your username"
-                  value={signInData.username}
-                  onChange={(e) => setSignInData({ ...signInData, username: e.target.value })}
+                  id="signin-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={signInData.email}
+                  onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}
                   disabled={loading}
                   required
                 />
@@ -137,12 +138,24 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
           <TabsContent value="signup">
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="signup-username">Username</Label>
+                <Label htmlFor="signup-email">Email</Label>
                 <Input
-                  id="signup-username"
-                  placeholder="Choose a username"
-                  value={signUpData.username}
-                  onChange={(e) => setSignUpData({ ...signUpData, username: e.target.value })}
+                  id="signup-email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={signUpData.email}
+                  onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
+                  disabled={loading}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="signup-displayname">Display Name</Label>
+                <Input
+                  id="signup-displayname"
+                  placeholder="Choose a display name"
+                  value={signUpData.displayName}
+                  onChange={(e) => setSignUpData({ ...signUpData, displayName: e.target.value })}
                   disabled={loading}
                   required
                 />
@@ -152,7 +165,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
                 <Input
                   id="signup-password"
                   type="password"
-                  placeholder="Choose a password"
+                  placeholder="Choose a password (min 6 characters)"
                   value={signUpData.password}
                   onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
                   disabled={loading}
@@ -188,7 +201,7 @@ export function AuthModal({ open, onClose }: AuthModalProps) {
                 )}
               </Button>
               <p className="text-xs text-muted-foreground text-center">
-                No email required. Your username is your identity.
+                Your data is stored securely and never shared.
               </p>
             </form>
           </TabsContent>

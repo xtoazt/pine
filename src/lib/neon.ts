@@ -16,8 +16,9 @@ export async function initializeDatabase() {
     // Create users table
     await sql`
       CREATE TABLE IF NOT EXISTS users (
-        id TEXT PRIMARY KEY,
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
         display_name TEXT,
         photo_url TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
@@ -28,7 +29,7 @@ export async function initializeDatabase() {
     // Create user_stats table
     await sql`
       CREATE TABLE IF NOT EXISTS user_stats (
-        user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+        user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
         total_play_time INTEGER DEFAULT 0,
         games_played INTEGER DEFAULT 0,
         achievements JSONB DEFAULT '[]',
@@ -42,7 +43,7 @@ export async function initializeDatabase() {
     // Create user_profiles table
     await sql`
       CREATE TABLE IF NOT EXISTS user_profiles (
-        user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+        user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
         bio TEXT,
         favorite_games JSONB DEFAULT '[]',
         settings JSONB DEFAULT '{}',
@@ -55,8 +56,8 @@ export async function initializeDatabase() {
     await sql`
       CREATE TABLE IF NOT EXISTS friendships (
         id SERIAL PRIMARY KEY,
-        user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
-        friend_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+        user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        friend_id UUID REFERENCES users(id) ON DELETE CASCADE,
         status TEXT DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT NOW(),
         UNIQUE(user_id, friend_id)
@@ -67,8 +68,8 @@ export async function initializeDatabase() {
     await sql`
       CREATE TABLE IF NOT EXISTS messages (
         id SERIAL PRIMARY KEY,
-        from_user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
-        to_user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+        from_user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+        to_user_id UUID REFERENCES users(id) ON DELETE CASCADE,
         message TEXT NOT NULL,
         read BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT NOW()
@@ -79,7 +80,7 @@ export async function initializeDatabase() {
     await sql`
       CREATE TABLE IF NOT EXISTS api_keys (
         id SERIAL PRIMARY KEY,
-        user_id TEXT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+        user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
         api_key TEXT UNIQUE NOT NULL,
         is_active BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT NOW(),
