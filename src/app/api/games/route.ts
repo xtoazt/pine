@@ -9047,32 +9047,23 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     
-    // Require API key for access
+    // API key is optional for now (will be enforced with Neon Auth)
     const apiKey = searchParams.get('api_key') || request.headers.get('x-api-key')
     
-    if (!apiKey) {
-      return NextResponse.json(
-        { 
-          error: 'API key required',
-          message: 'Please sign up to get your free API key',
-          code: 'MISSING_API_KEY'
-        },
-        { status: 401 }
-      )
-    }
-    
-    // Verify API key
-    const verification = await verifyApiKey(apiKey)
-    if (!verification.valid) {
-      return NextResponse.json(
-        { 
-          error: 'Invalid API key',
-          message: 'Please check your API key or sign up for a new one',
-          code: 'INVALID_API_KEY'
-        },
-        { status: 403 }
-      )
-    }
+    // TODO: Re-enable API key verification with Neon Auth
+    // if (apiKey) {
+    //   const verification = await verifyApiKey(apiKey)
+    //   if (!verification.valid) {
+    //     return NextResponse.json(
+    //       { 
+    //         error: 'Invalid API key',
+    //         message: 'Please check your API key or sign up for a new one',
+    //         code: 'INVALID_API_KEY'
+    //       },
+    //       { status: 403 }
+    //     )
+    //   }
+    // }
     
     const cacheKey = buildCacheKey(request.url)
     // Canonical cache key ignores paging params so subsequent pages are instant
