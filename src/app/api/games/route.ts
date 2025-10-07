@@ -40,6 +40,72 @@ function isValidGame(game: Game): boolean {
   return true
 }
 
+// Cache of quick verification results to avoid rechecking within TTL
+const brokenGameCache: Map<string, { ok: boolean; expires: number }> = new Map()
+
+function shouldQuickCheck(game: Game): boolean {
+  const src = (game.source || '').toLowerCase()
+  if (src === 'gamedist' || src === 'arcade' || src === 'classwork' || src === 'radon') return true
+  try {
+    const host = new URL(game.playUrl).hostname.toLowerCase()
+    if (host.includes('gamedistribution')) return true
+    if (host.includes('classroom') || host.includes('googleusercontent')) return true
+  } catch {}
+  return false
+}
+
+async function fetchWithTimeout(url: string, opts: RequestInit = {}, timeoutMs = 4000): Promise<Response> {
+  const controller = new AbortController()
+  const id = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const res = await fetch(url, { ...opts, signal: controller.signal, redirect: 'follow', cache: 'no-store' })
+    return res
+  } finally {
+    clearTimeout(id)
+  }
+}
+
+async function quickVerify(url: string): Promise<boolean> {
+  try {
+    const res = await fetchWithTimeout(url, { headers: { 'user-agent': 'Mozilla/5.0 PineBot' } }, 5000)
+    if (!res.ok || res.status >= 400) return false
+    // Only inspect small HTML/text responses
+    const ct = res.headers.get('content-type') || ''
+    if (ct.includes('text/html') || ct.includes('application/xhtml')) {
+      const text = await res.text()
+      const snippet = text.slice(0, 4096).toLowerCase()
+      if (snippet.includes('game not found') || snippet.includes('404') || snippet.includes('not found')) return false
+    }
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function quickFilterGames(baseUrl: string, games: Game[], maxChecks = 50): Promise<Game[]> {
+  const now = Date.now()
+  const ttl = 10 * 60 * 1000 // 10 minutes
+  const toCheck = games.filter(g => shouldQuickCheck(g)).slice(0, maxChecks)
+  const results: Array<Promise<void>> = []
+  for (const g of toCheck) {
+    results.push((async () => {
+      const key = g.id || g.playUrl
+      const cached = brokenGameCache.get(key)
+      if (cached && cached.expires > now) return
+      let absoluteUrl = g.playUrl
+      try { absoluteUrl = new URL(g.playUrl, baseUrl).toString() } catch {}
+      const ok = await quickVerify(absoluteUrl)
+      brokenGameCache.set(key, { ok, expires: now + ttl })
+    })())
+  }
+  await Promise.allSettled(results)
+  return games.filter(g => {
+    const key = g.id || g.playUrl
+    const cached = brokenGameCache.get(key)
+    return !cached || cached.ok
+  })
+}
+
 async function fetchGameMonetizeGames(baseUrl: string): Promise<Game[]> {
   try {
     const url = new URL('/api/gamemonetize/games', baseUrl).toString()
@@ -9183,6 +9249,10 @@ export async function GET(request: NextRequest) {
       if (!dedup.has(key)) dedup.set(key, g)
     }
     filteredGames = Array.from(dedup.values())
+
+    // Quick server-side availability filter to drop obvious "Game not found" entries
+    // Keeps API fast by checking only a capped subset per request
+    filteredGames = await quickFilterGames(request.url, filteredGames, 80)
 
     // Optional heavy verification (off by default to avoid timeouts and truncation)
     if (verify) {
