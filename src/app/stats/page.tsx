@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useGameStats } from '@/hooks/useGameStats'
+import { useAuth } from '@/contexts/auth-context'
 import { Trophy, Flame, Star, Target, Award, Users, TrendingUp, Crown, User, Gamepad2, Map, Zap, Shuffle, Moon, Heart } from 'lucide-react'
 import { StatsPanel } from '@/components/gamification/stats-panel'
 
@@ -42,6 +43,7 @@ const iconMap = {
 
 export default function StatsPage() {
   const { stats, achievements } = useGameStats()
+  const { user } = useAuth()
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null)
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false)
