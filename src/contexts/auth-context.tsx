@@ -1,8 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useUser, useStackApp } from "@stackframe/stack"
-import { sql } from '@/lib/neon'
+import { isStackConfigured } from '@/lib/stack'
 
 interface User {
   id: string
@@ -29,11 +28,20 @@ const AuthContext = createContext<AuthContextType>({
 
 export const useAuth = () => useContext(AuthContext)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const stackUser = useUser()
-  const stackApp = useStackApp()
+export function AuthProvider({ children }: { children: React.ReactNode}) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  
+  // Only use Stack Auth if configured
+  let stackUser: any = null
+  if (isStackConfigured && typeof window !== 'undefined') {
+    try {
+      const { useUser } = require('@stackframe/stack')
+      stackUser = useUser()
+    } catch (e) {
+      // Stack Auth not available
+    }
+  }
 
   useEffect(() => {
     if (stackUser) {
