@@ -1,10 +1,14 @@
 import { neon } from '@neondatabase/serverless'
 
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not set')
-}
+// Check if Neon is configured
+const isDatabaseConfigured = !!process.env.DATABASE_URL
 
-export const sql = neon(process.env.DATABASE_URL)
+// Only initialize if DATABASE_URL is present
+export const sql = isDatabaseConfigured 
+  ? neon(process.env.DATABASE_URL) 
+  : null as any
+
+export { isDatabaseConfigured }
 
 // Helper function to create tables if they don't exist
 export async function initializeDatabase() {

@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sql } from '@/lib/neon'
-import { createApiKeyForUser, getApiKeyForUser } from '@/lib/api-key'
+
+// Force dynamic rendering to avoid build-time initialization
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  // Dynamically import to avoid build-time errors
+  const { sql } = await import('@/lib/neon')
+  const { createApiKeyForUser, getApiKeyForUser } = await import('@/lib/api-key')
   try {
     const body = await request.json()
     const { id, email, displayName, photoUrl } = body
