@@ -8,8 +8,6 @@ import { SettingsProvider } from '@/contexts/settings-context'
 import { AuthProvider } from '@/contexts/auth-context'
 import { TabCloak } from '@/components/tab-cloak'
 import ErrorBoundary from '@/components/error-boundary'
-import { StackProvider } from "@stackframe/stack"
-import { stackClientApp, isStackConfigured } from '@/lib/stack'
 
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
@@ -49,51 +47,26 @@ export default function RootLayout({
           </head>
       <body className={`${inter.variable} font-sans antialiased`}>
             <ErrorBoundary>
-              {isStackConfigured ? (
-                <StackProvider app={stackClientApp}>
-                  <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                  >
-                    <AuthProvider>
-                      <SettingsProvider>
-                        <TabCloak />
-                        <div className="relative min-h-screen flex flex-col">
-                          <div className="absolute inset-0 -z-10 hero-gradient opacity-40" />
-                          <Header />
-                          <main className="flex-1 px-4 py-6">
-                            {children}
-                          </main>
-                          <Footer />
-                        </div>
-                      </SettingsProvider>
-                    </AuthProvider>
-                  </ThemeProvider>
-                </StackProvider>
-              ) : (
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-                >
-                  <AuthProvider>
-                    <SettingsProvider>
-                      <TabCloak />
-                      <div className="relative min-h-screen flex flex-col">
-                        <div className="absolute inset-0 -z-10 hero-gradient opacity-40" />
-                        <Header />
-                        <main className="flex-1 px-4 py-6">
-                          {children}
-                        </main>
-                        <Footer />
-                      </div>
-                    </SettingsProvider>
-                  </AuthProvider>
-                </ThemeProvider>
-              )}
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <AuthProvider>
+                  <SettingsProvider>
+                    <TabCloak />
+                    <div className="relative min-h-screen flex flex-col">
+                      <div className="absolute inset-0 -z-10 hero-gradient opacity-40" />
+                      <Header />
+                      <main className="flex-1 px-4 py-6">
+                        {children}
+                      </main>
+                      <Footer />
+                    </div>
+                  </SettingsProvider>
+                </AuthProvider>
+              </ThemeProvider>
             </ErrorBoundary>
       </body>
     </html>

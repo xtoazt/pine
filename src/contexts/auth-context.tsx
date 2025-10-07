@@ -1,7 +1,6 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { isStackConfigured } from '@/lib/stack'
 
 interface User {
   id: string
@@ -20,7 +19,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  loading: true,
+  loading: false,
   signUp: async () => {},
   signIn: async () => {},
   signOut: async () => {},
@@ -28,90 +27,30 @@ const AuthContext = createContext<AuthContextType>({
 
 export const useAuth = () => useContext(AuthContext)
 
-export function AuthProvider({ children }: { children: React.ReactNode}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  
-  // Only use Stack Auth if configured
-  let stackUser: any = null
-  if (isStackConfigured && typeof window !== 'undefined') {
-    try {
-      const { useUser } = require('@stackframe/stack')
-      stackUser = useUser()
-    } catch (e) {
-      // Stack Auth not available
-    }
-  }
+  const [loading, setLoading] = useState(false)
 
+  // Auth is disabled for now - can be implemented with Neon Auth or another solution
   useEffect(() => {
-    if (stackUser) {
-      setUser({
-        id: stackUser.id,
-        email: stackUser.primaryEmail || null,
-        displayName: stackUser.displayName || stackUser.primaryEmail || null,
-        photoURL: stackUser.profileImageUrl || null,
-      })
-      
-      // Sync user to Neon database
-      syncUserToDatabase(stackUser).catch(console.error)
-    } else {
-      setUser(null)
-    }
     setLoading(false)
-  }, [stackUser])
-
-  const syncUserToDatabase = async (stackUser: any) => {
-    try {
-      // Upsert user to Neon database and get API key
-      const response = await fetch('/api/auth/sync-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: stackUser.id,
-          email: stackUser.primaryEmail,
-          displayName: stackUser.displayName || stackUser.primaryEmail,
-          photoUrl: stackUser.profileImageUrl,
-        }),
-      })
-      
-      const data = await response.json()
-      if (data.apiKey) {
-        // Store API key in localStorage for client-side use
-        localStorage.setItem('pine-api-key', data.apiKey)
-      }
-    } catch (error) {
-      console.error('[auth] Error syncing user to database:', error)
-    }
-  }
+  }, [])
 
   const signUp = async (username: string, password: string) => {
-    try {
-      // Stack Auth handles signup via their UI components
-      // This is a placeholder for compatibility
-      throw new Error('Please use the Stack Auth signup UI')
-    } catch (error: any) {
-      throw error
-    }
+    // TODO: Implement authentication
+    console.log('Sign up not yet implemented')
+    throw new Error('Authentication not yet implemented')
   }
 
   const signIn = async (username: string, password: string) => {
-    try {
-      // Stack Auth handles signin via their UI components
-      // This is a placeholder for compatibility
-      throw new Error('Please use the Stack Auth signin UI')
-    } catch (error: any) {
-      throw error
-    }
+    // TODO: Implement authentication
+    console.log('Sign in not yet implemented')
+    throw new Error('Authentication not yet implemented')
   }
 
   const signOut = async () => {
-    // Clear API key from localStorage
-    localStorage.removeItem('pine-api-key')
-    
-    // Stack Auth sign out - redirect to home
-    if (typeof window !== 'undefined') {
-      window.location.href = '/api/auth/signout'
-    }
+    // TODO: Implement authentication
+    setUser(null)
   }
 
   return (
