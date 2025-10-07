@@ -103,7 +103,7 @@ export default function HomePage() {
 
       {/* Categories */}
       <section className="container pb-12 relative">
-        <div className="absolute inset-0 -z-10 section-gradient" />
+        <div className="absolute inset-0 -z-10 section-gradient-purple opacity-60" />
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Browse by Category</h2>
           <Button variant="ghost" asChild>
@@ -113,7 +113,7 @@ export default function HomePage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {categories.map((cat) => (
             <Link key={cat.slug} href={`/category/${cat.slug}`}>
-              <Card className="hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer border border-border glass">
+              <Card className="hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer border border-border liquid-glass hover-shade">
                 <CardContent className="p-4 text-center space-y-2">
                   <div className="text-3xl">
                     {React.createElement(categoryIconMap[cat.icon as keyof typeof categoryIconMap] || Gamepad2, { className: "w-8 h-8 mx-auto" })}
@@ -128,7 +128,7 @@ export default function HomePage() {
 
       {/* Game Sources Section */}
       <section className="container pb-12 relative">
-        <div className="absolute inset-0 -z-10 section-gradient" />
+        <div className="absolute inset-0 -z-10 section-gradient-pink opacity-60" />
         <h2 className="text-2xl font-bold mb-6">Browse by Source</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
@@ -143,7 +143,7 @@ export default function HomePage() {
           { name: 'GameSnacks', source: 'gamesnacks', color: 'bg-pink-500/10 text-pink-600' },
         ].map((src) => (
             <Link key={src.source} href={`/games?source=${src.source}`}>
-              <Card className="hover:shadow-md transition-shadow cursor-pointer glass">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer liquid-glass hover-shade">
                 <CardContent className="p-4">
                   <Badge className={`${src.color} mb-2`}>{src.name}</Badge>
                   <p className="text-xs text-muted-foreground">Browse games</p>
@@ -156,7 +156,7 @@ export default function HomePage() {
 
       {/* Featured Games */}
       <section className="container pb-16 relative">
-        <div className="absolute inset-0 -z-10 section-gradient" />
+        <div className="absolute inset-0 -z-10 section-gradient opacity-80" />
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Popular Games</h2>
           <Button variant="ghost" asChild>
@@ -166,7 +166,7 @@ export default function HomePage() {
                 <Suspense fallback={
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {Array.from({ length: 12 }).map((_, i) => (
-                      <Card key={i} className="animate-pulse glass">
+                      <Card key={i} className="animate-pulse liquid-glass">
                         <CardContent className="p-4">
                           <div className="aspect-video bg-muted rounded-lg mb-3"></div>
                           <div className="h-4 bg-muted rounded mb-2"></div>

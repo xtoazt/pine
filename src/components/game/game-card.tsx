@@ -44,7 +44,7 @@ export function GameCard({ game }: GameCardProps) {
 
   // Check if game has thumbnail for compact layout
   const hasThumbnail = Boolean(game.thumbnail)
-  const cardBase = `group hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ${settings.showThumbnails ? 'game-card liquid-glass' : 'liquid-glass rounded-lg'}`
+  const cardBase = `group hover:shadow-lg hover:scale-[1.02] transition-all duration-200 hover-shade ${settings.showThumbnails ? 'game-card liquid-glass shadow-premium' : 'liquid-glass rounded-lg shadow-premium'}`
 
   return (
     <Link 

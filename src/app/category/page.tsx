@@ -42,7 +42,8 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="container py-8 space-y-8">
+    <div className="container py-8 space-y-8 relative">
+      <div className="absolute inset-0 -z-10 hero-gradient-strong opacity-50" />
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center space-x-2">
@@ -61,7 +62,7 @@ export default function CategoriesPage() {
       {/* Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {categories.map((category) => (
-          <Card key={category.id} className="hover:shadow-md transition-shadow group">
+          <Card key={category.id} className="hover:shadow-md transition-shadow group liquid-glass hover-shade">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center justify-between">
                 <span className="text-lg">{category.name}</span>
