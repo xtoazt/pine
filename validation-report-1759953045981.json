@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-10-08T19:50:45.981Z",
+  "config": {
+    "timeout": 5000,
+    "maxGames": 50,
+    "dryRun": true,
+    "skipBackup": false,
+    "parallel": 15,
+    "sources": null
+  },
+  "stats": {
+    "total": 150,
+    "valid": 150,
+    "broken": 0,
+    "skipped": 0,
+    "bySource": {
+      "poki": {
+        "total": 50,
+        "valid": 50,
+        "broken": 0
+      },
+      "playgama": {
+        "total": 50,
+        "valid": 50,
+        "broken": 0
+      },
+      "mockGames": {
+        "total": 50,
+        "valid": 50,
+        "broken": 0
+      }
+    },
+    "brokenGames": [],
+    "errors": {}
+  },
+  "brokenGames": []
+}

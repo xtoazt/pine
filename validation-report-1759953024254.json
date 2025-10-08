@@ -1,0 +1,741 @@
+{
+  "timestamp": "2025-10-08T19:50:24.254Z",
+  "config": {
+    "timeout": 5000,
+    "maxGames": 50,
+    "dryRun": true,
+    "skipBackup": false,
+    "parallel": 15,
+    "sources": null
+  },
+  "stats": {
+    "total": 150,
+    "valid": 100,
+    "broken": 50,
+    "skipped": 0,
+    "bySource": {
+      "poki": {
+        "total": 50,
+        "valid": 50,
+        "broken": 0
+      },
+      "playgama": {
+        "total": 50,
+        "valid": 50,
+        "broken": 0
+      },
+      "mockGames": {
+        "total": 50,
+        "valid": 0,
+        "broken": 50
+      }
+    },
+    "brokenGames": [
+      {
+        "id": "lesson-1",
+        "title": "Yohoho",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-1"
+      },
+      {
+        "id": "lesson-2",
+        "title": "Paperio 2",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-2"
+      },
+      {
+        "id": "lesson-3",
+        "title": "Paperio 3",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-3"
+      },
+      {
+        "id": "lesson-4",
+        "title": "2048 Hacked",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-4"
+      },
+      {
+        "id": "lesson-5",
+        "title": "3d Free Kick",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-5"
+      },
+      {
+        "id": "lesson-6",
+        "title": "Combines",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-6"
+      },
+      {
+        "id": "lesson-7",
+        "title": "Achieve Ment Unlocked",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-7"
+      },
+      {
+        "id": "lesson-8",
+        "title": "Adeventures With Anxiety",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-8"
+      },
+      {
+        "id": "lesson-9",
+        "title": "Adventure Drivers",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-9"
+      },
+      {
+        "id": "lesson-10",
+        "title": "Alien Hominid",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-10"
+      },
+      {
+        "id": "lesson-11",
+        "title": "Among Us",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-11"
+      },
+      {
+        "id": "lesson-12",
+        "title": "Arcade Wizard",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-12"
+      },
+      {
+        "id": "lesson-13",
+        "title": "Archery World Tour",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-13"
+      },
+      {
+        "id": "lesson-14",
+        "title": "Aspiring Artist",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-14"
+      },
+      {
+        "id": "lesson-15",
+        "title": "Awesome Tanks 2",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-15"
+      },
+      {
+        "id": "lesson-16",
+        "title": "Backrooms 3d",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-16"
+      },
+      {
+        "id": "lesson-17",
+        "title": "Yohoho 2",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-17"
+      },
+      {
+        "id": "lesson-18",
+        "title": "Bad Ice Cream 2",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-18"
+      },
+      {
+        "id": "lesson-19",
+        "title": "Baldis Basics",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-19"
+      },
+      {
+        "id": "lesson-20",
+        "title": "Basket And Ball",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-20"
+      },
+      {
+        "id": "lesson-21",
+        "title": "Basket Random",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-21"
+      },
+      {
+        "id": "lesson-22",
+        "title": "Basket Stars",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-22"
+      },
+      {
+        "id": "lesson-23",
+        "title": "Basketball Stars",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-23"
+      },
+      {
+        "id": "lesson-24",
+        "title": "Bear On A Scooter",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-24"
+      },
+      {
+        "id": "lesson-25",
+        "title": "Bitcoin Clicker",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-25"
+      },
+      {
+        "id": "lesson-26",
+        "title": "Blocky Snakes",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-26"
+      },
+      {
+        "id": "lesson-27",
+        "title": "Bloxors",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-27"
+      },
+      {
+        "id": "lesson-28",
+        "title": "Bob The Robber 2",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-28"
+      },
+      {
+        "id": "lesson-29",
+        "title": "Bouncing Hell",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-29"
+      },
+      {
+        "id": "lesson-30",
+        "title": "Bound Land",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-30"
+      },
+      {
+        "id": "lesson-31",
+        "title": "Boxel Rebound",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-31"
+      },
+      {
+        "id": "lesson-32",
+        "title": "Boxing Random",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-32"
+      },
+      {
+        "id": "lesson-33",
+        "title": "Breaking The Bank",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-33"
+      },
+      {
+        "id": "lesson-34",
+        "title": "Burrito Bison Launch A Libre",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-34"
+      },
+      {
+        "id": "lesson-35",
+        "title": "Cannon Basketball 4",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-35"
+      },
+      {
+        "id": "lesson-36",
+        "title": "Cars Simulator",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-36"
+      },
+      {
+        "id": "lesson-37",
+        "title": "Cave War",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-37"
+      },
+      {
+        "id": "lesson-38",
+        "title": "Chrome Dino",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-38"
+      },
+      {
+        "id": "lesson-39",
+        "title": "Classicube",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-39"
+      },
+      {
+        "id": "lesson-40",
+        "title": "Connect 3",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-40"
+      },
+      {
+        "id": "lesson-41",
+        "title": "Cookieclicker",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-41"
+      },
+      {
+        "id": "lesson-42",
+        "title": "Craft Mine",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-42"
+      },
+      {
+        "id": "lesson-43",
+        "title": "Creative Kill Chamber",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-43"
+      },
+      {
+        "id": "lesson-44",
+        "title": "Deal Or No Deal",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-44"
+      },
+      {
+        "id": "lesson-45",
+        "title": "Death Run 3d",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-45"
+      },
+      {
+        "id": "lesson-46",
+        "title": "Death Soul",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-46"
+      },
+      {
+        "id": "lesson-47",
+        "title": "Deathcario",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-47"
+      },
+      {
+        "id": "lesson-48",
+        "title": "Deathrun 3d",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-48"
+      },
+      {
+        "id": "lesson-49",
+        "title": "Doge Miner",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-49"
+      },
+      {
+        "id": "lesson-50",
+        "title": "Doodle Jump",
+        "source": "mockGames",
+        "reason": "Invalid URL",
+        "url": "/play/lesson-50"
+      }
+    ],
+    "errors": {
+      "Invalid URL": 50
+    }
+  },
+  "brokenGames": [
+    {
+      "id": "lesson-1",
+      "title": "Yohoho",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-1"
+    },
+    {
+      "id": "lesson-2",
+      "title": "Paperio 2",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-2"
+    },
+    {
+      "id": "lesson-3",
+      "title": "Paperio 3",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-3"
+    },
+    {
+      "id": "lesson-4",
+      "title": "2048 Hacked",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-4"
+    },
+    {
+      "id": "lesson-5",
+      "title": "3d Free Kick",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-5"
+    },
+    {
+      "id": "lesson-6",
+      "title": "Combines",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-6"
+    },
+    {
+      "id": "lesson-7",
+      "title": "Achieve Ment Unlocked",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-7"
+    },
+    {
+      "id": "lesson-8",
+      "title": "Adeventures With Anxiety",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-8"
+    },
+    {
+      "id": "lesson-9",
+      "title": "Adventure Drivers",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-9"
+    },
+    {
+      "id": "lesson-10",
+      "title": "Alien Hominid",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-10"
+    },
+    {
+      "id": "lesson-11",
+      "title": "Among Us",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-11"
+    },
+    {
+      "id": "lesson-12",
+      "title": "Arcade Wizard",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-12"
+    },
+    {
+      "id": "lesson-13",
+      "title": "Archery World Tour",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-13"
+    },
+    {
+      "id": "lesson-14",
+      "title": "Aspiring Artist",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-14"
+    },
+    {
+      "id": "lesson-15",
+      "title": "Awesome Tanks 2",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-15"
+    },
+    {
+      "id": "lesson-16",
+      "title": "Backrooms 3d",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-16"
+    },
+    {
+      "id": "lesson-17",
+      "title": "Yohoho 2",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-17"
+    },
+    {
+      "id": "lesson-18",
+      "title": "Bad Ice Cream 2",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-18"
+    },
+    {
+      "id": "lesson-19",
+      "title": "Baldis Basics",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-19"
+    },
+    {
+      "id": "lesson-20",
+      "title": "Basket And Ball",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-20"
+    },
+    {
+      "id": "lesson-21",
+      "title": "Basket Random",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-21"
+    },
+    {
+      "id": "lesson-22",
+      "title": "Basket Stars",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-22"
+    },
+    {
+      "id": "lesson-23",
+      "title": "Basketball Stars",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-23"
+    },
+    {
+      "id": "lesson-24",
+      "title": "Bear On A Scooter",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-24"
+    },
+    {
+      "id": "lesson-25",
+      "title": "Bitcoin Clicker",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-25"
+    },
+    {
+      "id": "lesson-26",
+      "title": "Blocky Snakes",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-26"
+    },
+    {
+      "id": "lesson-27",
+      "title": "Bloxors",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-27"
+    },
+    {
+      "id": "lesson-28",
+      "title": "Bob The Robber 2",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-28"
+    },
+    {
+      "id": "lesson-29",
+      "title": "Bouncing Hell",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-29"
+    },
+    {
+      "id": "lesson-30",
+      "title": "Bound Land",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-30"
+    },
+    {
+      "id": "lesson-31",
+      "title": "Boxel Rebound",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-31"
+    },
+    {
+      "id": "lesson-32",
+      "title": "Boxing Random",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-32"
+    },
+    {
+      "id": "lesson-33",
+      "title": "Breaking The Bank",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-33"
+    },
+    {
+      "id": "lesson-34",
+      "title": "Burrito Bison Launch A Libre",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-34"
+    },
+    {
+      "id": "lesson-35",
+      "title": "Cannon Basketball 4",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-35"
+    },
+    {
+      "id": "lesson-36",
+      "title": "Cars Simulator",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-36"
+    },
+    {
+      "id": "lesson-37",
+      "title": "Cave War",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-37"
+    },
+    {
+      "id": "lesson-38",
+      "title": "Chrome Dino",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-38"
+    },
+    {
+      "id": "lesson-39",
+      "title": "Classicube",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-39"
+    },
+    {
+      "id": "lesson-40",
+      "title": "Connect 3",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-40"
+    },
+    {
+      "id": "lesson-41",
+      "title": "Cookieclicker",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-41"
+    },
+    {
+      "id": "lesson-42",
+      "title": "Craft Mine",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-42"
+    },
+    {
+      "id": "lesson-43",
+      "title": "Creative Kill Chamber",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-43"
+    },
+    {
+      "id": "lesson-44",
+      "title": "Deal Or No Deal",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-44"
+    },
+    {
+      "id": "lesson-45",
+      "title": "Death Run 3d",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-45"
+    },
+    {
+      "id": "lesson-46",
+      "title": "Death Soul",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-46"
+    },
+    {
+      "id": "lesson-47",
+      "title": "Deathcario",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-47"
+    },
+    {
+      "id": "lesson-48",
+      "title": "Deathrun 3d",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-48"
+    },
+    {
+      "id": "lesson-49",
+      "title": "Doge Miner",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-49"
+    },
+    {
+      "id": "lesson-50",
+      "title": "Doodle Jump",
+      "source": "mockGames",
+      "reason": "Invalid URL",
+      "url": "/play/lesson-50"
+    }
+  ]
+}
