@@ -3,6 +3,15 @@ const nextConfig = {
       images: {
         domains: ['localhost', 'fortnite-game.github.io', 'raw.githubusercontent.com', 'classroom.mathify.space'],
       },
+  async redirects() {
+    return [
+      {
+        source: '/active',
+        destination: '/active/',
+        permanent: false,
+      },
+    ]
+  },
   async rewrites() {
     return [
       {
