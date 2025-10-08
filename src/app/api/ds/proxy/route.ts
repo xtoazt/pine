@@ -1,198 +1,85 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-function isHtml(ct: string | null): boolean {
-  return !!ct && /text\/html/i.test(ct)
-}
-
-function isCss(ct: string | null): boolean {
-  return !!ct && /text\/css/i.test(ct)
-}
-
-function absoluteBase(target: URL): string {
-  // Ensure trailing slash
-  const s = target.origin + target.pathname
-  return s.endsWith('/') ? s : s + '/'
-}
-
-function rewriteHtml(baseHref: string, html: string): string {
-  let out = html
-  if (!/\<base\s+/i.test(out)) {
-    out = out.replace(/<head(\s[^>]*)?>/i, (m) => `${m}\n<base href="${baseHref}">`)
-  }
-  out = out.replace(/(src|href)="(.*?)"/gi, (_m, attr, url) => {
-    if (!url || /^https?:\/\//i.test(url) || /^data:/i.test(url)) return _m
-    const rel = url.startsWith('/') ? url.slice(1) : url
-    const proxied = `/api/ds/proxy?url=${encodeURIComponent(baseHref + rel)}`
-    return `${attr}="${proxied}"`
-  })
-  return out
-}
-
-function rewriteCss(baseHref: string, css: string): string {
-  return css.replace(/url\(([^)]+)\)/gi, (m, raw) => {
-    let url = String(raw).trim().replace(/^['"]|['"]$/g, '')
-    if (!url || /^https?:\/\//i.test(url) || /^data:/i.test(url)) return m
-    const rel = url.startsWith('/') ? url.slice(1) : url
-    const proxied = `/api/ds/proxy?url=${encodeURIComponent(baseHref + rel)}`
-    return `url(${proxied})`
-  })
-}
+/**
+ * DS Proxy - NOW USES UV PROXY
+ * 
+ * This endpoint redirects all game requests to use UV (Ultraviolet) proxy
+ * for better CORS handling and reliability.
+ * 
+ * All games now load through UV service worker for:
+ * - CORS bypass
+ * - Better performance
+ * - Client-side proxying (no server load)
+ * 
+ * Usage: /api/ds/proxy?url=https://example.com
+ */
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const rawUrl = searchParams.get('url')
-    const ping = searchParams.get('ping') === '1'
-    const embed = searchParams.get('embed') === '1'
-    const zoom = Math.max(0.5, Math.min(2, Number(searchParams.get('zoom') || '1')))
+    
     if (!rawUrl) {
       return NextResponse.json({ error: 'Missing url param' }, { status: 400 })
     }
 
+    // Validate URL
     let target: URL
     try {
       target = new URL(rawUrl)
     } catch {
       return NextResponse.json({ error: 'Invalid url' }, { status: 400 })
     }
-
-    const origin = new URL(request.url).origin
-    const buildCodetabsUrl = (u: URL) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u.toString())}`
-    const buildMirrorUrl = (u: URL) => {
-      const base = process.env.MIRROR_URL || `${origin}/api/mirror`
-      if (!base) return null
-      try {
-        const out = new URL(base)
-        // Use common query param name
-        out.searchParams.set('url', u.toString())
-        return out.toString()
-      } catch { return null }
-    }
-
-    const fetchWithFallback = async (u: URL): Promise<Response> => {
-      try {
-        const primary = await fetch(u.toString(), {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Referer': u.origin,
-            'Origin': u.origin,
-          },
-          redirect: 'follow',
-        })
-        if (primary.ok) return primary
-      } catch {
-        // fall through to codetabs
-      }
-      // Try user-provided Mirror proxy first (e.g., embr-dev/Mirror)
-      const mirrorUrl = buildMirrorUrl(u)
-      if (mirrorUrl) {
-        try {
-          const m = await fetch(mirrorUrl, { redirect: 'follow' })
-          if (m.ok) return m
-        } catch {}
-      }
-      // Then try Codetabs public proxy as a fallback for CORS/restrictions
-      try {
-        const fallback = await fetch(buildCodetabsUrl(u), { redirect: 'follow' })
-        return fallback
-      } catch {
-        // Surface a generic failure; caller will handle
-        return new Response(null, { status: 502 })
-      }
-    }
-
-    const res = await fetchWithFallback(target)
-
-    if (ping) {
-      return new NextResponse(null, { status: res.ok ? 204 : 404 })
-    }
-
-    if (!res.ok) {
-      return NextResponse.json({ error: `Upstream error ${res.status}` }, { status: res.status })
-    }
-
-    const ct = res.headers.get('content-type') || ''
-    const base = absoluteBase(target)
-
-    if (!isHtml(ct)) {
-      const ab = await res.arrayBuffer()
-      // Try CSS first
-      if (isCss(ct)) {
-        const text = Buffer.from(ab).toString('utf-8')
-        const rewritten = rewriteCss(base, text)
-        return new NextResponse(rewritten, {
-          headers: {
-            'Content-Type': 'text/css; charset=utf-8',
-            'Cache-Control': 'public, max-age=300',
-          }
-        })
-      }
-
-      // Heuristic: Some CORS proxies return text/plain or application/octet-stream for HTML
-      const sniff = Buffer.from(ab).toString('utf-8')
-      const looksHtml = /<\s*(!doctype\s+html|html)[^>]*>/i.test(sniff)
-      if (looksHtml) {
-        const rewritten = rewriteHtml(base, sniff)
-        return new NextResponse(rewritten, {
-          headers: {
-            'Content-Type': 'text/html; charset=utf-8',
-            'Cache-Control': 'public, max-age=120',
-            'X-Frame-Options': 'SAMEORIGIN',
-            'Cross-Origin-Embedder-Policy': 'unsafe-none',
-          }
-        })
-      }
-
-      // Binary/unknown: stream as-is
-      return new NextResponse(Buffer.from(ab), {
-        headers: {
-          'Content-Type': ct || 'application/octet-stream',
-          'Cache-Control': 'public, max-age=300',
+    
+    // REDIRECT TO UV PROXY
+    // Instead of server-side proxying, redirect to our UV proxy endpoint
+    const uvRedirectUrl = `/api/uv-redirect?url=${encodeURIComponent(target.toString())}`
+    
+    // Return HTML page that loads game via UV proxy
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            overflow: hidden;
         }
-      })
-    }
-
-    let html = await res.text()
-    if (embed) {
-      // Try to extract first iframe src and render a clean wrapper focusing only on the game
-      const m = html.match(/<iframe[^>]+src=["']([^"']+)["'][^>]*>/i)
-      if (m && m[1]) {
-        const iframeUrl = new URL(m[1], base)
-        const proxied = `/api/ds/proxy?url=${encodeURIComponent(iframeUrl.toString())}`
-        const clean = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"/><style>
-          :root{--z:${zoom};}
-          html,body{margin:0;height:100%;background:#000}
-          .wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#000}
-          /* Scale around center; fill area precisely */
-          iframe{width:calc(100%/var(--z));height:calc(100%/var(--z));border:0;transform:scale(var(--z));transform-origin:center center}
-        </style></head><body><div class="wrap"><iframe src="${proxied}" allowfullscreen allow="autoplay; fullscreen; gamepad; xr-spatial-tracking; clipboard-read; clipboard-write"></iframe></div></body></html>`
-        return new NextResponse(clean, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=120' } })
-      }
-    }
-    if (html.trim().length < 64) {
-      // Attempt fetching index.html if we landed on a directory
-      const alt = new URL('index.html', base)
-      const r2 = await fetchWithFallback(alt)
-      if (r2.ok && isHtml(r2.headers.get('content-type'))) {
-        html = await r2.text()
-      }
-    }
-
-    const rewritten = rewriteHtml(base, html)
-    return new NextResponse(rewritten, {
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <iframe 
+        src="${uvRedirectUrl}" 
+        allowfullscreen 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-orientation-lock allow-top-navigation-by-user-activation"
+    ></iframe>
+</body>
+</html>`
+    
+    return new NextResponse(html, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=120',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
         'X-Frame-Options': 'SAMEORIGIN',
-        'Cross-Origin-Embedder-Policy': 'unsafe-none',
       }
     })
   } catch (e) {
-    console.error('DS proxy error', e)
-    return NextResponse.json({ error: 'Proxy failure' }, { status: 500 })
+    console.error('[DS Proxy] Error:', e)
+    return NextResponse.json(
+      { error: 'Proxy error', details: e instanceof Error ? e.message : 'Unknown' },
+      { status: 500 }
+    )
   }
 }
-
-

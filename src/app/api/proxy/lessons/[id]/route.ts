@@ -1,25 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-function isHtml(contentType: string | null): boolean {
-  return !!contentType && contentType.toLowerCase().includes('text/html')
-}
-
-function rewriteHtml(baseUrl: string, html: string): string {
-  let modified = html
-  // Insert base tag
-  if (!/\<base\s+/i.test(modified)) {
-    const baseTag = `<base href="${baseUrl}" />`
-    modified = modified.replace(/<head(\s[^>]*)?>/i, (m) => `${m}\n${baseTag}`)
-  }
-  // Rewrite src/href attributes
-  modified = modified.replace(/(src|href)="(.*?)"/gi, (_m, attr, url) => {
-    if (!url || /^https?:\/\//i.test(url) || /^data:/i.test(url)) return _m
-    const abs = url.startsWith('/') ? url : `${baseUrl}${url}`
-    return `${attr}="${abs}"
-`
-  })
-  return modified
-}
+/**
+ * Lessons Proxy - NOW USES UV
+ * 
+ * This endpoint redirects lesson games to use UV proxy
+ * 
+ * Usage: /api/proxy/lessons/[id]
+ */
 
 export async function GET(
   request: NextRequest,
@@ -27,56 +14,53 @@ export async function GET(
 ) {
   try {
     const { id: gameId } = await params
-    const base = `https://classroom.mathify.space/lessons/${gameId}/`
-    const targetUrl = `${base}index.html`
+    const targetUrl = `https://classroom.mathify.space/lessons/${gameId}/index.html`
     
-    let response = await fetch(targetUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Referer': base
-      }
-    })
+    // Redirect to UV proxy
+    const uvRedirectUrl = `/api/uv-redirect?url=${encodeURIComponent(targetUrl)}`
     
-    if (!response.ok) {
-      return NextResponse.json({ error: 'Game not found' }, { status: 404 })
-    }
-    
-    const ct = response.headers.get('content-type') || ''
-
-    // Stream non-HTML assets (when this route is used for assets)
-    if (!isHtml(ct)) {
-      const body = await response.arrayBuffer()
-      return new NextResponse(Buffer.from(body), {
-        headers: {
-          'Content-Type': ct || 'application/octet-stream',
-          'Cache-Control': 'public, max-age=3600'
+    // Return HTML page that loads via UV
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Lesson...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            overflow: hidden;
         }
-      })
-    }
-
-    let content = await response.text()
-
-    // Basic anti-bot fallback (if empty/placeholder)
-    if (content.trim().length < 64) {
-      const alt = await fetch(base, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': base } })
-      if (alt.ok && isHtml(alt.headers.get('content-type'))) {
-        content = await alt.text()
-      }
-    }
-
-    const rewritten = rewriteHtml(base, content)
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <iframe 
+        src="${uvRedirectUrl}" 
+        allowfullscreen 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock allow-orientation-lock allow-top-navigation-by-user-activation"
+    ></iframe>
+</body>
+</html>`
     
-    return new NextResponse(rewritten, {
+    return new NextResponse(html, {
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
         'Cache-Control': 'public, max-age=300',
         'X-Frame-Options': 'SAMEORIGIN',
-        'Cross-Origin-Embedder-Policy': 'unsafe-none',
       }
     })
   } catch (error) {
-    console.error('Proxy error:', error)
-    return NextResponse.json({ error: 'Failed to load game' }, { status: 500 })
+    console.error('[Lessons Proxy] Error:', error)
+    return NextResponse.json({ error: 'Failed to load lesson' }, { status: 500 })
   }
 }

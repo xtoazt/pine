@@ -218,25 +218,27 @@ export default function GamePage() {
                       try {
                         const playUrl = game.playUrl || ''
                         
-                        // Handle relative URLs (internal routes)
-                        if (playUrl.startsWith('/')) {
-                          // If it's /api/proxy or /proxy, these should go through UV too
-                          if (playUrl.startsWith('/api/proxy') || playUrl.startsWith('/proxy/')) {
-                            return playUrl // Keep internal proxy routes as-is for now
-                          }
-                          return playUrl // Other internal routes
+                        console.log('[Game Player] Loading game:', game.id, 'URL:', playUrl)
+                        
+                        // ALL external URLs go through UV - no exceptions
+                        if (playUrl.startsWith('http://') || playUrl.startsWith('https://')) {
+                          try {
+                            const url = new URL(playUrl)
+                            // Check if it's our domain
+                            if (url.origin !== window.location.origin) {
+                              const proxied = getUVProxyUrl(url.toString())
+                              console.log('[Game Player] Proxying external URL through UV:', proxied)
+                              return proxied
+                            }
+                          } catch {}
                         }
                         
-                        // For external URLs, always use UV proxy
-                        const url = new URL(playUrl, window.location.origin)
-                        if (url.origin === window.location.origin) {
-                          return playUrl // Same origin, no proxy needed
-                        }
-                        
-                        // Proxy all external URLs through UV
-                        return getUVProxyUrl(url.toString())
+                        // Internal routes (/api/*, /proxy/*, /play/*) load directly
+                        // These now internally redirect to UV
+                        console.log('[Game Player] Loading internal route:', playUrl)
+                        return playUrl
                       } catch (e) {
-                        console.error('[UV] Failed to process URL:', game.playUrl, e)
+                        console.error('[Game Player] Error processing URL:', game.playUrl, e)
                         return game.playUrl || ''
                       }
                     })()}
