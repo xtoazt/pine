@@ -13,7 +13,9 @@
     "validate:dry": "node scripts/validate-and-cleanup-games.js --dry-run",
     "validate:cleanup": "node scripts/validate-and-cleanup-games.js",
     "validate:poki": "node scripts/validate-and-cleanup-games.js --sources=poki --dry-run",
-    "validate:playgama": "node scripts/validate-and-cleanup-games.js --sources=playgama --dry-run"
+    "validate:playgama": "node scripts/validate-and-cleanup-games.js --sources=playgama --dry-run",
+    "cleanup:pages": "node scripts/cleanup-invalid-pages.js",
+    "cleanup:pages:dry": "node scripts/cleanup-invalid-pages.js --dry-run"
   },
   "repository": {
     "type": "git",
