@@ -216,11 +216,27 @@ export default function GamePage() {
                   <iframe
                     src={(() => {
                       try {
-                        const url = new URL(game.playUrl || '', window.location.origin)
-                        // Avoid proxying our own domain to prevent recursive iframe
-                        if (url.origin === window.location.origin) return game.playUrl || ''
+                        const playUrl = game.playUrl || ''
+                        
+                        // Handle relative URLs (internal routes)
+                        if (playUrl.startsWith('/')) {
+                          // If it's /api/proxy or /proxy, these should go through UV too
+                          if (playUrl.startsWith('/api/proxy') || playUrl.startsWith('/proxy/')) {
+                            return playUrl // Keep internal proxy routes as-is for now
+                          }
+                          return playUrl // Other internal routes
+                        }
+                        
+                        // For external URLs, always use UV proxy
+                        const url = new URL(playUrl, window.location.origin)
+                        if (url.origin === window.location.origin) {
+                          return playUrl // Same origin, no proxy needed
+                        }
+                        
+                        // Proxy all external URLs through UV
                         return getUVProxyUrl(url.toString())
-                      } catch {
+                      } catch (e) {
+                        console.error('[UV] Failed to process URL:', game.playUrl, e)
                         return game.playUrl || ''
                       }
                     })()}
