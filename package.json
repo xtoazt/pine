@@ -8,7 +8,12 @@
     "build": "next build",
     "start": "node server.js",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "validate:quick": "node scripts/quick-test-games.js",
+    "validate:dry": "node scripts/validate-and-cleanup-games.js --dry-run",
+    "validate:cleanup": "node scripts/validate-and-cleanup-games.js",
+    "validate:poki": "node scripts/validate-and-cleanup-games.js --sources=poki --dry-run",
+    "validate:playgama": "node scripts/validate-and-cleanup-games.js --sources=playgama --dry-run"
   },
   "repository": {
     "type": "git",
